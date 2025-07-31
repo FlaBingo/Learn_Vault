@@ -4,6 +4,7 @@ import { createdAt, id, updatedAt } from "../schemaHelpers";
 import { UsersTable } from "./user";
 import { relations } from "drizzle-orm";
 import { ContentBlockTable } from "./contentBlock";
+import { CollaboratorTable } from "./collaborator";
 
 export const repoStatuses = ["public", "private"] as const
 export type repoStatus = (typeof repoStatuses)[number]
@@ -29,5 +30,6 @@ export const repoRelations = relations(RepoTable, ({ one, many }) => ({
     fields: [RepoTable.userId],
     references: [UsersTable.id]
   }),
-  contentBlocks: many(ContentBlockTable)
+  contentBlocks: many(ContentBlockTable),
+  collaborators: many(CollaboratorTable),
 }))
