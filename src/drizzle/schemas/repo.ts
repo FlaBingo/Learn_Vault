@@ -1,3 +1,4 @@
+// src/drizzle/schemas/repo.ts
 import { index, pgEnum, pgTable, text, uuid } from "drizzle-orm/pg-core";
 import { createdAt, id, updatedAt } from "../schemaHelpers";
 import { UsersTable } from "./user";
