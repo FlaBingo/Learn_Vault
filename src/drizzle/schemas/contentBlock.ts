@@ -17,6 +17,7 @@ export const ContentBlockTable = pgTable("content_block", {
   content: text().notNull(),
   description: text(),
   order: integer().notNull(),
+  bgColor: text(),
   createdAt,
   updatedAt,
 },

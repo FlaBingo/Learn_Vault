@@ -1,4 +1,4 @@
-import { pgEnum, pgTable, uuid } from "drizzle-orm/pg-core";
+import { pgEnum, pgTable, unique, uuid } from "drizzle-orm/pg-core";
 import { createdAt, id, updatedAt } from "../schemaHelpers";
 import { UsersTable } from "./user";
 import { RepoTable } from "./repo";
@@ -15,7 +15,11 @@ export const CollaboratorTable = pgTable("collaborators", {
   role: collaboratorRolesEnum().notNull().default("viewer"),
   createdAt,
   updatedAt,
-})
+}, 
+  (table) => ({
+    uniqueUserRepo: unique().on(table.userId, table.repoId), // not completely sure about the syntax
+  })
+)
 
 export const collaboratorRelations = relations(CollaboratorTable, ({one}) => ({
   user: one(UsersTable, {
