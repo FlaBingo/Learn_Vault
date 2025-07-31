@@ -3,7 +3,7 @@
 import { boolean, pgTable, text } from "drizzle-orm/pg-core";
 import { createdAt, id, updatedAt } from "../schemaHelpers";
 import { relations } from "drizzle-orm";
-import { repoTable } from "./repo";
+import { RepoTable } from "./repo";
 
 
 export const UsersTable = pgTable("users", {
@@ -17,5 +17,5 @@ export const UsersTable = pgTable("users", {
 })
 
 export const usersRelations = relations(UsersTable, ({ many }) => ({
-  repositories: many(repoTable),
+  repositories: many(RepoTable),
 }))
