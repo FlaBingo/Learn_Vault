@@ -1,7 +1,7 @@
 import { pgTable, text, uuid } from "drizzle-orm/pg-core";
 import { createdAt, id } from "../schemaHelpers";
 import { relations } from "drizzle-orm";
-import { ContentBlockTagTable } from "./contentTag";
+import { ContentBlockTagTable } from "./contentBlockTag";
 
 
 export const TagTable = pgTable("tags", {
