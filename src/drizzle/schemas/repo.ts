@@ -8,7 +8,7 @@ import { CollaboratorTable } from "./collaborator";
 
 export const repoStatuses = ["public", "private"] as const
 export type repoStatus = (typeof repoStatuses)[number]
-export const repoStatusEnum = pgEnum("course_section_status", repoStatuses);
+export const repoStatusEnum = pgEnum("repo_status", repoStatuses);
 
 export const RepoTable = pgTable("repositories", {
   id,

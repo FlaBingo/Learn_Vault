@@ -27,7 +27,7 @@ export const collaboratorRelations = relations(CollaboratorTable, ({one}) => ({
     references: [UsersTable.id],
   }),
   repository: one(RepoTable, {
-    fields: [CollaboratorTable.id],
+    fields: [CollaboratorTable.repoId],
     references: [RepoTable.id],
   })
 }))
