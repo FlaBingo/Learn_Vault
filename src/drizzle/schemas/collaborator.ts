@@ -4,7 +4,7 @@ import { UsersTable } from "./user";
 import { RepoTable } from "./repo";
 import { relations } from "drizzle-orm";
 
-export const collaboratorRoles = ["owner", "editor", "viewer"] as const;
+export const collaboratorRoles = ["owner", "admin", "editor"] as const;
 export type collaboratorRole = (typeof collaboratorRoles)[number];
 export const collaboratorRolesEnum = pgEnum("collaborator_roles", collaboratorRoles);
 
@@ -12,7 +12,7 @@ export const CollaboratorTable = pgTable("collaborators", {
   id,
   userId: uuid().notNull().references(() => UsersTable.id, { onDelete: "cascade"}),
   repoId: uuid().notNull().references(() => RepoTable.id, { onDelete: "cascade"}),
-  role: collaboratorRolesEnum().notNull().default("viewer"),
+  role: collaboratorRolesEnum().notNull().default("editor"),
   createdAt,
   updatedAt,
 }, 
