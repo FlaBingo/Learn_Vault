@@ -21,11 +21,11 @@ export const ContentBlockTable = pgTable("content_block", {
   createdAt,
   updatedAt,
 },
-  (contentBlock) => ({
-    repoIdx: index("repo_idx").on(contentBlock.repoId),
-    typeIdx: index("type_idx").on(contentBlock.type),
-    orderIdx: index("order_idx").on(contentBlock.order)
-  })
+  (contentBlock) => [
+    index("repo_idx").on(contentBlock.repoId),
+    index("type_idx").on(contentBlock.type),
+    index("order_idx").on(contentBlock.order)
+  ]
 )
 
 export const contentBlockRelations = relations(ContentBlockTable, ({ one, many }) => ({

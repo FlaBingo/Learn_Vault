@@ -1,4 +1,4 @@
-import { pgEnum, pgTable, unique, uuid } from "drizzle-orm/pg-core";
+import { index, pgEnum, pgTable, unique, uuid } from "drizzle-orm/pg-core";
 import { createdAt, id, updatedAt } from "../schemaHelpers";
 import { UsersTable } from "./user";
 import { RepoTable } from "./repo";
@@ -10,18 +10,21 @@ export const collaboratorRolesEnum = pgEnum("collaborator_roles", collaboratorRo
 
 export const CollaboratorTable = pgTable("collaborators", {
   id,
-  userId: uuid().notNull().references(() => UsersTable.id, { onDelete: "cascade"}),
-  repoId: uuid().notNull().references(() => RepoTable.id, { onDelete: "cascade"}),
+  userId: uuid().notNull().references(() => UsersTable.id, { onDelete: "cascade" }),
+  repoId: uuid().notNull().references(() => RepoTable.id, { onDelete: "cascade" }),
   role: collaboratorRolesEnum().notNull().default("editor"),
   createdAt,
   updatedAt,
-}, 
-  (table) => ({
-    uniqueUserRepo: unique().on(table.userId, table.repoId), // not completely sure about the syntax
-  })
+},
+  (table) => [
+    index("idx_user").on(table.userId),
+    index("idx_repo").on(table.repoId),
+    index("idx_role").on(table.role),
+    unique("user_repo_unique").on(table.userId, table.repoId),
+  ]
 )
 
-export const collaboratorRelations = relations(CollaboratorTable, ({one}) => ({
+export const collaboratorRelations = relations(CollaboratorTable, ({ one }) => ({
   user: one(UsersTable, {
     fields: [CollaboratorTable.userId],
     references: [UsersTable.id],

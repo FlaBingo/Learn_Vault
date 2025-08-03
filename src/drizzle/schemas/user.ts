@@ -1,10 +1,11 @@
 // src/drizzle/schemas/user.ts
 
-import { boolean, pgTable, text } from "drizzle-orm/pg-core";
+import { boolean, index, pgTable, text, uniqueIndex } from "drizzle-orm/pg-core";
 import { createdAt, id, updatedAt } from "../schemaHelpers";
 import { relations } from "drizzle-orm";
 import { RepoTable } from "./repo";
 import { CollaboratorTable } from "./collaborator";
+import { commentTable } from "./comments";
 
 
 export const UsersTable = pgTable("users", {
@@ -15,9 +16,14 @@ export const UsersTable = pgTable("users", {
   isVerified: boolean().notNull().default(false),
   createdAt,
   updatedAt,
-})
+},
+  (table) => [
+    uniqueIndex("email_idx").on(table.email),
+  ]
+)
 
 export const usersRelations = relations(UsersTable, ({ many }) => ({
   repositories: many(RepoTable),
-  collaborations: many(CollaboratorTable)
+  collaborations: many(CollaboratorTable),
+  comments: many(commentTable),
 }))

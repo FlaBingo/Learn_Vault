@@ -5,6 +5,7 @@ import { UsersTable } from "./user";
 import { relations } from "drizzle-orm";
 import { ContentBlockTable } from "./contentBlock";
 import { CollaboratorTable } from "./collaborator";
+import { commentTable } from "./comments";
 
 export const repoStatuses = ["public", "private"] as const
 export type repoStatus = (typeof repoStatuses)[number]
@@ -19,10 +20,10 @@ export const RepoTable = pgTable("repositories", {
   createdAt,
   updatedAt,
 },
-  (repo) => ({
-    userIdx: index("user_idx").on(repo.userId),
-    statusIdx: index("status_idx").on(repo.status),
-  })
+  (repo) => [
+    index("user_idx").on(repo.userId),
+    index("status_idx").on(repo.status),
+  ]
 )
 
 export const repoRelations = relations(RepoTable, ({ one, many }) => ({
@@ -32,4 +33,5 @@ export const repoRelations = relations(RepoTable, ({ one, many }) => ({
   }),
   contentBlocks: many(ContentBlockTable),
   collaborators: many(CollaboratorTable),
+  comments: many(commentTable),
 }))
