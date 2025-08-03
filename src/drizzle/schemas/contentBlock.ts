@@ -23,10 +23,10 @@ export const ContentBlockTable = pgTable("content_block", {
   updatedAt,
 },
   (contentBlock) => [
-    index("repo_idx").on(contentBlock.repoId),
-    index("parent_idx").on(contentBlock.parentId),
-    index("type_idx").on(contentBlock.type),
-    index("order_idx").on(contentBlock.order),
+    index("content_repo_idx").on(contentBlock.repoId),
+    index("content_parent_idx").on(contentBlock.parentId),
+    index("content_type_idx").on(contentBlock.type),
+    index("content_order_idx").on(contentBlock.order),
     // Add foreign key constraint separately
     foreignKey({
       columns: [contentBlock.parentId],

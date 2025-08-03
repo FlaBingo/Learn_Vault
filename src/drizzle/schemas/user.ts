@@ -18,7 +18,7 @@ export const UsersTable = pgTable("users", {
   updatedAt,
 },
   (table) => [
-    uniqueIndex("email_idx").on(table.email),
+    uniqueIndex("user_email_idx").on(table.email),
   ]
 )
 

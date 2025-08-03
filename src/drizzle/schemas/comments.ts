@@ -14,8 +14,8 @@ export const commentTable = pgTable("comments", {
   updatedAt,
 },
   (table) => [
-    index("user_idx").on(table.userId),
-    index("repo_idx").on(table.repoId)
+    index("comment_user_idx").on(table.userId),
+    index("comment_repo_idx").on(table.repoId)
   ]
 )
 

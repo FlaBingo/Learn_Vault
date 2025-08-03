@@ -21,8 +21,8 @@ export const RepoTable = pgTable("repositories", {
   updatedAt,
 },
   (repo) => [
-    index("user_idx").on(repo.userId),
-    index("status_idx").on(repo.status),
+    index("repo_user_idx").on(repo.userId),
+    index("repo_status_idx").on(repo.status),
   ]
 )
 
