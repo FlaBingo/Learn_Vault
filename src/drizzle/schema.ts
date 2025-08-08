@@ -1,3 +1,5 @@
+//src/drizzle/schema.ts
+
 export * from "@/drizzle/schemas/user";
 export * from "@/drizzle/schemas/repo";
 export * from "@/drizzle/schemas/contentBlock";
@@ -5,3 +7,4 @@ export * from "@/drizzle/schemas/tags";
 export * from "@/drizzle/schemas/contentBlockTag";
 export * from "@/drizzle/schemas/collaborator";
 export * from "@/drizzle/schemas/comments";
+export * from "@/drizzle/schemas/accounts"

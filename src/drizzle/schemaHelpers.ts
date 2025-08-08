@@ -1,5 +1,6 @@
-import { timestamp, uuid } from "drizzle-orm/pg-core";
+// src/drizzle/schemaHelpers.ts
 
+import { timestamp, uuid } from "drizzle-orm/pg-core";
 
 export const id = uuid().primaryKey().defaultRandom();
 export const createdAt = timestamp({ withTimezone: true }).notNull().defaultNow();
