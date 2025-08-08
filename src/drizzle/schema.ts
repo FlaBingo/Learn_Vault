@@ -8,3 +8,4 @@ export * from "@/drizzle/schemas/contentBlockTag";
 export * from "@/drizzle/schemas/collaborator";
 export * from "@/drizzle/schemas/comments";
 export * from "@/drizzle/schemas/accounts"
+export * from "@/drizzle/schemas/sessionAndVerification"
