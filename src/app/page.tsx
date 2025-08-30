@@ -5,13 +5,13 @@ import { SessionProvider } from "next-auth/react";
 import Image from "next/image";
 
 export default async function Home() {
-  const session = await auth(); 
+  const session = await auth();
   return (
     <>
       <SessionProvider>
         <Navbar />
-        {session ? ( <div>{session.user?.name}</div> ) : ( <div>not logged in</div> )}
       </SessionProvider>
+      {session ? <div className="container mx-auto">{session.user?.name}</div> : <div className="container mx-auto">not logged in</div>}
     </>
   );
 }
