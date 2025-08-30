@@ -6,7 +6,6 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { LogOut, Plus } from "lucide-react";
-import { SidebarTrigger } from "./ui/sidebar";
 
 export const Navbar = () => {
   const { data } = useSession();
@@ -29,7 +28,6 @@ export const Navbar = () => {
             </Button>
           </div>
           <div className="sm:hidden">
-            <SidebarTrigger />
           </div>
           </>
         ) : (
