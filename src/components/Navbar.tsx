@@ -16,18 +16,16 @@ export const Navbar = () => {
         <ModeToggle />
         {data ? (
           <>
-          <div className="hidden sm:block">
-            <Button variant={"outline"} className="mr-3" asChild>
+          <div>
+            <Button variant={"outline"} className="mr-3" asChild title="New Repo">
               <Link href={"/new_repo"}>
                 <Plus size={4} />
-                Repository
+                <span className="hidden sm:block">Repository</span>
               </Link>
             </Button>
             <Button onClick={() => signOut()} title="Logout">
               <LogOut />
             </Button>
-          </div>
-          <div className="sm:hidden">
           </div>
           </>
         ) : (

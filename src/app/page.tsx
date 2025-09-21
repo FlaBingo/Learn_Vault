@@ -8,7 +8,6 @@ export default async function Home() {
   const session = await auth();
   return (
     <>
-      
       {session ? <div className="container mx-auto">{session.user?.name}</div> : <div className="container mx-auto">not logged in</div>}
     </>
   );
