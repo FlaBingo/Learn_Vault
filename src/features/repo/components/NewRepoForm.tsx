@@ -1,6 +1,14 @@
+"use client"
+import {useForm} from "react-hook-form"
+
 
 export default function NewRepoForm() {
+  const { register, handleSubmit, formState: {errors, isSubmitting}} = useForm();
   return (
-    <div></div>
+    <form>
+      
+
+    </form>
+    
   )
 }
