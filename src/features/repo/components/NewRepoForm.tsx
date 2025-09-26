@@ -16,8 +16,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { createNewRepo } from "../actions/repo";
+import { useSession } from "next-auth/react";
 
 export default function NewRepoForm() {
+  const { data: session } = useSession();
+  const userId = session?.user?.id;
+
   const form = useForm<z.infer<typeof newRepoSchema>>({
     resolver: zodResolver(newRepoSchema),
     defaultValues: {
@@ -27,9 +32,17 @@ export default function NewRepoForm() {
     },
   });
 
-
   async function onSubmit(values: z.infer<typeof newRepoSchema>) {
     // create repo logic
+    if(!userId){
+      console.log("no user id")
+      return;
+    }
+    try {
+      const result = await createNewRepo(userId as string, values);
+    } catch (error) {
+      console.log("Error in submit handler function", error)
+    }
   }
 
   return (
@@ -42,7 +55,7 @@ export default function NewRepoForm() {
             <FormItem>
               <FormLabel>Title</FormLabel>
               <FormControl>
-                <Input placeholder="Enter the Title for this repository..." {...field} />
+                <Input placeholder="Enter the title for this repository..." {...field} />
               </FormControl>
                 <FormDescription>
                 Choose a clear, descriptive title that reflects the purpose of your repository.

@@ -11,14 +11,18 @@ export const Navbar = () => {
   const { data } = useSession();
   return (
     <div className="container mx-auto px-5 py-3 shadow flex justify-between items-center">
-      <div className="font-extrabold">LearnVault</div>
+      <div className="font-extrabold cursor-pointer">
+        <Link href={"/"}>
+          LearnVault
+        </Link>
+      </div>
       <div className="flex gap-3">
         <ModeToggle />
         {data ? (
           <>
           <div>
             <Button variant={"outline"} className="mr-3" asChild title="New Repo">
-              <Link href={"/new_repo"}>
+              <Link href={"/repo-details"}>
                 <Plus size={4} />
                 <span className="hidden sm:block">Repository</span>
               </Link>
