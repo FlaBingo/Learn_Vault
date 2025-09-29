@@ -18,8 +18,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { createNewRepo } from "../actions/repo";
 import { useSession } from "next-auth/react";
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function NewRepoForm() {
+  const router = useRouter();
   const { data: session } = useSession();
   const userId = session?.user?.id;
 
@@ -33,16 +37,23 @@ export default function NewRepoForm() {
   });
 
   async function onSubmit(values: z.infer<typeof newRepoSchema>) {
-    // create repo logic
-    if(!userId){
-      console.log("no user id")
+    if (!userId) {
+      console.log("no user id");
       return;
     }
     try {
       const result = await createNewRepo(userId as string, values);
+      if (result.success) {
+        toast(result.message);
+        router.push("/");
+      }
     } catch (error) {
-      console.log("Error in submit handler function", error)
+      console.log("Error in submit handler function", error);
     }
+  }
+
+  if (!session) {
+    return <div>Please log in to create a repository.</div>;
   }
 
   return (
@@ -55,39 +66,43 @@ export default function NewRepoForm() {
             <FormItem>
               <FormLabel>Title</FormLabel>
               <FormControl>
-                <Input placeholder="Enter the title for this repository..." {...field} />
+                <Input
+                  placeholder="Enter the title for this repository..."
+                  {...field}
+                />
               </FormControl>
-                <FormDescription>
-                Choose a clear, descriptive title that reflects the purpose of your repository.
-                </FormDescription>
+              <FormDescription>
+                Choose a clear, descriptive title that reflects the purpose of
+                your repository.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <FormField 
+        <FormField
           control={form.control}
           name="description"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea 
+                <Textarea
                   placeholder="Enter a description..."
                   // rows={40} don't know why it has no effect
                   maxLength={200}
                   {...field}
                 />
               </FormControl>
-                <FormDescription>
-                Up to 200 characters.<br />
+              <FormDescription>
+                Up to 200 characters.
+                <br />
                 Provide a clear and concise summary of your repository.
-                </FormDescription>
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-
 
         <FormField
           control={form.control}
@@ -100,31 +115,35 @@ export default function NewRepoForm() {
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
-
                   <FormItem className="flex items-center gap-3">
                     <FormControl>
-                      <RadioGroupItem value="private"/>
+                      <RadioGroupItem value="private" />
                     </FormControl>
                     <FormLabel>Private</FormLabel>
                   </FormItem>
 
                   <FormItem className="flex items-center gap-3">
                     <FormControl>
-                      <RadioGroupItem value="public"/>
+                      <RadioGroupItem value="public" />
                     </FormControl>
                     <FormLabel>Public</FormLabel>
                   </FormItem>
-
                 </RadioGroup>
               </FormControl>
               <FormDescription>
-                If you choose <b>Public</b>, anyone can see your repository. If you choose <b>Private</b>, only you can see it.
+                If you choose <b>Public</b>, anyone can see your repository. If
+                you choose <b>Private</b>, only you can see it.
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button
+          type="submit"
+          disabled={form.formState.isSubmitting}
+        >
+          { form.formState.isSubmitting ? "Submitting" : "Submit"}
+        </Button>
       </form>
     </Form>
   );

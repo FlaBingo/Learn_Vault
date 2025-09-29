@@ -13,4 +13,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     verificationTokensTable: verificationTokens,
   }),
   providers: [GitHub, Google],
+  callbacks: {
+    async session({ session, user }) {
+      session.user.id = user.id;
+      return session;
+    }
+  }
 })
