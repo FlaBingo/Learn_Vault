@@ -51,7 +51,7 @@ export default function LoginPage() {
                 >
                   <Github />
                   {/* <Image
-                  src={"/google_logo.webp"}
+                  src={"/github_logo.webp"}
                   width={20}
                   height={3}
                   alt="google"

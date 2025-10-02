@@ -20,6 +20,7 @@ import { createNewRepo } from "../actions/repo";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { LoaderCircle } from "lucide-react";
 
 export default function NewRepoForm() {
   const router = useRouter();
@@ -52,7 +53,9 @@ export default function NewRepoForm() {
   }
 
   if (!session) {
-    return <div>Please log in to create a repository.</div>;
+    return <div className="h-10 flex justify-center items-center">
+      <LoaderCircle className="animate-spin" />
+    </div>;
   }
 
   return (
