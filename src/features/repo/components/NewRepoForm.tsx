@@ -18,7 +18,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { createNewRepo } from "../actions/repo";
 import { useSession } from "next-auth/react";
-import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -45,7 +44,7 @@ export default function NewRepoForm() {
       const result = await createNewRepo(userId as string, values);
       if (result.success) {
         toast(result.message);
-        router.push("/");
+        router.push("/repositories");
       }
     } catch (error) {
       console.log("Error in submit handler function", error);
@@ -67,6 +66,7 @@ export default function NewRepoForm() {
               <FormLabel>Title</FormLabel>
               <FormControl>
                 <Input
+                  autoFocus
                   placeholder="Enter the title for this repository..."
                   {...field}
                 />

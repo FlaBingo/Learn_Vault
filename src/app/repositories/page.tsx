@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -8,10 +10,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { getRepos } from "@/features/repo/actions/repo";
+import RepoStructure from "@/features/repo/components/Repo";
 import { auth } from "@/services/auth";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default async function Home() {
   const session = await auth();
+  const userId = session?.user?.id
+  const response = await getRepos({userId});
+  // console.log(response)
   return (
     <>
       <div className="flex gap-2">
@@ -47,9 +56,30 @@ export default async function Home() {
         </Select>
       </div>
 
-      <div>
-        {/* // here goes the list */}
-      </div>
+      <Card className="my-5">
+        <CardHeader>
+          <CardTitle>Your Repositories</CardTitle>
+          <CardDescription>description</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {response.map((repo) => (
+            <div key={repo.id}>  
+              <RepoStructure {...repo}/>
+              <Separator className="my-4"/>
+            </div>
+          ))}
+        </CardContent>
+        <CardFooter className="flex justify-center gap-2">
+          <Button variant={"ghost"}>
+            <ChevronLeft />
+            Previous
+          </Button>
+          <Button variant={"ghost"}>
+            Next
+            <ChevronRight />
+          </Button>
+        </CardFooter>
+      </Card>
     </>
   );
 }

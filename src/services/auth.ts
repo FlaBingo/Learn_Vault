@@ -13,6 +13,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     verificationTokensTable: verificationTokens,
   }),
   providers: [GitHub, Google],
+  // still not understood, what's happening below
   callbacks: {
     async session({ session, user }) {
       session.user.id = user.id;

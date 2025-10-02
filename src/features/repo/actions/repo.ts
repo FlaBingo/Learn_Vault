@@ -3,6 +3,46 @@
 import { createNewRepoDB } from "../db/repo"
 import z from "zod"
 import { newRepoSchema } from "../schemas/repo"
+import { repoStatus, RepoTable } from "@/drizzle/schema"
+import { db } from "@/drizzle/db"
+
+export type GetReposParams = {
+  userId?: string;
+  search?: string;
+  status?: repoStatus;
+  page?: number;
+  pageSize?: number;
+}
+
+export async function getRepos(params: GetReposParams) {
+  const { userId, search, status, page = 1, pageSize = 10 } = params;
+
+  let query = db.select().from(RepoTable);
+  // add filters
+  // let query = db.select().from(RepoTable);
+
+  // // Filter by userId
+  // if (userId) {
+  //   query = query.where(RepoTable.userId.eq(userId));
+  // }
+
+  // // Filter by status
+  // if (status) {
+  //   query = query.where(RepoTable.status.eq(status));
+  // }
+
+  // // Filter by search (title)
+  // if (search) {
+  //   query = query.where(RepoTable.title.ilike(`%${search}%`));
+  // }
+
+  // // Pagination
+  // query = query.limit(pageSize).offset((page - 1) * pageSize);
+
+  // const repos = await query;
+  // return repos;
+  return query;
+}
 
 export async function createNewRepo(userId: string, repoData: z.infer<typeof newRepoSchema>) {
   try {
