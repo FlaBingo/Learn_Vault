@@ -8,16 +8,20 @@ import Link from "next/link";
 import { signIn, useSession } from "next-auth/react";
 import { Github } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { redirect } from "next/navigation";
 
 export default function LoginPage() {
   const isMobile = useIsMobile();
   const { data } = useSession();
-  if (data) return <div>Get out of here</div>;
+  if (data) {
+    redirect("/")
+    // return <div>Get out of here</div>;
+  }
   if (!data)
     return (
       <>
         <div className="sm:w-[600px] grid grid-cols-2">
-          <Card className="rounded-none px-1">
+          <Card className="rounded-tr-none rounded-br-none px-1">
             <CardHeader>
               <CardTitle className="text-center">Login</CardTitle>
             </CardHeader>
