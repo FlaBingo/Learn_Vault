@@ -15,6 +15,13 @@
       "when": 1754658260700,
       "tag": "0001_conscious_squadron_sinister",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1759590691615,
+      "tag": "0002_lonely_midnight",
+      "breakpoints": true
     }
   ]
 }

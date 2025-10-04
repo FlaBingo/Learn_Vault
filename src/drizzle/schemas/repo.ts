@@ -1,5 +1,5 @@
 // src/drizzle/schemas/repo.ts
-import { index, pgEnum, pgTable, text, uuid } from "drizzle-orm/pg-core";
+import { index, pgEnum, pgTable, text, unique, uuid } from "drizzle-orm/pg-core";
 import { createdAt, id, updatedAt } from "../schemaHelpers";
 import { UsersTable } from "./user";
 import { relations } from "drizzle-orm";
@@ -23,6 +23,7 @@ export const RepoTable = pgTable("repositories", {
   (repo) => [
     index("repo_user_idx").on(repo.userId),
     index("repo_status_idx").on(repo.status),
+    unique("user_title_unique").on(repo.userId, repo.title), // still don't know how it works under the hood
   ]
 )
 

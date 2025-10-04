@@ -19,7 +19,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { createNewRepo } from "../actions/repo";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { LoaderCircle } from "lucide-react";
 
 export default function NewRepoForm() {
@@ -39,12 +39,12 @@ export default function NewRepoForm() {
   async function onSubmit(values: z.infer<typeof newRepoSchema>) {
     if (!userId) {
       console.log("no user id");
-      return;
+      redirect("/login");
     }
     try {
       const result = await createNewRepo(userId as string, values);
+      toast(result.message);
       if (result.success) {
-        toast(result.message);
         router.push("/repositories");
       }
     } catch (error) {

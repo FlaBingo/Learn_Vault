@@ -5,48 +5,45 @@ import z from "zod"
 import { newRepoSchema } from "../schemas/repo"
 import { repoStatus, RepoTable } from "@/drizzle/schema"
 import { db } from "@/drizzle/db"
+import { and, eq } from "drizzle-orm"
+import { auth } from "@/services/auth"
+
+type SortBy = | "updated_desc" | "title_asc" | "title_desc";
 
 export type GetReposParams = {
-  userId?: string;
   search?: string;
   status?: repoStatus;
+  sortBy?: SortBy;
   page?: number;
   pageSize?: number;
 }
 
 export async function getRepos(params: GetReposParams) {
-  const { userId, search, status, page = 1, pageSize = 10 } = params;
+  const userId = auth();
+  
+  const { search, status, sortBy, page = 1, pageSize = 10 } = params;
+  
+  let query = await db.select().from(RepoTable);
+  if(!userId) {
+    const result =  await db.query.RepoTable.findMany({
+      where: eq(RepoTable.status, "public")
+    })
+  } else {
 
-  let query = db.select().from(RepoTable);
+  }
   // add filters
-  // let query = db.select().from(RepoTable);
-
-  // // Filter by userId
-  // if (userId) {
-  //   query = query.where(RepoTable.userId.eq(userId));
-  // }
-
-  // // Filter by status
-  // if (status) {
-  //   query = query.where(RepoTable.status.eq(status));
-  // }
-
-  // // Filter by search (title)
-  // if (search) {
-  //   query = query.where(RepoTable.title.ilike(`%${search}%`));
-  // }
-
-  // // Pagination
-  // query = query.limit(pageSize).offset((page - 1) * pageSize);
-
-  // const repos = await query;
-  // return repos;
-  return query;
+  
 }
 
 export async function createNewRepo(userId: string, repoData: z.infer<typeof newRepoSchema>) {
   try {
     const validated = newRepoSchema.parse(repoData);
+    const existingRepo = await db.query.RepoTable.findFirst({
+      where: and(eq(RepoTable.userId, userId), eq(RepoTable.title, repoData.title))
+    });
+    if(existingRepo){
+      return { success: false, message: "Repo with this title already exists"}
+    }
     await createNewRepoDB({ ...validated, userId })
     return { success: true, message: "Repository created successfully" }
   } catch (error) {
