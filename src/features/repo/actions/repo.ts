@@ -1,11 +1,11 @@
 "use server"
 
 import { createNewRepoDB } from "../db/repo"
-import z from "zod"
+import z, { success } from "zod"
 import { newRepoSchema } from "../schemas/repo"
 import { repoStatus, RepoTable } from "@/drizzle/schema"
 import { db } from "@/drizzle/db"
-import { and, eq } from "drizzle-orm"
+import { and, asc, count, desc, eq, ilike, isNotNull, or, SQL } from "drizzle-orm"
 import { auth } from "@/services/auth"
 
 type SortBy = | "updated_desc" | "title_asc" | "title_desc";
@@ -18,21 +18,65 @@ export type GetReposParams = {
   pageSize?: number;
 }
 
-export async function getRepos(params: GetReposParams) {
-  const userId = auth();
-  
-  const { search, status, sortBy, page = 1, pageSize = 10 } = params;
-  
-  let query = await db.select().from(RepoTable);
-  if(!userId) {
-    const result =  await db.query.RepoTable.findMany({
-      where: eq(RepoTable.status, "public")
-    })
-  } else {
+export async function getMyRepos(params: GetReposParams) {
+  try {
+    const session = await auth();
+    const userId = session?.user?.id;
+    if (!userId) {
+      return {
+        status: true,
+        data: [],
+        pagination: { currentPage: 1, pageSize: 10, totalPages: 0, totalCount: 0 }
+      }
+    }
+    const { search, status, sortBy, page = 1, pageSize = 10 } = params;
+    const conditions = [
+      eq(RepoTable.userId, userId),
+    ];
+    if (status) {
+      conditions.push(eq(RepoTable.status, status));
+    }
+    if (search) {
+      const searchTerm = `%${search}%`;
+      const searchCondition = or(
+        ilike(RepoTable.title, searchTerm),
+        ilike(RepoTable.description, searchTerm)
+      )
+      if (searchCondition) {
+        conditions.push(searchCondition);
+      }
+    }
 
+    const whereClause = and(...conditions);
+
+    let orderByClause = desc(RepoTable.updatedAt);
+    switch (sortBy) {
+      case "title_asc": orderByClause = asc(RepoTable.title); break;
+      case "title_desc": orderByClause = desc(RepoTable.title); break;
+    }
+
+    const [repos, totalResult] = await Promise.all([
+      db.select().from(RepoTable).where(whereClause).orderBy(orderByClause).limit(pageSize).offset((page - 1) * pageSize), // don't know about limit and offset methods
+      db.select({ total: count() }).from(RepoTable).where(whereClause),
+    ])
+    const totalCount = totalResult[0].total;
+    const totalPages = Math.ceil(totalCount / pageSize);
+
+    return {
+      success: true,
+      data: repos,
+      pagination: { currentPage: page, pageSize, totalPages, totalCount },
+    };
+
+  } catch (error) {
+    console.error("Failed to get my repos", error);
+    return {
+      success: false,
+      error: "An unexpected error occurred.",
+      data: [],
+      pagination: { currentPage: 1, pageSize: 10, totalPages: 0, totalCount: 0 }
+    }
   }
-  // add filters
-  
 }
 
 export async function createNewRepo(userId: string, repoData: z.infer<typeof newRepoSchema>) {
@@ -41,8 +85,8 @@ export async function createNewRepo(userId: string, repoData: z.infer<typeof new
     const existingRepo = await db.query.RepoTable.findFirst({
       where: and(eq(RepoTable.userId, userId), eq(RepoTable.title, repoData.title))
     });
-    if(existingRepo){
-      return { success: false, message: "Repo with this title already exists"}
+    if (existingRepo) {
+      return { success: false, message: "Repo with this title already exists" }
     }
     await createNewRepoDB({ ...validated, userId })
     return { success: true, message: "Repository created successfully" }
