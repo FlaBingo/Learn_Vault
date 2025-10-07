@@ -1,83 +1,71 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+// app/repositories/page.tsx
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { getRepos } from "@/features/repo/actions/repo";
+import { repoStatuses, repoStatus } from "@/drizzle/schema";
+import { getMyRepos } from "@/features/repo/actions/repo";
+import FilterForm from "@/features/repo/components/FilterForm";
+import PaginationControls from "@/features/repo/components/PaginationControls";
 import RepoStructure from "@/features/repo/components/Repo";
-import { auth } from "@/services/auth";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { sortBy, sortByOptions } from "@/lib/types/sorttypes";
 
-export default async function Home() {
-  const session = await auth();
-  const userId = session?.user?.id
-  const response = await getRepos({userId});
-  // console.log(response)
+export default async function RepositoriesPage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  // extract the searchParams
+  const search =
+    typeof searchParams.search === "string" ? searchParams.search : undefined;
+  // const status = repoStatuses.includes(searchParams.status as repoStatus) ? (searchParams.status as repoStatus) : undefined; // this f*cking line wasted my 4 hours
+  const status =
+    searchParams.status === "public" || searchParams.status === "private"
+      ? (searchParams.status as repoStatus)
+      : undefined; // still doesn't work
+  const sortBy = sortByOptions.includes(searchParams.sortBy as sortBy)
+    ? (searchParams.sortBy as sortBy)
+    : "updated_desc";
+  const page =
+    typeof searchParams.page === "string" ? Number(searchParams.page) : 1;
+
+  console.log(status, sortBy); // url shows status=private or public but here the value is still undefined
+  const response = await getMyRepos({ search, status, sortBy, page });
+  const { data: repos, pagination } = response;
+
   return (
     <>
       <div className="flex gap-2">
-        <Input placeholder="Find a repository..." />
-        <Select>
-          <SelectTrigger className="w-[120px]">
-            <SelectValue placeholder="Type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Type</SelectLabel>
-              <SelectItem value="all">All</SelectItem>
-              <SelectItem value="private">Private</SelectItem>
-              <SelectItem value="public">Public</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        <Select>
-          <SelectTrigger className="w-[160px]">
-            <SelectValue placeholder="Sort" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Sort</SelectLabel>
-              <SelectItem value="last-updated">last updated</SelectItem>
-              <SelectGroup>
-                <SelectLabel>alphabetical</SelectLabel>
-                <SelectItem value="ascending">ascending</SelectItem>
-                <SelectItem value="descending">descending</SelectItem>
-              </SelectGroup>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+        <FilterForm />
       </div>
 
       <Card className="my-5">
         <CardHeader>
           <CardTitle>Your Repositories</CardTitle>
-          <CardDescription>description</CardDescription>
+          <CardDescription>
+            Showing {repos.length} of {pagination.totalCount} repositories.
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          {response.map((repo) => (
-            <div key={repo.id}>  
-              <RepoStructure {...repo}/>
-              <Separator className="my-4"/>
-            </div>
-          ))}
+          {repos.length > 0 ? (
+            repos.map((repo) => (
+              <div key={repo.id}>
+                <RepoStructure {...repo} />
+                <Separator className="my-4" />
+              </div>
+            ))
+          ) : (
+            <p>No repositories found.</p>
+          )}
         </CardContent>
         <CardFooter className="flex justify-center gap-2">
-          <Button variant={"ghost"}>
-            <ChevronLeft />
-            Previous
-          </Button>
-          <Button variant={"ghost"}>
-            Next
-            <ChevronRight />
-          </Button>
+          {/*  */}
+          <PaginationControls pagination={pagination} />
         </CardFooter>
       </Card>
     </>

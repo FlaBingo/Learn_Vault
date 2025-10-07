@@ -1,19 +1,19 @@
+// src/features/repo/actions/repo.ts
 "use server"
 
 import { createNewRepoDB } from "../db/repo"
-import z, { success } from "zod"
+import z from "zod"
 import { newRepoSchema } from "../schemas/repo"
 import { repoStatus, RepoTable } from "@/drizzle/schema"
 import { db } from "@/drizzle/db"
-import { and, asc, count, desc, eq, ilike, isNotNull, or, SQL } from "drizzle-orm"
+import { and, asc, count, desc, eq, ilike, or} from "drizzle-orm"
 import { auth } from "@/services/auth"
-
-type SortBy = | "updated_desc" | "title_asc" | "title_desc";
+import { sortBy } from "@/lib/types/sorttypes"
 
 export type GetReposParams = {
   search?: string;
   status?: repoStatus;
-  sortBy?: SortBy;
+  sortBy?: sortBy;
   page?: number;
   pageSize?: number;
 }
@@ -24,7 +24,7 @@ export async function getMyRepos(params: GetReposParams) {
     const userId = session?.user?.id;
     if (!userId) {
       return {
-        status: true,
+        success: true,
         data: [],
         pagination: { currentPage: 1, pageSize: 10, totalPages: 0, totalCount: 0 }
       }
@@ -34,9 +34,10 @@ export async function getMyRepos(params: GetReposParams) {
       eq(RepoTable.userId, userId),
     ];
     if (status) {
+      console.log(status);
       conditions.push(eq(RepoTable.status, status));
     }
-    if (search) {
+    if (search && search !== "") {
       const searchTerm = `%${search}%`;
       const searchCondition = or(
         ilike(RepoTable.title, searchTerm),
@@ -44,6 +45,7 @@ export async function getMyRepos(params: GetReposParams) {
       )
       if (searchCondition) {
         conditions.push(searchCondition);
+        console.log(searchCondition)
       }
     }
 
@@ -91,6 +93,7 @@ export async function createNewRepo(userId: string, repoData: z.infer<typeof new
     await createNewRepoDB({ ...validated, userId })
     return { success: true, message: "Repository created successfully" }
   } catch (error) {
+    console.error("Error creating repo: ", error)
     return { success: false, message: "Failed to create repository" }
   }
 }

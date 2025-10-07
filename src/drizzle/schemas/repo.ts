@@ -23,7 +23,7 @@ export const RepoTable = pgTable("repositories", {
   (repo) => [
     index("repo_user_idx").on(repo.userId),
     index("repo_status_idx").on(repo.status),
-    unique("user_title_unique").on(repo.userId, repo.title), // still don't know how it works under the hood
+    unique("user_title_unique").on(repo.userId, repo.title),
   ]
 )
 
