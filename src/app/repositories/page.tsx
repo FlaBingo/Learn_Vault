@@ -23,18 +23,24 @@ export default async function RepositoriesPage({
   // extract the searchParams
   const search =
     typeof searchParams.search === "string" ? searchParams.search : undefined;
+
+
   // const status = repoStatuses.includes(searchParams.status as repoStatus) ? (searchParams.status as repoStatus) : undefined; // this f*cking line wasted my 4 hours
-  const status =
-    searchParams.status === "public" || searchParams.status === "private"
-      ? (searchParams.status as repoStatus)
-      : undefined; // still doesn't work
+  // const status =
+  //   searchParams.status === "public" || searchParams.status === "private"
+  //     ? (searchParams.status as repoStatus)
+  //     : undefined; // doesn't work 😭😭
+  const status = searchParams.status as repoStatus; // doesn't work
+
+
+  
   const sortBy = sortByOptions.includes(searchParams.sortBy as sortBy)
     ? (searchParams.sortBy as sortBy)
     : "updated_desc";
   const page =
     typeof searchParams.page === "string" ? Number(searchParams.page) : 1;
 
-  console.log(status, sortBy); // url shows status=private or public but here the value is still undefined
+  console.log(status, sortBy, search); // url shows status=private or public but here the value is still undefined
   const response = await getMyRepos({ search, status, sortBy, page });
   const { data: repos, pagination } = response;
 
