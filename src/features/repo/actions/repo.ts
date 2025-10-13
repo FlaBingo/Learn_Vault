@@ -34,7 +34,6 @@ export async function getMyRepos(params: GetReposParams) {
       eq(RepoTable.userId, userId),
     ];
     if (status) {
-      console.log(status);
       conditions.push(eq(RepoTable.status, status));
     }
     if (search && search !== "") {
