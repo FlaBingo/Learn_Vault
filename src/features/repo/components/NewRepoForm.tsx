@@ -16,51 +16,70 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { createNewRepo } from "../actions/repo";
-import { useSession } from "next-auth/react";
+import { createNewRepo, getRepoById, updateRepo } from "../actions/repo";
 import { toast } from "sonner";
-import { redirect, RedirectType, useRouter } from "next/navigation";
-import { LoaderCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useRef, useState, useTransition } from "react";
+import { repoStatus } from "@/lib/types/repoTypes";
+import { Loader2 } from "lucide-react";
 
-export default function NewRepoForm() {
+type RepoData =
+  | {
+      id: string;
+      title: string;
+      description: string | null;
+      status: repoStatus;
+    }
+  | undefined;
+
+export default function NewRepoForm({
+  initialData,
+}: {
+  initialData?: RepoData;
+}) {
   const router = useRouter();
-  const { data: session } = useSession();
-  const userId = session?.user?.id;
+  const [isPending, startTransition] = useTransition();
+  const isEditMode = !!initialData;
 
   const form = useForm<z.infer<typeof newRepoSchema>>({
     resolver: zodResolver(newRepoSchema),
-    defaultValues: {
-      title: "",
-      description: "",
-      status: "private",
-    },
+    defaultValues: initialData
+      ? {
+          title: initialData.title,
+          description: initialData.description || "",
+          status: initialData.status,
+        }
+      : {
+          title: "",
+          description: "",
+          status: "private",
+        },
   });
 
   async function onSubmit(values: z.infer<typeof newRepoSchema>) {
-    try {
-      const result = await createNewRepo(values);
-      if (result.success) {
-        toast.success(result.message);
-        router.push("/repositories");
-      } else {
-        toast.error(result.message);
+    startTransition(async () => {
+      try {
+        if (isEditMode) {
+          const result = await updateRepo(initialData.id, values);
+          if (result.success) {
+            toast.success(result.message);
+            router.push("/repositories");
+          } else {
+            toast.error(result.error);
+          }
+        } else {
+          const result = await createNewRepo(values);
+          if (result.success) {
+            toast.success(result.message);
+            router.push("/repositories");
+          } else {
+            toast.error(result.message);
+          }
+        }
+      } catch (error) {
+        console.log("Error in submit handler function", error);
       }
-    } catch (error) {
-      console.log("Error in submit handler function", error);
-    }
-  }
-
-  if (!userId) {
-    console.log("no user id");
-    redirect("/login", RedirectType.replace);
-  }
-
-  if (!session) {
-    return (
-      <div className="h-10 flex justify-center items-center">
-        <LoaderCircle className="animate-spin" />
-      </div>
-    );
+    });
   }
 
   return (
@@ -91,25 +110,33 @@ export default function NewRepoForm() {
         <FormField
           control={form.control}
           name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Enter a description..."
-                  // rows={40} don't know why it has no effect
-                  maxLength={200}
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>
-                Up to 200 characters.
-                <br />
-                Provide a clear and concise summary of your repository.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
+          render={({ field }) => {
+            const MAX_LENGTH = 300;
+            const remainingChars = MAX_LENGTH - (field.value?.length || 0);
+            return (
+              <FormItem>
+                <FormLabel>Description</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Enter a description..."
+                    maxLength={MAX_LENGTH}
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription>
+                  <span className="text-red-400 font-bold">
+                    {remainingChars}
+                  </span>{" "}
+                  characters remaining
+                  <br />
+                  Up to {MAX_LENGTH} characters.
+                  <br />
+                  Provide a clear and concise summary of your repository.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
         />
 
         <FormField
@@ -146,8 +173,15 @@ export default function NewRepoForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={form.formState.isSubmitting}>
-          {form.formState.isSubmitting ? "Submitting" : "Submit"}
+        <Button type="submit" disabled={isPending}>
+          {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {isPending
+            ? isEditMode
+              ? "Saving..."
+              : "Creating..."
+            : isEditMode
+            ? "Save Changes"
+            : "Create Repo"}
         </Button>
       </form>
     </Form>

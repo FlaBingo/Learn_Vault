@@ -1,4 +1,4 @@
-// app/repositories/page.tsx
+// app/my-repos/page.tsx
 import {
   Card,
   CardContent,

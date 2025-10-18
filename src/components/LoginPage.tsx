@@ -9,36 +9,26 @@ import { signIn, useSession } from "next-auth/react";
 import { Github } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { redirect } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 export default function LoginPage() {
   const isMobile = useIsMobile();
   const { data } = useSession();
   if (data) {
-    redirect("/")
-    // return <div>Get out of here</div>;
+    redirect("/");
   }
   if (!data)
     return (
       <>
-        <div className="sm:w-[600px] grid grid-cols-2">
-          <Card className="rounded-tr-none rounded-br-none px-1">
+        <div className="sm:w-[600px] min-w-[275px] flex">
+          <Card className={cn("w-full px-1", !isMobile && "rounded-tr-none rounded-br-none")}>
             <CardHeader>
               <CardTitle className="text-center">Login</CardTitle>
             </CardHeader>
             <CardContent>
-              {/* <form action="">
-              <Label htmlFor="name" className="p-2">Name</Label>
-              <Input id="name" type="text" placeholder="John Doe" />
-
-              <label htmlFor="email" className="p-2">Email</label>
-              <Input id="email" type="email" placeholder="johndoe@gmail.com" />
-
-              <label htmlFor="password" className="p-2">Password</label>
-              <Input id="password" type="password" placeholder="********" />
-            </form> */}
               <div className="flex justify-between">
                 <button
-                  className="bg-white py-2 px-4 shadow cursor-pointer"
+                  className="bg-white py-2 px-4 shadow cursor-pointer rounded-xl"
                   onClick={() => signIn("google", { redirectTo: "/" })}
                 >
                   <Image
@@ -54,20 +44,18 @@ export default function LoginPage() {
                   onClick={() => signIn("github", { redirectTo: "/" })}
                 >
                   <Github />
-                  {/* <Image
-                  src={"/github_logo.webp"}
-                  width={20}
-                  height={3}
-                  alt="google"
-                /> */}
                 </button>
               </div>
             </CardContent>
           </Card>
           {!isMobile && (
-            <div className="w-full">
-              <Image src={"/login.jpg"} width={250} height={400} alt="logo" />
-            </div>
+            <Image
+              src={"/login.jpg"}
+              width={250}
+              height={400}
+              alt="logo"
+              className="rounded-tr-2xl rounded-br-2xl"
+            />
           )}
         </div>
       </>

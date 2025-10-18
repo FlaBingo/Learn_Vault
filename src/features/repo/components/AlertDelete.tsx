@@ -1,5 +1,5 @@
 // src/features/repo/components/AlerDelete.tsx
-"use client"
+"use client";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,31 +13,35 @@ import {
 } from "@/components/ui/alert-dialog";
 import { deleteRepo } from "../actions/repo";
 import { toast } from "sonner";
+import { useTransition } from "react";
+import { Loader2 } from "lucide-react";
 
 export default function DeleteAlertBox({
   children,
   title,
-  id
+  id,
 }: {
   children: React.ReactNode;
   title: string;
   id: string;
 }) {
+  const [isPending, startTransition] = useTransition();
 
-
-  const handleAction = async () => {
-    try {
-      const result = await deleteRepo(id);
-      if (result.success) {
-        toast.success(result.message);
-      } else {
-        toast.error(result.error)
+  const handleAction = () => {
+    startTransition(async () => {
+      try {
+        const result = await deleteRepo(id);
+        if (result.success) {
+          toast.success(result.message);
+        } else {
+          toast.error(result.error);
+        }
+      } catch (error) {
+        console.log("Error in submit handler function", error);
+        toast.error("An unexpected error occurred.");
       }
-    } catch (error) {
-      console.log("Error in submit handler function", error);
-      toast.error("An unexpected error occurred.");
-    }
-  }
+    });
+  };
 
   return (
     <>
@@ -46,11 +50,25 @@ export default function DeleteAlertBox({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>This action cannot be undone. This will permanently delete your <span className="font-bold">{title}</span> repository.</AlertDialogDescription>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete your{" "}
+              <span className="font-bold">{title}</span> repository.
+            </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="cursor-pointer">Cancel</AlertDialogCancel>
-            <AlertDialogAction className="hover:bg-red-600 cursor-pointer" onClick={handleAction}>Delete</AlertDialogAction>
+            <AlertDialogCancel disabled={isPending} className="cursor-pointer">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              disabled={isPending}
+              className="hover:bg-red-600 cursor-pointer"
+              onClick={handleAction}
+            >
+              {isPending && (
+                <Loader2 className="animate-spin"/>
+              )}
+              {isPending ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

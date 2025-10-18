@@ -1,14 +1,10 @@
 import { db } from "@/drizzle/db";
 import { RepoTable } from "@/drizzle/schema";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
-export async function getRepoByIdDB(repoId: string) {
+export async function getRepoByIdDB(userId: string, repoId: string) {
   return db.query.RepoTable.findFirst({
     where: eq(RepoTable.id, repoId),
-    columns: {
-      userId: true,
-      title: true,
-    }
   });
 }
 
@@ -19,6 +15,16 @@ export async function createNewRepoDB(repoData: typeof RepoTable.$inferInsert) {
   } catch (error) {
     console.log("Error in createNewRepoDB", error);
     throw new Error("Failed to create repository");
+  }
+}
+
+export async function updateRepoDB(repoId: string, repoData: typeof RepoTable.$inferInsert) {
+  try {
+    const updatedRepo = await db.update(RepoTable).set({...repoData, updatedAt: new Date()}).where(eq(RepoTable.id, repoId)).returning();
+    return updatedRepo[0];
+  } catch (error) {
+    console.log("Error in createNewRepoDB", error);
+    throw new Error("Failed to update repository");
   }
 }
 

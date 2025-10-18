@@ -15,8 +15,8 @@ export default async function RepoStructure({
   updatedAt,
 }: RepoType) {
   return (
-    <div className="flex justify-between">
-      <div>
+    <div className="flex justify-between gap-3">
+      <div className="w-full overflow-hidden">
         <div className="flex gap-3">
           <Button variant={"link"} className="font-bold p-0" asChild>
             <Link href={`/repo-${id}`}>{title}</Link>
@@ -25,7 +25,12 @@ export default async function RepoStructure({
             {status}
           </p>
         </div>
-        <p className="text-sm text-muted-foreground py-2">{description}</p>
+        <p className="text-sm text-muted-foreground py-2">
+          {description &&
+            (description.length > 100
+              ? `${description.substring(0, 100)}...`
+              : description)}
+        </p>
         <div className="text-muted-foreground text-xs">
           <span>created at </span>
           {createdAt.toLocaleDateString()}

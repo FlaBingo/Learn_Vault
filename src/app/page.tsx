@@ -31,7 +31,7 @@ export default async function Home() {
           )}
         </div>
         <Button asChild>
-          <Link href={"/repositories"}>All Repositories</Link>
+          <Link href={"/my-repos"}>My Repositories</Link>
         </Button>
       </Card>
     </>

@@ -13,7 +13,7 @@ export default auth((req) => {
   const { pathname } = req.nextUrl;
 
   // Protect the /dashboard route
-  if (pathname.startsWith('/dashboard') && !isLoggedIn) {
+  if (pathname.startsWith('/') && !isLoggedIn) {
     const loginUrl = new URL('/login', req.url);
     return NextResponse.redirect(loginUrl);
   }

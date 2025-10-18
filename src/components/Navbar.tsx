@@ -36,9 +36,6 @@ export const Navbar = () => {
                 <span className="hidden sm:block">Repository</span>
               </Link>
             </Button>
-            {/* <Button onClick={() => signOut()} title="Logout">
-              <LogOut />
-            </Button> */}
             <DropdownMenu>
               <DropdownMenuTrigger className="outline-none m-auto">
                 <Image
@@ -50,8 +47,8 @@ export const Navbar = () => {
                 />
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <Link href={"/repositories"}>
-                  <DropdownMenuItem>All Repository</DropdownMenuItem>
+                <Link href={"/my-repos"}>
+                  <DropdownMenuItem>Repositories</DropdownMenuItem>
                 </Link>
                 <DropdownMenuItem onClick={() => signOut()}>
                   <LogOut />
