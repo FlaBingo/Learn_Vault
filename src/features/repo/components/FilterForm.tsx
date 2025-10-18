@@ -24,25 +24,17 @@ export default function FilterForm() {
 
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [debouncedSearch] = useDebounce(search, 500);
-  // I added use-debounce to prevent firing a search on every keystroke.
-  // const [status, setStatus] = useState<repoStatus | "all">(
-  //   (searchParams.get("status") as repoStatus) || "all"
-  // );
-  // const [sortBy, setSortBy] = useState<sortBy>(
-  //   (searchParams.get("sortBy") as sortBy) || "updated_desc"
-  // );
 
   const handleFilterChange = (name: string, value: string) => {
     const params = new URLSearchParams(searchParams);
-    if(value && value !== "all"){
+    if (value && value !== "all") {
       params.set(name, value);
-    }else{
+    } else {
       params.delete(name);
     }
     params.delete("page");
     router.push(`${pathname}?${params.toString()}`);
-  }
-  
+  };
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams);

@@ -14,12 +14,20 @@ import FilterForm from "@/features/repo/components/FilterForm";
 import PaginationControls from "@/features/repo/components/PaginationControls";
 import RepoStructure from "@/features/repo/components/Repo";
 import { sortBy, sortByOptions } from "@/lib/types/sorttypes";
+import { auth } from "@/services/auth";
+import { redirect, RedirectType } from "next/navigation";
 
 export default async function RepositoriesPage({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
+
+  const session = await auth();
+  if(!session){
+    redirect("/login", RedirectType.replace);
+  }
+  
   const resolvedSearchParams = await searchParams;
 
   // extract the searchParams

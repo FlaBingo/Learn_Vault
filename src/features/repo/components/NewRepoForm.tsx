@@ -19,7 +19,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { createNewRepo } from "../actions/repo";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
-import { redirect, useRouter } from "next/navigation";
+import { redirect, RedirectType, useRouter } from "next/navigation";
 import { LoaderCircle } from "lucide-react";
 
 export default function NewRepoForm() {
@@ -37,25 +37,30 @@ export default function NewRepoForm() {
   });
 
   async function onSubmit(values: z.infer<typeof newRepoSchema>) {
-    if (!userId) {
-      console.log("no user id");
-      redirect("/login");
-    }
     try {
-      const result = await createNewRepo(userId as string, values);
-      toast(result.message);
+      const result = await createNewRepo(values);
       if (result.success) {
+        toast.success(result.message);
         router.push("/repositories");
+      } else {
+        toast.error(result.message);
       }
     } catch (error) {
       console.log("Error in submit handler function", error);
     }
   }
 
+  if (!userId) {
+    console.log("no user id");
+    redirect("/login", RedirectType.replace);
+  }
+
   if (!session) {
-    return <div className="h-10 flex justify-center items-center">
-      <LoaderCircle className="animate-spin" />
-    </div>;
+    return (
+      <div className="h-10 flex justify-center items-center">
+        <LoaderCircle className="animate-spin" />
+      </div>
+    );
   }
 
   return (
@@ -141,11 +146,8 @@ export default function NewRepoForm() {
             </FormItem>
           )}
         />
-        <Button
-          type="submit"
-          disabled={form.formState.isSubmitting}
-        >
-          { form.formState.isSubmitting ? "Submitting" : "Submit"}
+        <Button type="submit" disabled={form.formState.isSubmitting}>
+          {form.formState.isSubmitting ? "Submitting" : "Submit"}
         </Button>
       </form>
     </Form>

@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { RepoTable } from "@/drizzle/schema";
+import { SquarePen, Trash2 } from "lucide-react";
 import Link from "next/link";
+import DeleteAlertBox from "./AlertDelete";
 
 export type RepoType = typeof RepoTable.$inferSelect;
 
@@ -38,7 +40,22 @@ export default async function RepoStructure({
           )}
         </div>
       </div>
-      <div>buttons</div>
+      <div className="flex gap-4">
+        <Link href={`repo-details/${id}`}>
+          <Button className="cursor-pointer" title="Edit">
+            <SquarePen />
+          </Button>
+        </Link>
+        <DeleteAlertBox title={title} id={id}>
+          <Button
+            variant={"destructive"}
+            className="cursor-pointer"
+            title="Delete"
+          >
+            <Trash2 />
+          </Button>
+        </DeleteAlertBox>
+      </div>
     </div>
   );
 }

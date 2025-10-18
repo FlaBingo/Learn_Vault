@@ -30,8 +30,9 @@ export default function PaginationControls({
   };
 
   return (
-    <div>
+    <div className="flex justify-center items-center gap-3">
       <Button
+        className="cursor-pointer"
         variant={"ghost"}
         disabled={currentPage <= 1}
         onClick={() => handlePageChange(currentPage - 1)}
@@ -43,6 +44,7 @@ export default function PaginationControls({
         Page {currentPage} of {totalPages}
       </span>
       <Button
+        className="cursor-pointer"
         variant={"ghost"}
         disabled={currentPage >= totalPages}
         onClick={() => handlePageChange(currentPage + 1)}

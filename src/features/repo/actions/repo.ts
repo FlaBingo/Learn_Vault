@@ -1,14 +1,15 @@
 // src/features/repo/actions/repo.ts
 "use server"
 
-import { createNewRepoDB } from "../db/repo"
+import { createNewRepoDB, deleteRepoDB, getRepoByIdDB } from "../db/repo"
 import z from "zod"
 import { newRepoSchema } from "../schemas/repo"
 import { repoStatus, RepoTable } from "@/drizzle/schema"
 import { db } from "@/drizzle/db"
-import { and, asc, count, desc, eq, ilike, or} from "drizzle-orm"
+import { and, asc, count, desc, eq, ilike, or } from "drizzle-orm"
 import { auth } from "@/services/auth"
 import { sortBy } from "@/lib/types/sorttypes"
+import { revalidatePath } from "next/cache"
 
 export type GetReposParams = {
   search?: string;
@@ -80,14 +81,19 @@ export async function getMyRepos(params: GetReposParams) {
   }
 }
 
-export async function createNewRepo(userId: string, repoData: z.infer<typeof newRepoSchema>) {
+export async function createNewRepo(repoData: z.infer<typeof newRepoSchema>) {
   try {
+    const session = await auth();
+    const userId = session?.user?.id;
+    if (!userId) {
+      return { success: false, message: "Unauthorized: You must be logged in." };
+    }
     const validated = newRepoSchema.parse(repoData);
     const existingRepo = await db.query.RepoTable.findFirst({
       where: and(eq(RepoTable.userId, userId), eq(RepoTable.title, repoData.title))
     });
     if (existingRepo) {
-      return { success: false, message: "Repo with this title already exists" }
+      return { success: false, message: `${validated.title} already exists` }
     }
     await createNewRepoDB({ ...validated, userId })
     return { success: true, message: "Repository created successfully" }
@@ -96,6 +102,32 @@ export async function createNewRepo(userId: string, repoData: z.infer<typeof new
     return { success: false, message: "Failed to create repository" }
   }
 }
+
+export async function deleteRepo(repoId: string) {
+  const session = await auth();
+  const userId = session?.user?.id;
+  if (!userId) {
+    return { success: false, error: "Unauthorized: You must be logged in." };
+  }
+  const repo = await getRepoByIdDB(repoId); // it will only give userId and title
+  if (!repo) {
+    return { success: false, error: "Not Found: Repository does not exist." };
+  }
+  if (repo.userId !== userId) {
+    return { success: false, error: "Forbidden: You are not the owner of this repository." };
+  }
+
+  try {
+    await deleteRepoDB(repoId);
+    revalidatePath("/repositories");
+    return { success: true, message: `${repo.title} deleted successfully.` };
+  } catch (error) {
+    console.error("Error deleting repository", error);
+    return { success: false, error: "An unexpected error occurred." };
+  }
+}
+
+
 
 
 
