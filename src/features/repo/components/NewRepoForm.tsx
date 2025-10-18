@@ -63,7 +63,7 @@ export default function NewRepoForm({
           const result = await updateRepo(initialData.id, values);
           if (result.success) {
             toast.success(result.message);
-            router.push("/repositories");
+            router.push("/my-repos");
           } else {
             toast.error(result.error);
           }
@@ -71,7 +71,7 @@ export default function NewRepoForm({
           const result = await createNewRepo(values);
           if (result.success) {
             toast.success(result.message);
-            router.push("/repositories");
+            router.push("/my-repos");
           } else {
             toast.error(result.message);
           }
