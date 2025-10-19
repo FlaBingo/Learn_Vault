@@ -1,3 +1,5 @@
+// src/app/page.tsx
+
 import ExplorePublicRepos from "@/components/ExplorePublicRepo";
 import { Navbar } from "@/components/Navbar";
 import SignIn from "@/components/sign-in";
@@ -9,14 +11,19 @@ import { SessionProvider } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
   const session = await auth();
+  const validatedSearchParams = await searchParams;
 
-  if(!session) {
-    return <div className="h-10 flex justify-center items-center">
-      Please login
-    </div>;
-  }
+  // if (!session) {
+  //   return (
+  //     <div className="h-10 flex justify-center items-center">Please login</div>
+  //   );
+  // }
 
   return (
     <div className="container mx-auto my-5">
@@ -24,7 +31,13 @@ export default async function Home() {
         <div>
           {session ? (
             <div className="flex gap-3">
-              <Image src={session?.user?.image as string} className="rounded-[50%]" width={40} height={40} alt="profile image"/>
+              <Image
+                src={session?.user?.image as string}
+                className="rounded-[50%]"
+                width={40}
+                height={40}
+                alt="profile image"
+              />
               <span className="my-auto">{session.user?.name}</span>
             </div>
           ) : (
@@ -36,7 +49,7 @@ export default async function Home() {
         </Button>
       </Card>
 
-      <ExplorePublicRepos />
+      <ExplorePublicRepos searchParams={validatedSearchParams}/>
     </div>
   );
 }

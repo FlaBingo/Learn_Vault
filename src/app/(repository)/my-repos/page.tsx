@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { repoStatuses, repoStatus } from "@/drizzle/schema";
-import { getMyRepos } from "@/features/repo/actions/repo";
+import { getRepositories } from "@/features/repo/actions/repo";
 import FilterForm from "@/features/repo/components/FilterForm";
 import PaginationControls from "@/features/repo/components/PaginationControls";
 import RepoStructure from "@/features/repo/components/Repo";
@@ -47,10 +47,7 @@ export default async function RepositoriesPage({
     typeof resolvedSearchParams.page === "string"
       ? Number(resolvedSearchParams.page)
       : 1;
-
-  // console.log(status, sortBy, search); // resolved: url shows status=private or public but here the value is still undefined
-  // console.log(await searchParams) // it worked
-  const response = await getMyRepos({ search, status, sortBy, page, mode });
+  const response = await getRepositories({ search, status, sortBy, page });
   const { data: repos, pagination } = response;
 
   return (
@@ -79,7 +76,6 @@ export default async function RepositoriesPage({
           )}
         </CardContent>
         <CardFooter className="flex justify-center gap-2">
-          {/*  */}
           <PaginationControls pagination={pagination} />
         </CardFooter>
       </Card>

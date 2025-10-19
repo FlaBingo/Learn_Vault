@@ -1,7 +1,7 @@
 // src/features/repo/actions/repo.ts
 "use server"
 
-import { createNewRepoDB, deleteRepoDB, getRepoByIdDB, updateRepoDB } from "../db/repo"
+import { createNewRepoDB, deleteRepoDB, getPublicRepoByIdDB, getRepoByIdDB, getUserByRepoIdDB, updateRepoDB } from "../db/repo"
 import z from "zod"
 import { newRepoSchema } from "../schemas/repo"
 import { repoStatus, RepoTable } from "@/drizzle/schema"
@@ -20,7 +20,7 @@ export type GetReposParams = {
   mode?: "explore";
 }
 
-export async function getMyRepos(params: GetReposParams) {
+export async function getRepositories(params: GetReposParams) {
   try {
     const { search, status, sortBy, page = 1, pageSize = 10, mode } = params;
     const session = await auth();
@@ -33,11 +33,6 @@ export async function getMyRepos(params: GetReposParams) {
       }
     }
     const conditions = [];
-    // if(userId && mode !== "explore"){
-    //   conditions.push(eq(RepoTable.userId, userId));
-    // } else if (userId && mode === "explore") {
-    //   conditions.push(ne(RepoTable.userId, userId));
-    // }
 
     if (userId) {
       if (mode === "explore") {
@@ -53,7 +48,7 @@ export async function getMyRepos(params: GetReposParams) {
     } else if (mode === "explore") {
       conditions.push(eq(RepoTable.status, "public"));
     }
-    
+
     if (search && search !== "") {
       const searchTerm = `%${search}%`;
       const searchCondition = or(
@@ -103,7 +98,8 @@ export async function getRepoById(repoId: string) {
     const session = await auth();
     const userId = session?.user?.id;
     if (!userId) {
-      return { success: false, error: "Unauthorized: You must be logged in." };
+      const repo = await getPublicRepoByIdDB(repoId);
+      return { success: false, data: repo, error: "Unauthorized: You must be logged in." };
     }
     const repo = await getRepoByIdDB(userId, repoId);
     return { success: true, data: repo }
@@ -146,10 +142,8 @@ export async function updateRepo(repoId: string, repoData: z.infer<typeof newRep
     if (!repo) {
       return { success: false, error: "Not Found: Repository does not exist." };
     }
-    if (repo.userId !== userId) {
-      return { success: false, error: "Forbidden: You are not the owner of this repository." };
-    }
     await updateRepoDB(repoId, { ...repoData, userId });
+    revalidatePath("/my-repos");
     return { success: true, message: "Repo udpated successfully" }
   } catch (error) {
     console.log("Error updating repo")
@@ -168,10 +162,6 @@ export async function deleteRepo(repoId: string) {
     if (!repo) {
       return { success: false, error: "Not Found: Repository does not exist." };
     }
-    if (repo.userId !== userId) {
-      return { success: false, error: "Forbidden: You are not the owner of this repository." };
-    }
-
     await deleteRepoDB(repoId);
     revalidatePath("/my-repos");
     return { success: true, message: `${repo.title} deleted successfully.` };
@@ -181,7 +171,14 @@ export async function deleteRepo(repoId: string) {
   }
 }
 
-
+export async function getUserByRepoId(repoId: string) {
+  try {
+    return await getUserByRepoIdDB(repoId);
+  } catch (error) {
+    console.error("Error getting user by repo id")
+    return null;
+  }
+}
 
 
 
