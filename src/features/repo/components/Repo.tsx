@@ -19,7 +19,7 @@ export default async function RepoStructure({
       <div className="w-full overflow-hidden">
         <div className="flex gap-3">
           <Button variant={"link"} className="font-bold p-0" asChild>
-            <Link href={`/repo-${id}`}>{title}</Link>
+            <Link href={`/repo/${id}`}>{title}</Link>
           </Button>
           <p className="my-auto border-2 text-sm px-2 rounded-xl py-0.5">
             {status}

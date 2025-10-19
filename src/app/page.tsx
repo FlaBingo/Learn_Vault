@@ -1,3 +1,4 @@
+import ExplorePublicRepos from "@/components/ExplorePublicRepo";
 import { Navbar } from "@/components/Navbar";
 import SignIn from "@/components/sign-in";
 import { Button } from "@/components/ui/button";
@@ -18,8 +19,8 @@ export default async function Home() {
   }
 
   return (
-    <>
-      <Card className="container mx-auto my-5 flex flex-row justify-between px-5">
+    <div className="container mx-auto my-5">
+      <Card className="mb-5 flex flex-row justify-between px-5">
         <div>
           {session ? (
             <div className="flex gap-3">
@@ -34,6 +35,8 @@ export default async function Home() {
           <Link href={"/my-repos"}>My Repositories</Link>
         </Button>
       </Card>
-    </>
+
+      <ExplorePublicRepos />
+    </div>
   );
 }

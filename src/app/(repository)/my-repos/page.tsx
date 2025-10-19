@@ -50,12 +50,12 @@ export default async function RepositoriesPage({
 
   // console.log(status, sortBy, search); // resolved: url shows status=private or public but here the value is still undefined
   // console.log(await searchParams) // it worked
-  const response = await getMyRepos({ search, status, sortBy, page });
+  const response = await getMyRepos({ search, status, sortBy, page, mode });
   const { data: repos, pagination } = response;
 
   return (
     <>
-      <div className="flex gap-2">
+      <div>
         <FilterForm />
       </div>
 

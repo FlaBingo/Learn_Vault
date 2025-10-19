@@ -16,10 +16,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { createNewRepo, getRepoById, updateRepo } from "../actions/repo";
+import { createNewRepo, updateRepo } from "../actions/repo";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useRef, useState, useTransition } from "react";
+import { useTransition } from "react";
 import { repoStatus } from "@/lib/types/repoTypes";
 import { Loader2 } from "lucide-react";
 
@@ -63,7 +63,7 @@ export default function NewRepoForm({
           const result = await updateRepo(initialData.id, values);
           if (result.success) {
             toast.success(result.message);
-            router.push("/my-repos");
+            router.replace("/my-repos");
           } else {
             toast.error(result.error);
           }
@@ -71,7 +71,7 @@ export default function NewRepoForm({
           const result = await createNewRepo(values);
           if (result.success) {
             toast.success(result.message);
-            router.push("/my-repos");
+            router.replace("/my-repos");
           } else {
             toast.error(result.message);
           }

@@ -17,7 +17,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebounce } from "use-debounce";
 // import { repoStatus } from "@/lib/types/repoTypes";
 
-export default function FilterForm() {
+export default function FilterForm({ mode }: { mode?: "explore" }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -48,13 +48,15 @@ export default function FilterForm() {
   }, [debouncedSearch, searchParams, pathname, router]);
 
   return (
-    <>
+    <div className="flex gap-2">
       <Input
         placeholder="Find a repository..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
-      <Select
+
+      {mode !== "explore" && (
+        <Select
         value={searchParams.get("status") || "all"}
         onValueChange={(value) => handleFilterChange("status", value)}
       >
@@ -70,6 +72,7 @@ export default function FilterForm() {
           </SelectGroup>
         </SelectContent>
       </Select>
+      )}
 
       <Select
         value={searchParams.get("sortBy") || "updated_desc"}
@@ -87,6 +90,6 @@ export default function FilterForm() {
           </SelectGroup>
         </SelectContent>
       </Select>
-    </>
+    </div>
   );
 }

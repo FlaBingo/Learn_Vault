@@ -2,11 +2,11 @@
 "use server"
 
 import { createNewRepoDB, deleteRepoDB, getRepoByIdDB, updateRepoDB } from "../db/repo"
-import z, { success } from "zod"
+import z from "zod"
 import { newRepoSchema } from "../schemas/repo"
 import { repoStatus, RepoTable } from "@/drizzle/schema"
 import { db } from "@/drizzle/db"
-import { and, asc, count, desc, eq, ilike, or } from "drizzle-orm"
+import { and, asc, count, desc, eq, ilike, ne, or } from "drizzle-orm"
 import { auth } from "@/services/auth"
 import { sortBy } from "@/lib/types/sorttypes"
 import { revalidatePath } from "next/cache"
@@ -17,26 +17,43 @@ export type GetReposParams = {
   sortBy?: sortBy;
   page?: number;
   pageSize?: number;
+  mode?: "explore";
 }
 
 export async function getMyRepos(params: GetReposParams) {
   try {
+    const { search, status, sortBy, page = 1, pageSize = 10, mode } = params;
     const session = await auth();
     const userId = session?.user?.id;
-    if (!userId) {
+    if (!userId && mode !== "explore") {
       return {
         success: true,
         data: [],
         pagination: { currentPage: 1, pageSize: 10, totalPages: 0, totalCount: 0 }
       }
     }
-    const { search, status, sortBy, page = 1, pageSize = 10 } = params;
-    const conditions = [
-      eq(RepoTable.userId, userId),
-    ];
+    const conditions = [];
+    // if(userId && mode !== "explore"){
+    //   conditions.push(eq(RepoTable.userId, userId));
+    // } else if (userId && mode === "explore") {
+    //   conditions.push(ne(RepoTable.userId, userId));
+    // }
+
+    if (userId) {
+      if (mode === "explore") {
+        conditions.push(ne(RepoTable.userId, userId));
+      } else {
+        conditions.push(eq(RepoTable.userId, userId));
+      }
+    }
+
+
     if (status) {
       conditions.push(eq(RepoTable.status, status));
+    } else if (mode === "explore") {
+      conditions.push(eq(RepoTable.status, "public"));
     }
+    
     if (search && search !== "") {
       const searchTerm = `%${search}%`;
       const searchCondition = or(
@@ -58,7 +75,7 @@ export async function getMyRepos(params: GetReposParams) {
     }
 
     const [repos, totalResult] = await Promise.all([
-      db.select().from(RepoTable).where(whereClause).orderBy(orderByClause).limit(pageSize).offset((page - 1) * pageSize), // don't know about limit and offset methods
+      db.select().from(RepoTable).where(whereClause).orderBy(orderByClause).limit(pageSize).offset((page - 1) * pageSize),
       db.select({ total: count() }).from(RepoTable).where(whereClause),
     ])
     const totalCount = totalResult[0].total;
@@ -132,8 +149,8 @@ export async function updateRepo(repoId: string, repoData: z.infer<typeof newRep
     if (repo.userId !== userId) {
       return { success: false, error: "Forbidden: You are not the owner of this repository." };
     }
-    await updateRepoDB(repoId, {...repoData, userId});
-    return { success: true, message: "Repo udpated successfully"}
+    await updateRepoDB(repoId, { ...repoData, userId });
+    return { success: true, message: "Repo udpated successfully" }
   } catch (error) {
     console.log("Error updating repo")
     return { success: false, error: "An unexpected error occurred." };

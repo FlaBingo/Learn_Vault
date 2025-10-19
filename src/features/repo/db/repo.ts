@@ -4,7 +4,7 @@ import { and, eq } from "drizzle-orm";
 
 export async function getRepoByIdDB(userId: string, repoId: string) {
   return db.query.RepoTable.findFirst({
-    where: eq(RepoTable.id, repoId),
+    where: and(eq(RepoTable.id, repoId), eq(RepoTable.userId, userId)),
   });
 }
 
