@@ -1,7 +1,7 @@
 // src/features/repo/actions/repo.ts
 "use server"
 
-import { createNewRepoDB, deleteRepoDB, getPublicRepoByIdDB, getRepoByIdDB, getUserByRepoIdDB, updateRepoDB } from "../db/repo"
+import { createNewRepoDB, deleteRepoDB, getAnyRepoByIdDB, getRepoByIdDB, getUserByRepoIdDB, updateRepoDB } from "../db/repo"
 import z from "zod"
 import { newRepoSchema } from "../schemas/repo"
 import { repoStatus, RepoTable } from "@/drizzle/schema"
@@ -98,7 +98,7 @@ export async function getRepoById(repoId: string) {
     const session = await auth();
     const userId = session?.user?.id;
     if (!userId) {
-      const repo = await getPublicRepoByIdDB(repoId);
+      const repo = await getAnyRepoByIdDB(repoId);
       return { success: false, data: repo, error: "Unauthorized: You must be logged in." };
     }
     const repo = await getRepoByIdDB(userId, repoId);
@@ -106,6 +106,15 @@ export async function getRepoById(repoId: string) {
   } catch (error) {
     console.log("Error getting repo by id")
     return { success: false, error }
+  }
+}
+
+export async function getAnyRepoById(repoId: string) {
+  try {
+    const repo = await getAnyRepoByIdDB(repoId);
+    return { success: true, data: repo };
+  } catch (error) {
+    return { success: false, error};
   }
 }
 

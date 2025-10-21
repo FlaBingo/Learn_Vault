@@ -1,5 +1,12 @@
 // app/my-repos/page.tsx
 import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import {
   Card,
   CardContent,
   CardDescription,
@@ -22,12 +29,11 @@ export default async function RepositoriesPage({
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-
   const session = await auth();
-  if(!session){
+  if (!session) {
     redirect("/login", RedirectType.replace);
   }
-  
+
   const resolvedSearchParams = await searchParams;
 
   // extract the searchParams
@@ -52,6 +58,19 @@ export default async function RepositoriesPage({
 
   return (
     <>
+      <div>
+        <Breadcrumb className="px-4 py-1 mb-3 bg-accent rounded-sm">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink>my repositories</BreadcrumbLink>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
       <div>
         <FilterForm />
       </div>

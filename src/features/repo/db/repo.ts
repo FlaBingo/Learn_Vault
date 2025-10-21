@@ -1,6 +1,6 @@
 import { db } from "@/drizzle/db";
 import { RepoTable, UsersTable } from "@/drizzle/schema";
-import { and, eq } from "drizzle-orm";
+import { and, eq, ne } from "drizzle-orm";
 
 export async function getRepoByIdDB(userId: string, repoId: string) {
   try {
@@ -8,18 +8,18 @@ export async function getRepoByIdDB(userId: string, repoId: string) {
       where: and(eq(RepoTable.id, repoId), eq(RepoTable.userId, userId)),
     });
   } catch (error) {
-    console.error("Error in getRepoByIdDB");
+    console.error("Error in getRepoByIdDB", error);
     return null
   }
 }
 
-export async function getPublicRepoByIdDB(repoId: string) {
+export async function getAnyRepoByIdDB(repoId: string) {
   try {
     return await db.query.RepoTable.findFirst({
       where: eq(RepoTable.id, repoId),
     });
   } catch (error) {
-    console.error("Error in getRepoByIdDB");
+    console.error("Error in getRepoByIdDB", error);
     return null
   }
 }
@@ -38,7 +38,7 @@ export async function getUserByRepoIdDB(repoId: string) {
     });
     return user ?? null;
   } catch (error) {
-    console.error("Error in getUserByRepoIdDB");
+    console.error("Error in getUserByRepoIdDB", error);
     return null;
   }
 }
