@@ -5,7 +5,7 @@ import { RepoTable } from "./repo";
 import { relations } from "drizzle-orm";
 import { ContentBlockTagTable } from "./contentBlockTag";
 
-export const contentType = ["note", "video", "link", "image", "folder"] as const;
+export const contentType = ["note", "video", "link", "image", "folder", "pdf"] as const;
 export type ContentType = (typeof contentType)[number] // never understood this line 
 export const contentTypeEnum = pgEnum("content_type", contentType)
 

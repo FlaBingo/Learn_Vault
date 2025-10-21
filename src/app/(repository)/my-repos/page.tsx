@@ -59,7 +59,7 @@ export default async function RepositoriesPage({
   return (
     <>
       <div>
-        <Breadcrumb className="px-4 py-1 mb-3 bg-accent rounded-sm">
+        <Breadcrumb className="px-4 py-1 mb-4 bg-accent rounded-sm">
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href="/">Home</BreadcrumbLink>

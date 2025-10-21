@@ -12,6 +12,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -35,7 +42,7 @@ type RepoData =
 export default function NewRepoForm({
   initialData,
 }: {
-  initialData?: RepoData;
+  initialData?: RepoData | null;
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -83,107 +90,130 @@ export default function NewRepoForm({
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Title</FormLabel>
-              <FormControl>
-                <Input
-                  autoFocus
-                  placeholder="Enter the title for this repository..."
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>
-                Choose a clear, descriptive title that reflects the purpose of
-                your repository.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => {
-            const MAX_LENGTH = 300;
-            const remainingChars = MAX_LENGTH - (field.value?.length || 0);
-            return (
+    <>
+      <div className="container mx-auto mt-7">
+        <Breadcrumb className="px-4 py-1 mb-3 bg-accent rounded-sm">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            {isEditMode ? (
+              <>
+                <BreadcrumbItem>Edit Repository</BreadcrumbItem>
+                <BreadcrumbSeparator />
+              </>
+            ) : (
+              <>
+                <BreadcrumbItem>Create Repository</BreadcrumbItem>
+                <BreadcrumbSeparator />
+              </>
+            )}
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 px-20 py-10">
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
               <FormItem>
-                <FormLabel>Description</FormLabel>
+                <FormLabel>Title</FormLabel>
                 <FormControl>
-                  <Textarea
-                    placeholder="Enter a description..."
-                    maxLength={MAX_LENGTH}
+                  <Input
+                    autoFocus
+                    placeholder="Enter the title for this repository..."
                     {...field}
                   />
                 </FormControl>
                 <FormDescription>
-                  <span className="text-red-400 font-bold">
-                    {remainingChars}
-                  </span>{" "}
-                  characters remaining
-                  <br />
-                  Up to {MAX_LENGTH} characters.
-                  <br />
-                  Provide a clear and concise summary of your repository.
+                  Choose a clear, descriptive title that reflects the purpose of
+                  your repository.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
-            );
-          }}
-        />
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="status"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Status</FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormItem className="flex items-center gap-3">
-                    <FormControl>
-                      <RadioGroupItem value="private" />
-                    </FormControl>
-                    <FormLabel>Private</FormLabel>
-                  </FormItem>
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => {
+              const MAX_LENGTH = 300;
+              const remainingChars = MAX_LENGTH - (field.value?.length || 0);
+              return (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Enter a description..."
+                      maxLength={MAX_LENGTH}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    <span className="text-red-400 font-bold">
+                      {remainingChars}
+                    </span>{" "}
+                    characters remaining
+                    <br />
+                    Up to {MAX_LENGTH} characters.
+                    <br />
+                    Provide a clear and concise summary of your repository.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
+          />
 
-                  <FormItem className="flex items-center gap-3">
-                    <FormControl>
-                      <RadioGroupItem value="public" />
-                    </FormControl>
-                    <FormLabel>Public</FormLabel>
-                  </FormItem>
-                </RadioGroup>
-              </FormControl>
-              <FormDescription>
-                If you choose <b>Public</b>, anyone can see your repository. If
-                you choose <b>Private</b>, only you can see it.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit" disabled={isPending}>
-          {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {isPending
-            ? isEditMode
-              ? "Saving..."
-              : "Creating..."
-            : isEditMode
-            ? "Save Changes"
-            : "Create Repo"}
-        </Button>
-      </form>
-    </Form>
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Status</FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormItem className="flex items-center gap-3">
+                      <FormControl>
+                        <RadioGroupItem value="private" />
+                      </FormControl>
+                      <FormLabel>Private</FormLabel>
+                    </FormItem>
+
+                    <FormItem className="flex items-center gap-3">
+                      <FormControl>
+                        <RadioGroupItem value="public" />
+                      </FormControl>
+                      <FormLabel>Public</FormLabel>
+                    </FormItem>
+                  </RadioGroup>
+                </FormControl>
+                <FormDescription>
+                  If you choose <b>Public</b>, anyone can see your repository.
+                  If you choose <b>Private</b>, only you can see it.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit" disabled={isPending}>
+            {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {isPending
+              ? isEditMode
+                ? "Saving..."
+                : "Creating..."
+              : isEditMode
+              ? "Save Changes"
+              : "Create Repo"}
+          </Button>
+        </form>
+      </Form>
+    </>
   );
 }

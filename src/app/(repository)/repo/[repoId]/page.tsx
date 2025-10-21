@@ -62,11 +62,11 @@ export default async function ContentPage({
           </Breadcrumb>
         </div>
         <h1 className="text-5xl my-7 font-bold">{publicData?.title || data?.title}</h1>
-        <div className="grid grid-cols-5 gap-4">
-          <div className="bg-red-500 col-span-4 p-4">
+        <div className="grid grid-cols-5 gap-4 relative">
+          <div className="col-span-4 p-4">
             <ContentBlockGroup />
           </div>
-          <div className="col-span-1 p-2">
+          <div className="col-span-1 p-2 sticky top-0">
             <div>
               <h2 className="font-bold mb-2 text-2xl">About</h2>
               <ul>
