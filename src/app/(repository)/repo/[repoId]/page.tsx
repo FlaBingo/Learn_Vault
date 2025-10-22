@@ -5,8 +5,14 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { Card, CardContent } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ContentBlockGroup from "@/features/content-block/components/ContentBlockGroup";
-import { getAnyRepoById, getRepoById, getUserByRepoId } from "@/features/repo/actions/repo";
+import {
+  getAnyRepoById,
+  getRepoById,
+  getUserByRepoId,
+} from "@/features/repo/actions/repo";
 
 export default async function ContentPage({
   params,
@@ -18,7 +24,7 @@ export default async function ContentPage({
   const user = await getUserByRepoId(repoId);
   const { data } = repo;
   const publicRepo = await getAnyRepoById(repoId);
-  const { data : publicData } = publicRepo;
+  const { data: publicData } = publicRepo;
   const owner = repo?.data?.userId === user?.id;
   return (
     <>
@@ -42,31 +48,47 @@ export default async function ContentPage({
                 <>
                   <BreadcrumbSeparator />
                   <BreadcrumbItem>
-                    <BreadcrumbLink>
-                      Repository
-                    </BreadcrumbLink>
+                    <BreadcrumbLink>Repository</BreadcrumbLink>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />
                   <BreadcrumbItem>
-                    <BreadcrumbLink>
-                      {user?.name}
-                    </BreadcrumbLink>
+                    <BreadcrumbLink>{user?.name}</BreadcrumbLink>
                   </BreadcrumbItem>
                 </>
               )}
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink>{publicData?.title || data?.title}</BreadcrumbLink>
+                <BreadcrumbLink>
+                  {publicData?.title || data?.title}
+                </BreadcrumbLink>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
         </div>
-        <h1 className="text-5xl my-7 font-bold">{publicData?.title || data?.title}</h1>
-        <div className="grid grid-cols-5 gap-4 relative">
+        <h1 className="text-5xl mt-7 mb-2 mx-3 font-bold">
+          {publicData?.title || data?.title}
+        </h1>
+
+        <div className="grid grid-cols-5 gap-4">
           <div className="col-span-4 p-4">
-            <ContentBlockGroup />
+            <Tabs defaultValue="content">
+              <TabsList>
+                <TabsTrigger value="content">Content</TabsTrigger>
+                <TabsTrigger value="setting">Settings</TabsTrigger>
+              </TabsList>
+              <TabsContent value="content" className="my-2">
+                <ContentBlockGroup />
+              </TabsContent>
+              <TabsContent value="setting" className="my-2">
+                <Card>
+                  <CardContent>
+                    settings
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
           </div>
-          <div className="col-span-1 p-2 sticky top-0">
+          <div className="col-span-1 mt-14 p-2 sticky top-0 self-start">
             <div>
               <h2 className="font-bold mb-2 text-2xl">About</h2>
               <ul>

@@ -8,7 +8,7 @@ import { BLOCK_OPTIONS, BlockOption } from "@/lib/content-block-utils/block-opti
 export default function ContentBlockEditor() {
   return (
     <>
-      text editor
+      
     </>
   );
 }
