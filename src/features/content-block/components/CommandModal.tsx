@@ -19,10 +19,10 @@ import {
 } from "@/components/ui/command"
 import { cn } from "@/lib/utils"
 
-export function CommandDemo({className}: {className: string}) {
+export function CommandModal({className, inputValue}: {className?: string; inputValue?: string}) {
   return (
-    <Command className={cn("rounded-lg border shadow-md md:min-w-[450px]", className)}>
-      <CommandInput placeholder="Type a command or search..." />
+    <Command className={cn("rounded-lg border shadow-md md:min-w-[450px]", className)} onClick={(e) => e.stopPropagation()}>
+      <CommandInput placeholder="Type a command or search..." value={inputValue?.slice(1)} className="hidden"/>
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup heading="Suggestions">

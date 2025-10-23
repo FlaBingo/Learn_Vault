@@ -3,6 +3,23 @@
 
 @custom-variant dark (&:is(.dark *));
 
+html, body {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* OR: use a class to hide scrollbars only on specific containers */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
