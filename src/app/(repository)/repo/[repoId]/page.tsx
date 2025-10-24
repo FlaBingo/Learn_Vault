@@ -1,3 +1,4 @@
+// src\app\(repository)\repo\[repoId]\page.tsx
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -75,6 +76,7 @@ export default async function ContentPage({
               <TabsList>
                 <TabsTrigger value="content">Content</TabsTrigger>
                 <TabsTrigger value="setting">Settings</TabsTrigger>
+                <TabsTrigger value="how-to">How to</TabsTrigger>
               </TabsList>
               <TabsContent value="content" className="my-2">
                 <ContentBlockGroup />
@@ -83,6 +85,13 @@ export default async function ContentPage({
                 <Card>
                   <CardContent>
                     settings
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              <TabsContent value="how-to" className="my-2">
+                <Card>
+                  <CardContent>
+                    How to
                   </CardContent>
                 </Card>
               </TabsContent>
