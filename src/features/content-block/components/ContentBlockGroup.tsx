@@ -4,11 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useEffect, useRef, useState } from "react";
 import { CommandModal } from "./CommandModal";
-import ContentBlocks from "./ContentBlocks";
 import ContentFormModal from "./DataModal";
 import { ContentType } from "@/drizzle/schema";
 
-export default function ContentBlockGroup() {
+export default function ContentBlockGroup({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>("");
   const [showDialog, setShowDialog] = useState(false);
@@ -37,7 +36,7 @@ export default function ContentBlockGroup() {
           <CardTitle>Content Page</CardTitle>
         </CardHeader>
         <CardContent onClick={handleCardClick} className="min-h-[500px]">
-          <ContentBlocks />
+          { children }
           <Input
             ref={inputRef}
             value={inputValue}

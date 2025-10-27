@@ -9,6 +9,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ContentBlockGroup from "@/features/content-block/components/ContentBlockGroup";
+import ContentBlocks from "@/features/content-block/components/ContentBlocks";
 import {
   getAnyRepoById,
   getRepoById,
@@ -79,12 +80,19 @@ export default async function ContentPage({
                 <TabsTrigger value="how-to">How to</TabsTrigger>
               </TabsList>
               <TabsContent value="content" className="my-2">
-                <ContentBlockGroup />
+                <ContentBlockGroup>
+                  <ContentBlocks params={params} />
+                </ContentBlockGroup>
               </TabsContent>
               <TabsContent value="setting" className="my-2">
                 <Card>
                   <CardContent>
                     settings
+                    changes to make:
+                    - option for changing background color
+                    - setting permission 
+                      - if public : admin, editor
+                      - if private: admin, editor, private viewer(may be premium)
                   </CardContent>
                 </Card>
               </TabsContent>

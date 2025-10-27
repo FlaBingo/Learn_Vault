@@ -1,10 +1,24 @@
+// src\features\content-block\components\ContentBlocks.tsx
 
+import { getBlocks } from "../actions/content-block";
+import ContentBlock from "./ContentBlock";
 
-export default function ContentBlocks() {
+interface Props {
+  params: {repoId: string};
+}
+
+export default async function ContentBlocks({params}: Props) {
+  const {repoId} = await params;
+  const content_blocks = await getBlocks({repoId});
+  const {data} = content_blocks;
   return (
     <>
       <div>
-        f
+        {data?.map((block) => (
+          <div key={block.id}>
+            <ContentBlock input={block}/>
+          </div>
+        ))}
       </div>
     </>
   );

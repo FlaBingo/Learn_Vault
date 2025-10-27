@@ -12,7 +12,7 @@ import {
 
 import { useForm } from "react-hook-form";
 import z from "zod";
-import { newContentSchema } from "../schemas/content-block";
+import { ContentBlockSchema } from "../schemas/content-block";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -44,8 +44,8 @@ export default function ContentFormModal({
     (option) => option.id === contentId
   )[0];
 
-  const form = useForm<z.infer<typeof newContentSchema>>({
-    resolver: zodResolver(newContentSchema),
+  const form = useForm<z.infer<typeof ContentBlockSchema>>({
+    resolver: zodResolver(ContentBlockSchema),
     defaultValues: {
       content: "",
       description: "",

@@ -12,10 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-// import { sortBy } from "@/lib/types/sorttypes";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebounce } from "use-debounce";
-// import { repoStatus } from "@/lib/types/repoTypes";
 
 export default function FilterForm({ mode }: { mode?: "explore" }) {
   const router = useRouter();
