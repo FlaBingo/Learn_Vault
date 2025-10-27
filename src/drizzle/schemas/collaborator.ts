@@ -4,7 +4,7 @@ import { UsersTable } from "./user";
 import { RepoTable } from "./repo";
 import { relations } from "drizzle-orm";
 
-export const collaboratorRoles = ["owner", "admin", "editor"] as const;
+export const collaboratorRoles = ["admin", "editor", "viewer"] as const;
 export type collaboratorRole = (typeof collaboratorRoles)[number];
 export const collaboratorRolesEnum = pgEnum("collaborator_roles", collaboratorRoles);
 

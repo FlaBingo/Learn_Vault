@@ -22,6 +22,20 @@
       "when": 1759590691615,
       "tag": "0002_lonely_midnight",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1761562889103,
+      "tag": "0003_daily_marten_broadcloak",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1761563124047,
+      "tag": "0004_medical_wild_pack",
+      "breakpoints": true
     }
   ]
 }
