@@ -57,7 +57,7 @@ export async function getRepositories(params: GetReposParams) {
       )
       if (searchCondition) {
         conditions.push(searchCondition);
-        console.log(searchCondition)
+        // console.log(searchCondition)
       }
     }
 

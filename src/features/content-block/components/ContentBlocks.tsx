@@ -1,5 +1,6 @@
 // src\features\content-block\components\ContentBlocks.tsx
 
+import { Separator } from "@/components/ui/separator";
 import { getBlocks } from "../actions/content-block";
 import ContentBlock from "./ContentBlock";
 
@@ -15,8 +16,9 @@ export default async function ContentBlocks({params}: Props) {
     <>
       <div>
         {data?.map((block) => (
-          <div key={block.id}>
+          <div key={block.id} className="grid">
             <ContentBlock input={block}/>
+            <Separator />
           </div>
         ))}
       </div>

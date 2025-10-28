@@ -1,3 +1,5 @@
+// src\features\content-block\components\DataModal.tsx
+
 "use client";
 import {
   Dialog,
@@ -10,9 +12,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { useForm } from "react-hook-form";
+import { FieldErrors, useForm } from "react-hook-form";
 import z from "zod";
-import { ContentBlockSchema } from "../schemas/content-block";
+import {
+  ContentBlockSchema,
+  ContentFormSchema,
+} from "../schemas/content-block";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,6 +33,11 @@ import { Input } from "@/components/ui/input";
 import { ContentType } from "@/drizzle/schema";
 import { BLOCK_OPTIONS } from "@/lib/content-block-utils/block-options";
 import { Textarea } from "@/components/ui/textarea";
+import { useTransition } from "react";
+import { createBlock } from "../actions/content-block";
+import { toast } from "sonner";
+import { usePathname } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 export default function ContentFormModal({
   children,
@@ -40,21 +50,47 @@ export default function ContentFormModal({
   onOpenChange: (open: boolean) => void;
   contentId: ContentType | null;
 }) {
+  const pathname = usePathname();
+  const repoId = pathname.split("/")[2];
+  // console.log(pathname.split("/")[3]);
+  const parentId = pathname.split("/")[3]; // undefined
+
+  const [isPending, startTransition] = useTransition();
   const selectedOption = BLOCK_OPTIONS.filter(
     (option) => option.id === contentId
   )[0];
 
-  const form = useForm<z.infer<typeof ContentBlockSchema>>({
-    resolver: zodResolver(ContentBlockSchema),
+  const form = useForm<z.infer<typeof ContentFormSchema>>({
+    resolver: zodResolver(ContentFormSchema),
     defaultValues: {
       content: "",
       description: "",
-      bgColor: "",
     },
   });
 
-  async function onSubmit() {
-    console.log("klsdjflkajsdlfkjasdjkf");
+  async function onSubmit(values: z.infer<typeof ContentFormSchema>) {
+    startTransition(async () => {
+      try {
+        const result = await createBlock({
+          repoId,
+          parentId,
+          type: selectedOption.id,
+          ...values,
+        });
+        if (result.success) {
+          toast.success("Block created successfully.");
+          onOpenChange(false);
+        } else {
+          toast.error(result.error);
+          console.log(result.error);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  }
+  function onError(errors: FieldErrors<z.infer<typeof ContentBlockSchema>>) {
+    console.error("Form Validation Failed:", errors);
   }
 
   return (
@@ -69,7 +105,10 @@ export default function ContentFormModal({
             </DialogDescription>
           </DialogHeader>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form
+              onSubmit={form.handleSubmit(onSubmit, onError)}
+              className="space-y-8"
+            >
               {/* Form fields here */}
               <FormField
                 control={form.control}
@@ -122,9 +161,22 @@ export default function ContentFormModal({
 
               <DialogFooter>
                 <DialogClose asChild>
-                  <Button variant={"outline"}>Cancel</Button>
+                  <Button variant={"outline"} className="cursor-pointer">
+                    Cancel
+                  </Button>
                 </DialogClose>
-                <Button type="submit">Create</Button>
+                <Button
+                  type="submit"
+                  disabled={isPending}
+                  className="cursor-pointer"
+                >
+                  {isPending ? (
+                    <>
+                      <Loader2 className="mr-1"/>
+                      Creating...
+                    </>
+                  ) : "Create"}
+                </Button>
               </DialogFooter>
             </form>
           </Form>

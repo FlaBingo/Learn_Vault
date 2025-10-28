@@ -92,5 +92,15 @@ export const BLOCK_OPTIONS: {
       console.log("action in text");
     },
   },
+  {
+    id: "code",
+    tag: "div",
+    label: "Code Block",
+    description: "Write the code for future reference.",
+    icon: Folder,
+    action: () => {
+      console.log("action in text");
+    },
+  },
 ];
 export type BlockOption = (typeof BLOCK_OPTIONS)[number];
