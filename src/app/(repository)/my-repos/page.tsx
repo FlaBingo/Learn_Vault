@@ -84,14 +84,21 @@ export default async function RepositoriesPage({
         </CardHeader>
         <CardContent>
           {repos.length > 0 ? (
-            repos.map((repo) => (
-              <div key={repo.id}>
+            repos.map((repo, index) => (
+              <div
+                key={repo.id}
+                className={`py-5 px-5 transition-colors ${
+                  index % 2 === 0
+                    ? "bg-gray-100 dark:bg-gray-800" // bright for light mode, darker for dark mode
+                    : "bg-gray-200 dark:bg-gray-700"
+                }`}
+              >
                 <RepoStructure {...repo} />
-                <Separator className="my-4" />
+                {/* {index !== repos.length - 1 && <Separator className="my-4" />} */}
               </div>
             ))
           ) : (
-            <p>No repositories found.</p>
+            <div>No repositories found.</div>
           )}
         </CardContent>
         <CardFooter className="flex justify-center gap-2">

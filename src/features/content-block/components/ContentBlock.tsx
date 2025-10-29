@@ -26,11 +26,11 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
           style={{ backgroundColor: input.bgColor || undefined }}
         >
           <CardContent className="p-4">
-            <p className="text-lg font-semibold">{input.content}</p>
+            <div className="text-lg font-semibold">{input.content}</div>
             {input.description && (
-              <p className="text-sm text-muted-foreground mt-1">
+              <div className="text-sm text-muted-foreground mt-1">
                 {input.description}
-              </p>
+              </div>
             )}
           </CardContent>
         </Card>
@@ -57,9 +57,9 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
           </CardContent>
           {input.description && (
             <CardFooter className="p-3 bg-gray-50 dark:bg-gray-900 border-t">
-              <p className="text-sm text-muted-foreground">
+              <div className="text-sm text-muted-foreground">
                 {input.description}
-              </p>
+              </div>
             </CardFooter>
           )}
         </Card>
@@ -90,9 +90,9 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
             </div>
             {input.description && (
               <CardFooter className="p-3 bg-gray-50 dark:bg-gray-900 border-t">
-                <p className="text-sm text-muted-foreground">
+                <div className="text-sm text-muted-foreground">
                   {input.description}
-                </p>
+                </div>
               </CardFooter>
             )}
           </Card>
@@ -116,9 +116,9 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
           </CardContent>
           {input.description && (
             <CardFooter className="p-3 bg-gray-50 dark:bg-gray-900 border-t">
-              <p className="text-sm text-muted-foreground">
+              <div className="text-sm text-muted-foreground">
                 {input.description}
-              </p>
+              </div>
             </CardFooter>
           )}
         </Card>
@@ -140,12 +140,12 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
           >
             <LinkIcon className="size-6 text-gray-400 flex-shrink-0" />
             <div className="flex-grow overflow-hidden">
-              <p className="text-base font-medium truncate">
+              <div className="text-base font-medium truncate">
                 {input.description || "External Link"}
-              </p>
-              <p className="text-sm text-blue-600 dark:text-blue-400 truncate">
+              </div>
+              <div className="text-sm text-blue-600 dark:text-blue-400 truncate">
                 {input.content}
-              </p>
+              </div>
             </div>
           </a>
         </Card>
@@ -167,12 +167,12 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
           >
             <FileTextIcon className="size-6 text-red-600 flex-shrink-0" />
             <div className="flex-grow overflow-hidden">
-              <p className="text-base font-medium truncate">
+              <div className="text-base font-medium truncate">
                 {input.description || "PDF Document"}
-              </p>
-              <p className="text-sm text-muted-foreground truncate">
+              </div>
+              <div className="text-sm text-muted-foreground truncate">
                 {input.content}
-              </p>
+              </div>
             </div>
           </a>
         </Card>
@@ -189,9 +189,9 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
           {input.description && (
             <CardHeader className="flex flex-row items-center gap-2 p-3 bg-gray-100 dark:bg-gray-800 border-b">
               <CodeIcon className="size-4 text-muted-foreground" />
-              <p className="text-sm font-medium text-muted-foreground">
+              <div className="text-sm font-medium text-muted-foreground">
                 {input.description}
-              </p>
+              </div>
             </CardHeader>
           )}
           <CardContent className="p-0">
@@ -210,9 +210,9 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
       return (
         <Card className="my-2 rounded-lg shadow-sm border-red-500 border">
           <CardHeader>
-            <p className="font-bold text-red-600">
+            <div className="font-bold text-red-600">
               Unknown Content Block Type: &quot;{input.type}&quot;
-            </p>
+            </div>
           </CardHeader>
           <CardContent>
             <pre className="text-xs font-mono bg-gray-100 p-2 rounded">

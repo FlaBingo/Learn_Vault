@@ -28,22 +28,22 @@ export default async function RepoStructure({
             <Link href={`/repo/${id}`}>{title}</Link>
           </Button>
           {mode !== "explore" ? (
-            <p className="my-auto border-2 text-sm px-2 rounded-xl py-0.5">
+            <div className="my-auto border-2 text-sm px-2 rounded-xl py-0.5">
             {status}
-          </p>
+          </div>
           ): (
-            <p className="my-auto select-none">~</p>
+            <div className="my-auto select-none">~</div>
           )}
           {mode === "explore" && (
-            <p className="my-auto text-muted-foreground text-xs">@{username}</p>
+            <div className="my-auto text-muted-foreground text-xs">@{username}</div>
           )}
         </div>
-        <p className="text-sm text-muted-foreground py-2">
+        <div className="text-sm text-muted-foreground py-2">
           {description &&
             (description.length > 100
               ? `${description.substring(0, 100)}...`
               : description)}
-        </p>
+        </div>
         <div className="text-muted-foreground text-xs">
           <span>created at </span>
           {createdAt.toLocaleDateString()}

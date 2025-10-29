@@ -11,7 +11,7 @@ function MyColorPickerComponent() {
     <div>
       <h1>Color Picker Example</h1>
       <ColorPicker width={456} height={228} color={color} onChange={setColor} hideRGB hideHSV />
-      <p>Selected Color: {color.hex}</p>
+      <div>Selected Color: {color.hex}</div>
     </div>
   );
 }

@@ -100,7 +100,11 @@ export default function NewRepoForm({
             <BreadcrumbSeparator />
             {isEditMode ? (
               <>
-                <BreadcrumbItem>Edit Repository</BreadcrumbItem>
+                <BreadcrumbItem>
+                  <BreadcrumbLink href={`/my-repos`}>my repositories</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>Edit {initialData.title}</BreadcrumbItem>
                 <BreadcrumbSeparator />
               </>
             ) : (

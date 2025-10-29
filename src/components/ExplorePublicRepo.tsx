@@ -59,7 +59,7 @@ export default async function ExplorePublicRepos({
                 </div>
               ))
             ) : (
-              <p>No repositories found.</p>
+              <div>No repositories found.</div>
             )}
           </div>
         </CardContent>
