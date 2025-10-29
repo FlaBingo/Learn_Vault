@@ -1,8 +1,16 @@
 // src\features\content-block\components\ContentBlock.tsx
 
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import { ContentBlockTable } from "@/drizzle/schema";
-import { getYouTubeId, isValidImageUrl } from "@/lib/content-block-utils/validations";
+import {
+  getYouTubeId,
+  isValidImageUrl,
+} from "@/lib/content-block-utils/validations";
 import { CodeIcon, FileTextIcon, LinkIcon, Video } from "lucide-react";
 import Image from "next/image";
 
@@ -10,7 +18,7 @@ type ContentBlockProps = {
   input: typeof ContentBlockTable.$inferSelect;
 };
 
-const PLACEHOLDER_IMAGE = `/default_image.jpg`
+const PLACEHOLDER_IMAGE = `/default_image.jpg`;
 
 export default async function ContentBlock({ input }: ContentBlockProps) {
   switch (input.type) {
@@ -35,6 +43,19 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
           </CardContent>
         </Card>
       );
+    /**
+     * Renders a simple text block.
+     * `content` is the main title/text.
+     * `description` is the supporting text.
+     */
+
+    case "h1":
+      return (
+        <div className="my-4">
+          <div className="text-3xl font-extrabold">{input.content}</div>
+          <div className="text-xs text-muted-foreground">{input.description}</div>
+        </div>
+      );
 
     /**
      * Renders an image.
@@ -45,14 +66,14 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
       const isServerValid = await isValidImageUrl(input.content);
       const imageUrl = isServerValid ? input.content : PLACEHOLDER_IMAGE;
       return (
-        <Card className="my-2 overflow-hidden rounded-lg shadow-sm">
+        <Card className="my-2 rounded-lg shadow-sm">
           <CardContent className="p-0">
             <Image
               src={imageUrl}
               alt={input.description || "LearnVault resource image"}
-              width={240}
-              height={30}
-              className="w-full h-auto object-cover"
+              width={200}
+              height={200}
+              className="max-h-[25vh] object-contain"
             />
           </CardContent>
           {input.description && (

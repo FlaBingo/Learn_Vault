@@ -15,6 +15,7 @@ import {
   getRepoById,
   getUserByRepoId,
 } from "@/features/repo/actions/repo";
+import { auth } from "@/services/auth";
 
 export default async function ContentPage({
   params,
@@ -22,12 +23,15 @@ export default async function ContentPage({
   params: { repoId: string };
 }) {
   const { repoId } = await params;
-  const repo = await getRepoById(repoId);
-  const user = await getUserByRepoId(repoId);
+
+  const session = await auth();
+  const logedUserId = session?.user?.id;
+  
+  const ownerUser = await getUserByRepoId(repoId);
+  const repo = await getAnyRepoById(repoId);
   const { data } = repo;
-  const publicRepo = await getAnyRepoById(repoId);
-  const { data: publicData } = publicRepo;
-  const owner = repo?.data?.userId === user?.id;
+
+  const owner = logedUserId === ownerUser?.id;
   return (
     <>
       <div className="container mx-auto mt-7">
@@ -37,9 +41,9 @@ export default async function ContentPage({
               <BreadcrumbItem>
                 <BreadcrumbLink href="/">Home</BreadcrumbLink>
               </BreadcrumbItem>
+              <BreadcrumbSeparator />
               {owner ? (
                 <>
-                  <BreadcrumbSeparator />
                   <BreadcrumbItem>
                     <BreadcrumbLink href="/my-repos">
                       my repositories
@@ -48,27 +52,26 @@ export default async function ContentPage({
                 </>
               ) : (
                 <>
-                  <BreadcrumbSeparator />
                   <BreadcrumbItem>
-                    <BreadcrumbLink>Repository</BreadcrumbLink>
+                    <BreadcrumbLink>{ownerUser?.name}</BreadcrumbLink>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />
                   <BreadcrumbItem>
-                    <BreadcrumbLink>{user?.name}</BreadcrumbLink>
+                    <BreadcrumbLink>Repository</BreadcrumbLink>
                   </BreadcrumbItem>
                 </>
               )}
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink>
-                  {publicData?.title || data?.title}
+                  {data?.title}
                 </BreadcrumbLink>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
         </div>
         <h1 className="text-5xl mt-7 mb-2 mx-3 font-bold">
-          {publicData?.title || data?.title}
+          {data?.title}
         </h1>
 
         <div className="grid grid-cols-5 gap-4">
@@ -109,8 +112,8 @@ export default async function ContentPage({
             <div>
               <h2 className="font-bold mb-2 text-2xl">About</h2>
               <ul>
-                <li>Creater: {user?.name}</li>
-                <li>Status: {publicData?.status || data?.status}</li>
+                <li>Creater: {ownerUser?.name}</li>
+                <li>Status: {data?.status}</li>
               </ul>
             </div>
             <div>collaborators</div>

@@ -133,7 +133,7 @@ export default function ContentFormModal({
                 control={form.control}
                 name="description"
                 render={({ field }) => {
-                  const MAX_LENGTH = 100;
+                  const MAX_LENGTH = 150;
                   const remainingChars =
                     MAX_LENGTH - (field.value?.length || 0);
                   return (
@@ -142,6 +142,7 @@ export default function ContentFormModal({
                       <FormControl>
                         <Textarea
                           placeholder="Enter a description"
+                          maxLength={MAX_LENGTH}
                           {...field}
                         />
                       </FormControl>

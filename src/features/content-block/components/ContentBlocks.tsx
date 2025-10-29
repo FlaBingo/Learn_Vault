@@ -15,10 +15,10 @@ export default async function ContentBlocks({params}: Props) {
   return (
     <>
       <div>
-        {data?.map((block) => (
+        {data?.map((block, index) => (
           <div key={block.id} className="grid">
+            {(block.type === "h1" && index === 1) && <Separator />}
             <ContentBlock input={block}/>
-            <Separator />
           </div>
         ))}
       </div>
