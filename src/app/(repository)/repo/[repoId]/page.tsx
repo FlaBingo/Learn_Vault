@@ -74,7 +74,7 @@ export default async function ContentPage({
           {data?.title}
         </h1>
 
-        <div className="grid grid-cols-5 gap-4">
+        <div className="grid grid-cols-5 gap-3">
           <div className="col-span-4 p-4">
             <Tabs defaultValue="content">
               <TabsList>
@@ -108,7 +108,7 @@ export default async function ContentPage({
               </TabsContent>
             </Tabs>
           </div>
-          <div className="col-span-1 mt-14 p-2 sticky top-0 self-start">
+          <div className="col-span-1 mt-14 p-2 sticky top-16 self-start">
             <div>
               <h2 className="font-bold mb-2 text-2xl">About</h2>
               <ul>

@@ -89,12 +89,11 @@ export default async function RepositoriesPage({
                 key={repo.id}
                 className={`py-5 px-5 transition-colors ${
                   index % 2 === 0
-                    ? "bg-gray-100 dark:bg-gray-800" // bright for light mode, darker for dark mode
-                    : "bg-gray-200 dark:bg-gray-700"
+                    ? "bg-gray-50 dark:bg-gray-800" // bright for light mode, darker for dark mode
+                    : "bg-gray-100 dark:bg-gray-700"
                 }`}
               >
                 <RepoStructure {...repo} />
-                {/* {index !== repos.length - 1 && <Separator className="my-4" />} */}
               </div>
             ))
           ) : (

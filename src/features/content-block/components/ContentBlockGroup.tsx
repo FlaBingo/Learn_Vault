@@ -6,7 +6,6 @@ import { useEffect, useRef, useState } from "react";
 import { CommandModal } from "./CommandModal";
 import ContentFormModal from "./DataModal";
 import { ContentType } from "@/drizzle/schema";
-import { usePathname } from "next/navigation";
 
 export default function ContentBlockGroup({
   children,
@@ -18,10 +17,9 @@ export default function ContentBlockGroup({
   const [showDialog, setShowDialog] = useState(false);
   const [contentId, setContentId] = useState<ContentType | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  // console.log(params.repoId) // undefined
 
   // const pathname = usePathname();
-  function handleCardClick(e: React.MouseEvent<HTMLDivElement>) {
+  function handleClickFocus(e: React.MouseEvent<HTMLDivElement>) {
     // used this 'if condition' instead of writing e.stopPropagation() in every component
     if (e.target === e.currentTarget) {
       e.preventDefault();
@@ -43,25 +41,30 @@ export default function ContentBlockGroup({
         <CardHeader>
           <CardTitle>Content Page</CardTitle>
         </CardHeader>
-        <CardContent onClick={handleCardClick} className="min-h-[500px]">
+        <CardContent onClick={handleClickFocus} className="min-h-[500px]">
           {children}
-          <Input
-            ref={inputRef}
-            value={inputValue}
-            className="border-none outline-none shadow-none"
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Click here and type '/ '..."
-          />
-          <CommandModal
-            className={`${isOpen ? "block" : "hidden"}`}
-            isOpen={isOpen}
-            onSelect={(option) => {
-              setContentId(option.id);
-              setIsOpen(false);
-              setInputValue("");
-              setShowDialog(true);
-            }}
-          />
+          <div className="relative">
+            <Input
+              ref={inputRef}
+              value={inputValue}
+              className={`border-none outline-none shadow-none mt-7 mb-96`}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder="Click here and start typing or type '/ '..."
+            />
+            <CommandModal
+              className={`${isOpen ? "block absolute top-10 z-10 min-h-80 overflow-y-auto" : "hidden"}`}
+              isOpen={isOpen}
+              parentInputRef={inputRef}
+              setIsOpen={setIsOpen}
+              setInputValue={setInputValue}
+              onSelect={(option) => {
+                setContentId(option.id);
+                setIsOpen(false);
+                setInputValue("");
+                setShowDialog(true);
+              }}
+            />
+          </div>
 
           <ContentFormModal
             open={showDialog}

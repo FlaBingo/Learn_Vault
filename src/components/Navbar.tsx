@@ -17,7 +17,7 @@ import Image from "next/image";
 export const Navbar = () => {
   const { data } = useSession();
   return (
-    <div className="container mx-auto px-5 py-3 shadow flex justify-between items-center">
+    <div className="container mx-auto px-5 py-3 shadow flex justify-between items-center sticky top-0 backdrop-blur-lg bg-opacity-30 z-50">
       <div className="font-extrabold cursor-pointer">
         <Link href={"/"}>LearnVault</Link>
       </div>

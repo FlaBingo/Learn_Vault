@@ -65,7 +65,7 @@ export const BLOCK_OPTIONS: {
   {
     id: "link",
     tag: "div",
-    label: "Web Bookmark",
+    label: "Web Bookmark/Link",
     description: "A visual bookmark.",
     icon: Link,
     action: () => {

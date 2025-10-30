@@ -16,8 +16,8 @@ export default async function ContentBlocks({params}: Props) {
     <>
       <div>
         {data?.map((block, index) => (
-          <div key={block.id} className="grid">
-            {(block.type === "h1" && index === 1) && <Separator />}
+          <div key={block.id} className="grid resize-y">
+            {(block.type === "h1" && index !== 1) && <Separator />}
             <ContentBlock input={block}/>
           </div>
         ))}

@@ -30,7 +30,7 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
     case "note":
       return (
         <Card
-          className="my-2 rounded-lg shadow-sm"
+          className="rounded-sm shadow-sm"
           style={{ backgroundColor: input.bgColor || undefined }}
         >
           <CardContent className="p-4">
@@ -53,7 +53,9 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
       return (
         <div className="my-4">
           <div className="text-3xl font-extrabold">{input.content}</div>
-          <div className="text-xs text-muted-foreground">{input.description}</div>
+          <div className="text-xs text-muted-foreground">
+            {input.description}
+          </div>
         </div>
       );
 
@@ -66,15 +68,18 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
       const isServerValid = await isValidImageUrl(input.content);
       const imageUrl = isServerValid ? input.content : PLACEHOLDER_IMAGE;
       return (
-        <Card className="my-2 rounded-lg shadow-sm">
-          <CardContent className="p-0">
-            <Image
-              src={imageUrl}
-              alt={input.description || "LearnVault resource image"}
-              width={200}
-              height={200}
-              className="max-h-[25vh] object-contain"
-            />
+        <Card className="my-0 rounded-lg shadow-sm">
+          <CardContent className="p-0 m-0 flex items-center justify-center">
+            <div className="max-h-[300px] w-full flex items-center justify-center overflow-auto">
+              <Image
+                src={imageUrl}
+                alt={input.description || "LearnVault resource image"}
+                width={0}
+                height={0}
+                sizes="100vw"
+                className="h-full w-auto object-contain"
+              />
+            </div>
           </CardContent>
           {input.description && (
             <CardFooter className="p-3 bg-gray-50 dark:bg-gray-900 border-t">
@@ -236,7 +241,7 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
             </div>
           </CardHeader>
           <CardContent>
-            <pre className="text-xs font-mono bg-gray-100 p-2 rounded">
+            <pre className="text-xs font-mono p-2 rounded">
               {JSON.stringify(input, null, 2)}
             </pre>
           </CardContent>
