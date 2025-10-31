@@ -1,4 +1,3 @@
-// src/lib/content-block-utils/block-options.tsx
 import {
   Heading1,
   Image,
@@ -7,100 +6,132 @@ import {
   Type,
   Video,
   Folder,
+  Code,
+  Images,
   LucideIcon,
 } from "lucide-react";
 import { ContentType } from "@/drizzle/schema";
-// --- Configuration ---
 
-
-// i don't think i need action funtion
 export const BLOCK_OPTIONS: {
   id: ContentType;
-  tag: string;
   label: string;
+  contentEl: string;
+  contentPlaceholder: string;
+  contentMessage?: string;
+  descPlaceholder: string;
+  descMessage?: string;
   icon: LucideIcon;
-  description: string;
-  action: () => void;
+  color: string;
+  acceptsFile: boolean;
 }[] = [
   {
     id: "note",
-    tag: "p",
     label: "Note",
-    description: "Just start writing with plain text.",
+    contentEl: "textarea",
+    contentPlaceholder: "Start writing your note...",
+    contentMessage: "Plain text area for general notes.",
+    descPlaceholder: "Add a short summary...",
+    descMessage: "Keep it concise and clear.",
     icon: Type,
-    action: () => {
-      console.log("action in text");
-    },
+    color: "#FDE68A",
+    acceptsFile: false,
   },
   {
     id: "h1",
-    tag: "h1",
     label: "Heading 1",
-    description: "Big section heading.",
+    contentEl: "input",
+    contentPlaceholder: "Enter main heading...",
+    contentMessage: "Use for large section titles.",
+    descPlaceholder: "Describe what this section covers...",
+    descMessage: "Optional short context.",
     icon: Heading1,
-    action: () => {
-      console.log("action in h1");
-    },
+    color: "#A5B4FC",
+    acceptsFile: false,
   },
   {
     id: "image",
-    tag: "div",
     label: "Image",
-    description: "Upload or embed with a link.",
+    contentEl: "input",
+    contentPlaceholder: "Paste image URL or upload file...",
+    contentMessage: "Supports URL or image upload.",
+    descPlaceholder: "Describe this image...",
+    descMessage: "Explain what the image represents.",
     icon: Image,
-    action: () => {
-      console.log("action in text");
-    },
+    color: "#FCA5A5",
+    acceptsFile: true,
+  },
+  {
+    id: "collage",
+    label: "Image Collage",
+    contentEl: "textarea",
+    contentPlaceholder: "Paste multiple image URLs (one per line)...",
+    contentMessage: "Add multiple image URLs to create a collage.",
+    descPlaceholder: "Describe this collage...",
+    descMessage: "Mention what these images collectively represent.",
+    icon: Images,
+    color: "#FDBA74", // orange
+    acceptsFile: true,
   },
   {
     id: "video",
-    tag: "div",
     label: "Video",
-    description: "Embed from YouTube, Vimeo...",
+    contentEl: "input",
+    contentPlaceholder: "Paste YouTube or Vimeo link...",
+    contentMessage: "Embed videos via URL.",
+    descPlaceholder: "Add a short video description...",
+    descMessage: "Summarize what this video shows.",
     icon: Video,
-    action: () => {
-      console.log("action in text");
-    },
+    color: "#93C5FD",
+    acceptsFile: false,
   },
   {
     id: "link",
-    tag: "div",
     label: "Web Bookmark/Link",
-    description: "A visual bookmark.",
+    contentEl: "input",
+    contentPlaceholder: "Paste website URL...",
+    contentMessage: "Displays a rich bookmark preview.",
+    descPlaceholder: "Describe what this link leads to...",
+    descMessage: "Mention why it’s useful or related.",
     icon: Link,
-    action: () => {
-      console.log("action in text");
-    },
+    color: "#86EFAC",
+    acceptsFile: false,
   },
   {
     id: "pdf",
-    tag: "div",
     label: "PDF",
-    description: "Embed a PDF file.",
+    contentEl: "input",
+    contentPlaceholder: "Paste PDF link or upload file...",
+    contentMessage: "Embeds or links to a PDF document.",
+    descPlaceholder: "Add a description of this PDF...",
+    descMessage: "Summarize what it contains.",
     icon: FileText,
-    action: () => {
-      console.log("action in text");
-    },
+    color: "#F9A8D4",
+    acceptsFile: true,
   },
   {
     id: "folder",
-    tag: "div",
     label: "Folder Name",
-    description: "Create a folder to store more specific content.",
+    contentEl: "input",
+    contentPlaceholder: "Enter folder name...",
+    contentMessage: "Create a folder to organize items.",
+    descPlaceholder: "Describe the folder contents...",
+    descMessage: "Optional explanation for organization.",
     icon: Folder,
-    action: () => {
-      console.log("action in text");
-    },
+    color: "#FBBF24",
+    acceptsFile: false,
   },
   {
     id: "code",
-    tag: "div",
     label: "Code Block",
-    description: "Write the code for future reference.",
-    icon: Folder,
-    action: () => {
-      console.log("action in text");
-    },
+    contentEl: "textarea",
+    contentPlaceholder: "Write or paste code here...",
+    contentMessage: "Supports multiple programming languages.",
+    descPlaceholder: "Describe what this code does...",
+    descMessage: "Explain logic or purpose.",
+    icon: Code,
+    color: "#C084FC",
+    acceptsFile: false,
   },
 ];
+
 export type BlockOption = (typeof BLOCK_OPTIONS)[number];

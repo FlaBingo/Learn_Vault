@@ -33,7 +33,7 @@ import { Input } from "@/components/ui/input";
 import { ContentType } from "@/drizzle/schema";
 import { BLOCK_OPTIONS } from "@/lib/content-block-utils/block-options";
 import { Textarea } from "@/components/ui/textarea";
-import { useTransition } from "react";
+import { useEffect, useRef, useTransition } from "react";
 import { createBlock } from "../actions/content-block";
 import { toast } from "sonner";
 import { usePathname } from "next/navigation";
@@ -120,10 +120,14 @@ export default function ContentFormModal({
                       {selectedOption.label}
                     </FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter the content" {...field} />
+                      {selectedOption.contentEl === "textarea" ? (
+                        <Textarea placeholder={selectedOption.contentPlaceholder} {...field} />
+                      ) : (
+                        <Input placeholder={selectedOption.contentPlaceholder} {...field} />
+                      )}
                     </FormControl>
                     <FormDescription>
-                      {selectedOption.description}
+                      {selectedOption.contentMessage}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -141,12 +145,13 @@ export default function ContentFormModal({
                       <FormLabel>Description</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Enter a description"
+                          placeholder={selectedOption.descPlaceholder}
                           maxLength={MAX_LENGTH}
                           {...field}
                         />
                       </FormControl>
                       <FormDescription>
+                        {selectedOption.descMessage}<br/>
                         <span className="text-red-400 font-bold">
                           {remainingChars}
                         </span>{" "}

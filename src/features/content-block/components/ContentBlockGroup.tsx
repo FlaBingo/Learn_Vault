@@ -52,7 +52,7 @@ export default function ContentBlockGroup({
               placeholder="Click here and start typing or type '/ '..."
             />
             <CommandModal
-              className={`${isOpen ? "block absolute top-10 z-10 min-h-80 overflow-y-auto" : "hidden"}`}
+              className={`${isOpen ? "block absolute top-10 z-10 min-h-80 " : "hidden"}`}
               isOpen={isOpen}
               parentInputRef={inputRef}
               setIsOpen={setIsOpen}

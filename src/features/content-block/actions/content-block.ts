@@ -75,7 +75,7 @@ export async function createBlock(input: ContentBlockInput): Promise<ActionRespo
 
   } catch (error) {
     console.error("Failed to create block:", error);
-    return { success: false, error: "An internal error occurred. Please try again." };
+    return { success: false, error: "An internal error occurred. Please try again." + `${error}` };
   }
 }
 
@@ -98,23 +98,24 @@ export async function getBlocks(input: {
     const session = await auth();
     const userId = session?.user?.id;
 
-    if (!userId) {
+
+    const repo = await getAnyRepoByIdDB(repoId);
+    if (!session?.user?.id && repo?.status === "private") {
       return {
         success: false,
         error: "Unauthorized"
       }
     }
 
-    const repo = await getAnyRepoByIdDB(repoId);
     if (!repo) {
       return { success: false, error: "Repository not found" };
     }
     let isAuthorized = false;
-    if (repo.userId === userId) {
+    if (repo.userId === userId || repo.status === "public") {
       isAuthorized = true;
-    } else {
+    } else if (userId) {
       const collaborator = await isPermited(userId, repoId);
-      if (collaborator || repo.status === "public") {
+      if (collaborator) {
         isAuthorized = true;
       }
     }

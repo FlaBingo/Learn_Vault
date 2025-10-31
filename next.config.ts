@@ -12,6 +12,18 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'images.unsplash.com'
       },
+      {
+        protocol: 'https',
+        hostname: 'vocaberry.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'englishforyourself.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'englishgrammarzone.com'
+      },
     ]
   }
 };
