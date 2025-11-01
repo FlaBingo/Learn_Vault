@@ -177,7 +177,7 @@ export async function deleteRepo(repoId: string) {
     }
     await deleteRepoDB(repoId);
     revalidatePath("/my-repos");
-    return { success: true, message: `${repo.title} deleted successfully.` };
+    return { success: true, message: `Repository deleted successfully.` };
   } catch (error) {
     console.error("Error deleting repository", error);
     return { success: false, error: "An unexpected error occurred." };
