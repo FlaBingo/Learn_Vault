@@ -2,6 +2,7 @@
 
 import {
   Card,
+  CardAction,
   CardContent,
   CardFooter,
   CardHeader,
@@ -31,7 +32,7 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
     case "note":
       return (
         <Card
-          className="my-2 rounded-sm shadow-sm"
+          className="my-2 rounded-sm shadow-sm hover:border-primary"
           style={{ backgroundColor: input.bgColor || undefined }}
         >
           <CardContent className="px-4">
@@ -44,6 +45,10 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
               </div>
             )}
           </CardContent>
+          <CardFooter className="flex justify-between items-center">
+            <div>dates</div>
+            <div>buttons</div>
+          </CardFooter>
         </Card>
       );
     /**
@@ -54,7 +59,7 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
 
     case "h1":
       return (
-        <div className="my-4">
+        <div className="my-4 ">
           <div className="text-5xl font-extrabold">{input.content}</div>
           <div className="text-xs text-muted-foreground">
             {input.description}
@@ -71,8 +76,8 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
       const isServerValid = await isValidImageUrl(input.content);
       const imageUrl = isServerValid ? input.content : PLACEHOLDER_IMAGE;
       return (
-        <Card className="my-2 rounded-lg shadow-sm">
-          <CardContent className="p-0 m-0 flex items-center justify-center">
+        <Card className="my-2 rounded-lg shadow-sm hover:border-primary">
+          <CardContent className="p-0 m-0">
             <div className="max-h-[500px] w-full flex items-center justify-center overflow-auto">
               <Image
                 src={imageUrl}
@@ -83,12 +88,16 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
                 className="h-full w-auto object-contain"
               />
             </div>
-          </CardContent>
-          {input.description && (
-            <CardFooter className="p-3 bg-gray-50 dark:bg-gray-900 border-t">
-              <div className="text-sm text-muted-foreground">
+            {input.description && (
+              <div className="text-sm text-muted-foreground mt-1 p-3 bg-gray-50 dark:bg-gray-900 border-t">
                 {input.description}
               </div>
+            )}
+          </CardContent>
+          {input.description && (
+            <CardFooter className="flex justify-between items-center ">
+              <div>dates</div>
+              <div>buttons</div>
             </CardFooter>
           )}
         </Card>
@@ -113,7 +122,7 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
       }
 
       return (
-        <Card className="my-2 rounded-lg shadow-sm">
+        <Card className="my-2 rounded-lg shadow-sm hover:border-primary">
           <CardContent className="p-0">
             <CollageBlock urls={urls} description={input.description} />
           </CardContent>
@@ -144,7 +153,7 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
       if (videoId) {
         // It's a YouTube video
         return (
-          <Card className="my-2 overflow-hidden rounded-lg shadow-sm">
+          <Card className="my-2 overflow-hidden rounded-lg shadow-sm hover:border-primary">
             {/* <Video /> */}
             <div className="aspect-video w-full bg-black">
               <iframe
@@ -169,7 +178,7 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
 
       // It's a direct video link (e.g., .mp4)
       return (
-        <Card className="my-2 overflow-hidden rounded-lg shadow-sm">
+        <Card className="my-2 overflow-hidden rounded-lg shadow-sm hover:border-primary">
           <CardContent className="p-0">
             <video
               className="w-full h-auto bg-black"
@@ -199,7 +208,7 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
      */
     case "link":
       return (
-        <Card className="w-full min-w-0 my-2 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+        <Card className="w-full min-w-0 my-2 rounded-lg shadow-sm hover:shadow-md transition-shadow hover:border-primary">
           <a
             href={input.content}
             target="_blank"
@@ -226,7 +235,7 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
      */
     case "pdf":
       return (
-        <Card className="my-2 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+        <Card className="my-2 rounded-lg shadow-sm hover:shadow-md transition-shadow hover:border-primary">
           <a
             href={input.content}
             target="_blank"
@@ -253,7 +262,7 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
      */
     case "code":
       return (
-        <Card className="my-2 overflow-hidden rounded-lg shadow-sm">
+        <Card className="my-2 overflow-hidden rounded-lg shadow-sm hover:border-primary">
           {input.description && (
             <CardHeader className="flex flex-row items-center gap-2 p-3 bg-gray-100 dark:bg-gray-800 border-b">
               <CodeIcon className="size-4 text-muted-foreground" />

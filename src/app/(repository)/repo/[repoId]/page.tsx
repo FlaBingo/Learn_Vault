@@ -79,6 +79,7 @@ export default async function ContentPage({
             <Tabs defaultValue="content">
               <TabsList>
                 <TabsTrigger value="content">Content</TabsTrigger>
+                <TabsTrigger value="comment">Comment</TabsTrigger>
                 <TabsTrigger value="setting">Settings</TabsTrigger>
                 <TabsTrigger value="how-to">How to</TabsTrigger>
               </TabsList>
@@ -86,6 +87,9 @@ export default async function ContentPage({
                 <ContentBlockGroup>
                   <ContentBlocks params={params} />
                 </ContentBlockGroup>
+              </TabsContent>
+              <TabsContent value="comment" className="my-2">
+                Comment section
               </TabsContent>
               <TabsContent value="setting" className="my-2">
                 <Card>

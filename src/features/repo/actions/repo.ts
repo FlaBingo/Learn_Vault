@@ -10,6 +10,7 @@ import { and, asc, count, desc, eq, ilike, ne, or } from "drizzle-orm"
 import { auth } from "@/services/auth"
 import { sortBy } from "@/lib/types/sorttypes"
 import { revalidatePath } from "next/cache"
+import { isPermited } from "@/features/content-block/db/contentdb"
 
 export type GetReposParams = {
   search?: string;
@@ -98,8 +99,8 @@ export async function getRepoById(repoId: string) {
     const session = await auth();
     const userId = session?.user?.id;
     if (!userId) {
-      const repo = await getAnyRepoByIdDB(repoId);
-      return { success: false, data: repo, error: "Unauthorized: You must be logged in." };
+      // const repo = await getAnyRepoByIdDB(repoId);
+      return { success: false, error: "Unauthorized: You must be logged in." };
     }
     const repo = await getRepoByIdDB(userId, repoId);
     return { success: true, data: repo }
@@ -169,7 +170,10 @@ export async function deleteRepo(repoId: string) {
     }
     const repo = await getRepoByIdDB(userId, repoId);
     if (!repo) {
-      return { success: false, error: "Not Found: Repository does not exist." };
+      const collaborator = await isPermited(userId, repoId);
+      if(!collaborator || collaborator.role !== "admin"){
+        return { success: false, error: "Repository does not exist or access denied." };
+      }
     }
     await deleteRepoDB(repoId);
     revalidatePath("/my-repos");

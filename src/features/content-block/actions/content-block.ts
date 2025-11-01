@@ -6,9 +6,10 @@ import z from "zod";
 import { ContentBlockSchema, GetBlocksSchema } from "../schemas/content-block";
 import { auth } from "@/services/auth";
 import { getAnyRepoByIdDB, getRepoByIdDB } from "@/features/repo/db/repo";
-import { getBlocksDB, getMaxOrder, isPermited } from "../db/contentdb";
+import { deleteBlockDB, getBlocksDB, getMaxOrder, isPermited, updateBlockDB } from "../db/contentdb";
 import { db } from "@/drizzle/db";
 import { revalidatePath } from "next/cache";
+import { getRepoById } from "@/features/repo/actions/repo";
 
 // 1. defining types
 export type ContentBlockInput = z.infer<typeof ContentBlockSchema>;
@@ -129,5 +130,78 @@ export async function getBlocks(input: {
   } catch (error) {
     console.error("Failed to get blocks:", error);
     return { success: false, error: "An internal error occurred. Please try again." };
+  }
+}
+
+export async function updateBlock(input: ContentBlockInput & {id: string; order: number}) {
+  const validatedInput = ContentBlockSchema.safeParse(input);
+  if (!validatedInput.success) {
+    return {
+      success: false,
+      error: validatedInput.error.message || "Invalid input"
+    }
+  }
+  const { repoId, parentId, ...blockData } = validatedInput.data;
+
+  try {
+    const session = await auth();
+    const userId = session?.user?.id;
+    if(!userId){
+      return {
+        success: false,
+        error: "Unauthorized"
+      }
+    }
+
+    const repo = await getRepoById(repoId);
+    if(!repo){
+      const collaborator = await isPermited(userId, repoId);
+      if(!collaborator || collaborator.role === "viewer"){
+        return {
+          success: false,
+          error: "Repository not found or access denied",
+        }
+      }
+    }
+
+    const updatedBlock = await updateBlockDB(input.id, input);
+
+    // revalidating the path by using usePathname
+    return {
+      success: true,
+      data: updatedBlock,
+    }
+
+  } catch (error) {
+    console.error("Failed to create block:", error);
+    return { success: false, error: "An internal error occurred. Please try again." + `${error}` };
+  }
+}
+
+export async function deleteBlock(contentId: string, repoId: string) {
+  try {
+    const session = await auth();
+    const userId = session?.user?.id;
+    if(!userId){
+      return {
+        success: false,
+        error: "Unauthorized"
+      }
+    }
+
+    const repo = await getRepoById(repoId);
+    if(!repo){
+      const collaborator = await isPermited(userId, repoId);
+      if(!collaborator || collaborator.role === "viewer"){
+        return {
+          success: false,
+          error: "Repository not found or access denied",
+        }
+      }
+    }
+
+    const deletedContent = await deleteBlockDB(contentId);
+  } catch (error) {
+    
   }
 }

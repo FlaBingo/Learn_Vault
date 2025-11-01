@@ -62,5 +62,26 @@ export async function getBlocksDB(repoId: string, parentId?: string | null) {
       .orderBy(asc(ContentBlockTable.order));
   } catch (error) {
     console.error(error);
+    throw new Error("Error in getBlockDB");
+  }
+}
+
+export async function updateBlockDB(contentId: string, input: typeof ContentBlockTable.$inferInsert) {
+  try {
+    const updatedContent = await db.update(ContentBlockTable).set({ ...input, updatedAt: new Date() }).where(eq(ContentBlockTable.id, contentId)).returning();
+    return updatedContent[0];
+  } catch (error) {
+    console.log("Error in updateBlockDB: ", error);
+    throw new Error("Error in updateBlockDB");
+  }
+}
+
+export async function deleteBlockDB(contentId: string) {
+  try {
+    const [deletedRepo] = await db.delete(ContentBlockTable).where(eq(ContentBlockTable.id, contentId)).returning();
+    return deletedRepo;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error in deleteBlockDB");
   }
 }

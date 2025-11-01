@@ -50,6 +50,9 @@ export const Navbar = () => {
                 <Link href={"/my-repos"}>
                   <DropdownMenuItem>Repositories</DropdownMenuItem>
                 </Link>
+                <DropdownMenuItem>
+                  Collabs
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => signOut()}>
                   <LogOut />
                   {" "}
