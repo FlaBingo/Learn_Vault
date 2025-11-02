@@ -2,7 +2,6 @@
 
 import {
   Card,
-  CardAction,
   CardContent,
   CardFooter,
   CardHeader,
@@ -12,9 +11,22 @@ import {
   getYouTubeId,
   isValidImageUrl,
 } from "@/lib/content-block-utils/validations";
-import { CodeIcon, FileTextIcon, LinkIcon, Video } from "lucide-react";
+import {
+  CodeIcon,
+  FileTextIcon,
+  LinkIcon,
+  SquarePen,
+  Trash2,
+  Video,
+} from "lucide-react";
 import Image from "next/image";
 import CollageBlock from "./CollageBlock";
+import { Button } from "@/components/ui/button";
+import { BLOCK_OPTIONS } from "@/lib/content-block-utils/block-options";
+import {
+  ContentActionButtons,
+  ContentVerticalButtons,
+} from "./ContentActionButtons";
 
 type ContentBlockProps = {
   input: typeof ContentBlockTable.$inferSelect;
@@ -23,6 +35,7 @@ type ContentBlockProps = {
 const PLACEHOLDER_IMAGE = `/default_image.jpg`;
 
 export default async function ContentBlock({ input }: ContentBlockProps) {
+  // const color = BLOCK_OPTIONS.filter((option) => input.type === option.id)[0].color;
   switch (input.type) {
     /**
      * Renders a simple text block.
@@ -33,7 +46,7 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
       return (
         <Card
           className="my-2 rounded-sm shadow-sm hover:border-primary"
-          style={{ backgroundColor: input.bgColor || undefined }}
+          // style={{ backgroundColor: color || undefined }}
         >
           <CardContent className="px-4">
             <pre className="text-lg font-semibold whitespace-pre-wrap font-sans">
@@ -45,9 +58,8 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
               </div>
             )}
           </CardContent>
-          <CardFooter className="flex justify-between items-center">
-            <div>dates</div>
-            <div>buttons</div>
+          <CardFooter className="flex text-sm justify-between items-center">
+            <ContentActionButtons input={input} />
           </CardFooter>
         </Card>
       );
@@ -59,11 +71,14 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
 
     case "h1":
       return (
-        <div className="my-4 ">
-          <div className="text-5xl font-extrabold">{input.content}</div>
-          <div className="text-xs text-muted-foreground">
-            {input.description}
+        <div className="my-4 mt-8 flex items-center justify-between">
+          <div className="">
+            <div className="text-5xl font-extrabold">{input.content}</div>
+            <div className="text-xs text-muted-foreground">
+              {input.description}
+            </div>
           </div>
+          <ContentVerticalButtons input={input} />
         </div>
       );
 
@@ -94,12 +109,9 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
               </div>
             )}
           </CardContent>
-          {input.description && (
-            <CardFooter className="flex justify-between items-center ">
-              <div>dates</div>
-              <div>buttons</div>
-            </CardFooter>
-          )}
+          <CardFooter className="text-sm flex justify-between items-center">
+            <ContentActionButtons input={input} />
+          </CardFooter>
         </Card>
       );
 
@@ -124,8 +136,32 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
       return (
         <Card className="my-2 rounded-lg shadow-sm hover:border-primary">
           <CardContent className="p-0">
-            <CollageBlock urls={urls} description={input.description} />
+            <CollageBlock urls={urls} />
+            {input.description && (
+              <div className="text-sm text-muted-foreground mt-2 p-3 bg-gray-50 dark:bg-gray-900 border-t">
+                {input.description}
+              </div>
+            )}
           </CardContent>
+          <CardFooter className="text-sm flex justify-between items-center">
+            <div>
+              {input.createdAt.toLocaleDateString()}
+              {" ~ "}
+              Updated at {input.updatedAt.toLocaleString()}
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <Button className="cursor-pointer" title="Edit">
+                <SquarePen />
+              </Button>
+              <Button
+                className="cursor-pointer"
+                title="Delete"
+                variant={"destructive"}
+              >
+                <Trash2 />
+              </Button>
+            </div>
+          </CardFooter>
         </Card>
         // <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         //   {urls.map((url, i) => (
@@ -166,12 +202,31 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
               ></iframe>
             </div>
             {input.description && (
-              <CardFooter className="p-3 bg-gray-50 dark:bg-gray-900 border-t">
+              <div className="p-3 bg-gray-50 dark:bg-gray-900 border-t">
                 <div className="text-sm text-muted-foreground">
                   {input.description}
                 </div>
-              </CardFooter>
+              </div>
             )}
+            <CardFooter className="text-sm flex justify-between items-center">
+              <div>
+                {input.createdAt.toLocaleDateString()}
+                {" ~ "}
+                Updated at {input.updatedAt.toLocaleString()}
+              </div>
+              <div className="flex items-center justify-between gap-2">
+                <Button className="cursor-pointer" title="Edit">
+                  <SquarePen />
+                </Button>
+                <Button
+                  className="cursor-pointer"
+                  title="Delete"
+                  variant={"destructive"}
+                >
+                  <Trash2 />
+                </Button>
+              </div>
+            </CardFooter>
           </Card>
         );
       }
@@ -190,14 +245,33 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
               <source src={input.content} type="video/ogg" />
               Your browser does not support the video tag.
             </video>
-          </CardContent>
-          {input.description && (
-            <CardFooter className="p-3 bg-gray-50 dark:bg-gray-900 border-t">
-              <div className="text-sm text-muted-foreground">
-                {input.description}
+            {input.description && (
+              <div className="p-3 bg-gray-50 dark:bg-gray-900 border-t">
+                <div className="text-sm text-muted-foreground">
+                  {input.description}
+                </div>
               </div>
-            </CardFooter>
-          )}
+            )}
+          </CardContent>
+          <CardFooter className="text-sm flex justify-between items-center">
+            <div>
+              {input.createdAt.toLocaleDateString()}
+              {" ~ "}
+              Updated at {input.updatedAt.toLocaleString()}
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <Button className="cursor-pointer" title="Edit">
+                <SquarePen />
+              </Button>
+              <Button
+                className="cursor-pointer"
+                title="Delete"
+                variant={"destructive"}
+              >
+                <Trash2 />
+              </Button>
+            </div>
+          </CardFooter>
         </Card>
       );
 
@@ -209,22 +283,43 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
     case "link":
       return (
         <Card className="w-full min-w-0 my-2 rounded-lg shadow-sm hover:shadow-md transition-shadow hover:border-primary">
-          <a
-            href={input.content}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-4 p-4 overflow-hidden"
-          >
-            <LinkIcon className="size-6 text-gray-400 flex-shrink-0" />
-            <div className="flex-grow overflow-hidden min-w-0">
-              <div className="text-base font-medium">
-                {input.description || "External Link"}
+          <div className="flex justify-between">
+            <a
+              href={input.content}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full flex items-center gap-4 px-4 overflow-hidden"
+            >
+              <LinkIcon className="size-6 text-gray-400 flex-shrink-0" />
+              <div className="flex-grow overflow-hidden min-w-0">
+                <div className="text-base font-medium">
+                  {input.description || "External Link"}
+                </div>
+                <div className="text-sm text-blue-600 dark:text-blue-400 truncate break-all">
+                  {input.content}
+                </div>
               </div>
-              <div className="text-sm text-blue-600 dark:text-blue-400 truncate break-all">
-                {input.content}
-              </div>
+            </a>
+          </div>
+          <div className="w-full px-6 text-sm flex justify-between items-center">
+            <div>
+              {input.createdAt.toLocaleDateString()}
+              {" ~ "}
+              Updated at {input.updatedAt.toLocaleString()}
             </div>
-          </a>
+            <div className="flex items-center justify-between gap-2">
+              <Button className="cursor-pointer" title="Edit">
+                <SquarePen />
+              </Button>
+              <Button
+                className="cursor-pointer"
+                title="Delete"
+                variant={"destructive"}
+              >
+                <Trash2 />
+              </Button>
+            </div>
+          </div>
         </Card>
       );
 

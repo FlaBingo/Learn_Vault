@@ -150,13 +150,16 @@ export async function updateRepo(repoId: string, repoData: z.infer<typeof newRep
     }
     const repo = await getRepoByIdDB(userId, repoId);
     if (!repo) {
-      return { success: false, error: "Not Found: Repository does not exist." };
+      const collaborator = await isPermited(userId, repoId);
+      if(!collaborator || collaborator.role !== "admin"){
+        return { success: false, error: "Repository does not exist or access denied." };
+      }
     }
     await updateRepoDB(repoId, { ...repoData, userId });
     revalidatePath("/my-repos");
     return { success: true, message: "Repo udpated successfully" }
   } catch (error) {
-    console.log("Error updating repo")
+    console.log("Error updating repo: ", error)
     return { success: false, error: "An unexpected error occurred." };
   }
 }

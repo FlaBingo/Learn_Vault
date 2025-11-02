@@ -115,7 +115,7 @@ export const BLOCK_OPTIONS: {
     contentPlaceholder: "Enter folder name...",
     contentMessage: "Create a folder to organize items.",
     descPlaceholder: "Describe the folder contents...",
-    descMessage: "Optional explanation for organization.",
+    descMessage: "Give explanation for organization.",
     icon: Folder,
     color: "#FBBF24",
     acceptsFile: false,

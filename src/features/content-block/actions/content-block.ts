@@ -20,7 +20,7 @@ type ActionResponse = {
   error?: string;
 }
 
-export async function createBlock(input: ContentBlockInput): Promise<ActionResponse> {
+export async function createBlock(pathname: string, input: ContentBlockInput): Promise<ActionResponse> {
   // 2. validate the input;
   const validatedInput = ContentBlockSchema.safeParse(input);
   if (!validatedInput.success) {
@@ -69,7 +69,7 @@ export async function createBlock(input: ContentBlockInput): Promise<ActionRespo
     }).returning();
 
     // 7. cache revalidation
-    revalidatePath(`/repo/${repoId}`);
+    revalidatePath(pathname);
 
     // 8. response 
     return { success: true, data: newBlock };
@@ -133,7 +133,7 @@ export async function getBlocks(input: {
   }
 }
 
-export async function updateBlock(input: ContentBlockInput & {id: string; order: number}) {
+export async function updateBlock(pathname: string, input: ContentBlockInput & { id: string; order: number }) {
   const validatedInput = ContentBlockSchema.safeParse(input);
   if (!validatedInput.success) {
     return {
@@ -141,12 +141,12 @@ export async function updateBlock(input: ContentBlockInput & {id: string; order:
       error: validatedInput.error.message || "Invalid input"
     }
   }
-  const { repoId, parentId, ...blockData } = validatedInput.data;
+  const { repoId } = validatedInput.data;
 
   try {
     const session = await auth();
     const userId = session?.user?.id;
-    if(!userId){
+    if (!userId) {
       return {
         success: false,
         error: "Unauthorized"
@@ -154,9 +154,9 @@ export async function updateBlock(input: ContentBlockInput & {id: string; order:
     }
 
     const repo = await getRepoById(repoId);
-    if(!repo){
+    if (!repo) {
       const collaborator = await isPermited(userId, repoId);
-      if(!collaborator || collaborator.role === "viewer"){
+      if (!collaborator || collaborator.role === "viewer") {
         return {
           success: false,
           error: "Repository not found or access denied",
@@ -173,16 +173,16 @@ export async function updateBlock(input: ContentBlockInput & {id: string; order:
     }
 
   } catch (error) {
-    console.error("Failed to create block:", error);
+    console.error("Failed to update block:", error);
     return { success: false, error: "An internal error occurred. Please try again." + `${error}` };
   }
 }
 
-export async function deleteBlock(contentId: string, repoId: string) {
+export async function deleteBlock(pathname: string, contentId: string, repoId: string) {
   try {
     const session = await auth();
     const userId = session?.user?.id;
-    if(!userId){
+    if (!userId) {
       return {
         success: false,
         error: "Unauthorized"
@@ -190,9 +190,9 @@ export async function deleteBlock(contentId: string, repoId: string) {
     }
 
     const repo = await getRepoById(repoId);
-    if(!repo){
+    if (!repo) {
       const collaborator = await isPermited(userId, repoId);
-      if(!collaborator || collaborator.role === "viewer"){
+      if (!collaborator || collaborator.role === "viewer") {
         return {
           success: false,
           error: "Repository not found or access denied",
@@ -201,7 +201,9 @@ export async function deleteBlock(contentId: string, repoId: string) {
     }
 
     const deletedContent = await deleteBlockDB(contentId);
+    return { success: true, data: deletedContent };
   } catch (error) {
-    
+    console.error("Failed to delete block:", error);
+    return { success: false, error: "An internal error occurred. Please try again." + `${error}` };
   }
 }

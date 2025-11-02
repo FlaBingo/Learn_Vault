@@ -65,7 +65,7 @@ export default async function RepoStructure({
               <SquarePen />
             </Button>
           </Link>
-          <DeleteAlertBox title={title} id={id}>
+          <DeleteAlertBox title={title} repoId={id}>
             <Button
               variant={"destructive"}
               className="cursor-pointer"

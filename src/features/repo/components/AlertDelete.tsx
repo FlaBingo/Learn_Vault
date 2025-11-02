@@ -19,18 +19,20 @@ import { Loader2 } from "lucide-react";
 export default function DeleteAlertBox({
   children,
   title,
-  id,
+  repoId,
+  contentId,
 }: {
   children: React.ReactNode;
   title: string;
-  id: string;
+  repoId?: string;
+  contentId?: string;
 }) {
   const [isPending, startTransition] = useTransition();
 
   const handleAction = () => {
     startTransition(async () => {
       try {
-        const result = await deleteRepo(id);
+        const result = await deleteRepo(repoId as string);
         if (result.success) {
           toast.success(result.message);
         } else {

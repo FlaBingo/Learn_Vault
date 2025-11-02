@@ -53,8 +53,8 @@ export default function ContentFormModal({
   const pathname = usePathname();
   const repoId = pathname.split("/")[2];
   // console.log(pathname.split("/")[3]);
-  const parentId = pathname.split("/")[3]; // undefined
-
+  const parentId = pathname.split("/")[pathname.length-1]; // undefined
+  console.log("parentId: ", parentId);
   const [isPending, startTransition] = useTransition();
   const selectedOption = BLOCK_OPTIONS.filter(
     (option) => option.id === contentId
@@ -71,7 +71,7 @@ export default function ContentFormModal({
   async function onSubmit(values: z.infer<typeof ContentFormSchema>) {
     startTransition(async () => {
       try {
-        const result = await createBlock({
+        const result = await createBlock(pathname, {
           repoId,
           parentId,
           type: selectedOption.id,

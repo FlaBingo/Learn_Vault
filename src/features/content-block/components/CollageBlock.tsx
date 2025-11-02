@@ -44,12 +44,6 @@ export default function CollageBlock({ urls, description }: CollageBlockProps) {
         <CarouselPrevious />
         <CarouselNext />
       </Carousel>
-
-      {description && (
-        <p className="mt-3 text-center text-sm text-muted-foreground">
-          {description}
-        </p>
-      )}
     </div>
   );
 }
