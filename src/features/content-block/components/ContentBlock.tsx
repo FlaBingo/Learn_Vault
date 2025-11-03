@@ -14,6 +14,7 @@ import {
 import {
   CodeIcon,
   FileTextIcon,
+  Folder,
   LinkIcon,
   SquarePen,
   Trash2,
@@ -27,6 +28,7 @@ import {
   ContentActionButtons,
   ContentVerticalButtons,
 } from "./ContentActionButtons";
+import Link from "next/link";
 
 type ContentBlockProps = {
   input: typeof ContentBlockTable.$inferSelect;
@@ -144,23 +146,7 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
             )}
           </CardContent>
           <CardFooter className="text-sm flex justify-between items-center">
-            <div>
-              {input.createdAt.toLocaleDateString()}
-              {" ~ "}
-              Updated at {input.updatedAt.toLocaleString()}
-            </div>
-            <div className="flex items-center justify-between gap-2">
-              <Button className="cursor-pointer" title="Edit">
-                <SquarePen />
-              </Button>
-              <Button
-                className="cursor-pointer"
-                title="Delete"
-                variant={"destructive"}
-              >
-                <Trash2 />
-              </Button>
-            </div>
+            <ContentActionButtons input={input} />
           </CardFooter>
         </Card>
         // <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -209,23 +195,7 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
               </div>
             )}
             <CardFooter className="text-sm flex justify-between items-center">
-              <div>
-                {input.createdAt.toLocaleDateString()}
-                {" ~ "}
-                Updated at {input.updatedAt.toLocaleString()}
-              </div>
-              <div className="flex items-center justify-between gap-2">
-                <Button className="cursor-pointer" title="Edit">
-                  <SquarePen />
-                </Button>
-                <Button
-                  className="cursor-pointer"
-                  title="Delete"
-                  variant={"destructive"}
-                >
-                  <Trash2 />
-                </Button>
-              </div>
+              <ContentActionButtons input={input} />
             </CardFooter>
           </Card>
         );
@@ -254,23 +224,7 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
             )}
           </CardContent>
           <CardFooter className="text-sm flex justify-between items-center">
-            <div>
-              {input.createdAt.toLocaleDateString()}
-              {" ~ "}
-              Updated at {input.updatedAt.toLocaleString()}
-            </div>
-            <div className="flex items-center justify-between gap-2">
-              <Button className="cursor-pointer" title="Edit">
-                <SquarePen />
-              </Button>
-              <Button
-                className="cursor-pointer"
-                title="Delete"
-                variant={"destructive"}
-              >
-                <Trash2 />
-              </Button>
-            </div>
+            <ContentActionButtons input={input} />
           </CardFooter>
         </Card>
       );
@@ -301,25 +255,9 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
               </div>
             </a>
           </div>
-          <div className="w-full px-6 text-sm flex justify-between items-center">
-            <div>
-              {input.createdAt.toLocaleDateString()}
-              {" ~ "}
-              Updated at {input.updatedAt.toLocaleString()}
-            </div>
-            <div className="flex items-center justify-between gap-2">
-              <Button className="cursor-pointer" title="Edit">
-                <SquarePen />
-              </Button>
-              <Button
-                className="cursor-pointer"
-                title="Delete"
-                variant={"destructive"}
-              >
-                <Trash2 />
-              </Button>
-            </div>
-          </div>
+          <CardFooter className="text-sm flex justify-between items-center">
+            <ContentActionButtons input={input} />
+          </CardFooter>
         </Card>
       );
 
@@ -371,9 +309,31 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
               <code className="font-mono text-sm">{input.content}</code>
             </pre>
           </CardContent>
+          <CardFooter className="text-sm flex justify-between items-center">
+            <ContentActionButtons input={input} />
+          </CardFooter>
         </Card>
       );
 
+    case "folder": {
+      return (
+        <>
+          <Card className="my-2 overflow-hidden rounded-lg shadow-sm hover:border-primary">
+            <CardContent>
+              <Link href={`/repo/${input.repoId}/${input.id}`}>
+                <div className="text-3xl font-extrabold flex items-center gap-4"><Folder className="inline size-8"/>{input.content}</div>
+                <div className="text-sm text-muted-foreground my-0.5">
+                  {input.description}
+                </div>
+              </Link>
+            </CardContent>
+            <CardFooter className="text-sm flex justify-between items-center">
+              <ContentActionButtons input={input} />
+            </CardFooter>
+          </Card>
+        </>
+      );
+    }
     /**
      * Fallback for any unknown content types.
      * This helps with debugging if a new type is added but not rendered.
