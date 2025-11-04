@@ -16,8 +16,6 @@ import {
   FileTextIcon,
   Folder,
   LinkIcon,
-  SquarePen,
-  Trash2,
   Video,
 } from "lucide-react";
 import Image from "next/image";
@@ -26,18 +24,26 @@ import { Button } from "@/components/ui/button";
 import { BLOCK_OPTIONS } from "@/lib/content-block-utils/block-options";
 import {
   ContentActionButtons,
-  ContentVerticalButtons,
 } from "./ContentActionButtons";
 import Link from "next/link";
+import { auth } from "@/services/auth";
+import { userRepoRole } from "../actions/content-block";
 
 type ContentBlockProps = {
   input: typeof ContentBlockTable.$inferSelect;
+  slug?: string[];
 };
 
 const PLACEHOLDER_IMAGE = `/default_image.jpg`;
 
-export default async function ContentBlock({ input }: ContentBlockProps) {
+export default async function ContentBlock({ input, slug }: ContentBlockProps) {
   // const color = BLOCK_OPTIONS.filter((option) => input.type === option.id)[0].color;
+  const session = await auth();
+  const userId = session?.user?.id;
+  let role: string | undefined;
+  if(userId) {
+    role = (await userRepoRole(userId, input.repoId)).data?.role;
+  }
   switch (input.type) {
     /**
      * Renders a simple text block.
@@ -61,7 +67,7 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
             )}
           </CardContent>
           <CardFooter className="flex text-sm justify-between items-center">
-            <ContentActionButtons input={input} />
+            <ContentActionButtons input={input} userId={userId} role={role}/>
           </CardFooter>
         </Card>
       );
@@ -73,14 +79,14 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
 
     case "h1":
       return (
-        <div className="my-4 mt-8 flex items-center justify-between">
+        <div className="my-4 mt-6 flex items-center justify-between">
           <div className="">
             <div className="text-5xl font-extrabold">{input.content}</div>
             <div className="text-xs text-muted-foreground">
               {input.description}
             </div>
           </div>
-          <ContentVerticalButtons input={input} />
+          <ContentActionButtons input={input} userId={userId} role={role} />
         </div>
       );
 
@@ -112,7 +118,7 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
             )}
           </CardContent>
           <CardFooter className="text-sm flex justify-between items-center">
-            <ContentActionButtons input={input} />
+            <ContentActionButtons input={input} userId={userId} role={role}/>
           </CardFooter>
         </Card>
       );
@@ -146,7 +152,7 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
             )}
           </CardContent>
           <CardFooter className="text-sm flex justify-between items-center">
-            <ContentActionButtons input={input} />
+            <ContentActionButtons input={input} userId={userId} role={role}/>
           </CardFooter>
         </Card>
         // <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -195,7 +201,7 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
               </div>
             )}
             <CardFooter className="text-sm flex justify-between items-center">
-              <ContentActionButtons input={input} />
+              <ContentActionButtons input={input} userId={userId} role={role}/>
             </CardFooter>
           </Card>
         );
@@ -224,7 +230,7 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
             )}
           </CardContent>
           <CardFooter className="text-sm flex justify-between items-center">
-            <ContentActionButtons input={input} />
+            <ContentActionButtons input={input} userId={userId} role={role}/>
           </CardFooter>
         </Card>
       );
@@ -256,7 +262,7 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
             </a>
           </div>
           <CardFooter className="text-sm flex justify-between items-center">
-            <ContentActionButtons input={input} />
+            <ContentActionButtons input={input} userId={userId} role={role}/>
           </CardFooter>
         </Card>
       );
@@ -310,17 +316,19 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
             </pre>
           </CardContent>
           <CardFooter className="text-sm flex justify-between items-center">
-            <ContentActionButtons input={input} />
+            <ContentActionButtons input={input} userId={userId} role={role}/>
           </CardFooter>
         </Card>
       );
 
     case "folder": {
+      const folderIds = slug?.join("/");
+      console.log(folderIds);
       return (
         <>
           <Card className="my-2 overflow-hidden rounded-lg shadow-sm hover:border-primary">
             <CardContent>
-              <Link href={`/repo/${input.repoId}/${input.id}`}>
+              <Link href={`/repo/${input.repoId}/${folderIds ? folderIds : ""}/${input.id}`}>
                 <div className="text-3xl font-extrabold flex items-center gap-4"><Folder className="inline size-8"/>{input.content}</div>
                 <div className="text-sm text-muted-foreground my-0.5">
                   {input.description}
@@ -328,7 +336,7 @@ export default async function ContentBlock({ input }: ContentBlockProps) {
               </Link>
             </CardContent>
             <CardFooter className="text-sm flex justify-between items-center">
-              <ContentActionButtons input={input} />
+              <ContentActionButtons input={input} userId={userId} role={role}/>
             </CardFooter>
           </Card>
         </>

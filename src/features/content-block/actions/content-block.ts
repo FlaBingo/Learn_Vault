@@ -2,11 +2,11 @@
 "use server";
 
 import { ContentBlockTable } from "@/drizzle/schema";
-import z from "zod";
+import z, { success } from "zod";
 import { ContentBlockSchema, GetBlocksSchema } from "../schemas/content-block";
 import { auth } from "@/services/auth";
 import { getAnyRepoByIdDB, getRepoByIdDB } from "@/features/repo/db/repo";
-import { deleteBlockDB, getBlocksDB, getMaxOrder, isPermited, updateBlockDB } from "../db/contentdb";
+import { deleteBlockDB, getBlocksDB, getFolderByIdDB, getMaxOrder, isPermited, updateBlockDB } from "../db/contentdb";
 import { db } from "@/drizzle/db";
 import { revalidatePath } from "next/cache";
 import { getRepoById } from "@/features/repo/actions/repo";
@@ -123,13 +123,29 @@ export async function getBlocks(input: {
     if (!isAuthorized) {
       return { success: false, error: "Access denied" };
     }
-
+    // console.log(repoId, parentId);
     const blocks = await getBlocksDB(repoId, parentId);
     return { success: true, data: blocks };
 
   } catch (error) {
     console.error("Failed to get blocks:", error);
     return { success: false, error: "An internal error occurred. Please try again." };
+  }
+}
+
+export async function getFolderById(folderId: string) {
+  try {
+    const folders = await getFolderByIdDB(folderId);
+    if(!folders){
+      return {
+        success: false,
+        error: "Not Found"
+      }
+    }
+    return { success: true, data: folders[0] };
+  } catch (error) {
+    console.error("Error getting folders", error);
+    return { success: false, error: "An internal error occurred. Please try again." + `${error}`}
   }
 }
 
@@ -165,8 +181,7 @@ export async function updateBlock(pathname: string, input: ContentBlockInput & {
     }
 
     const updatedBlock = await updateBlockDB(input.id, input);
-
-    // revalidating the path by using usePathname
+    revalidatePath(pathname);
     return {
       success: true,
       data: updatedBlock,
@@ -201,9 +216,27 @@ export async function deleteBlock(pathname: string, contentId: string, repoId: s
     }
 
     const deletedContent = await deleteBlockDB(contentId);
+
+    revalidatePath(pathname);
     return { success: true, data: deletedContent };
   } catch (error) {
     console.error("Failed to delete block:", error);
+    return { success: false, error: "An internal error occurred. Please try again." + `${error}` };
+  }
+}
+
+export async function userRepoRole(userId: string, repoId: string) {
+  try {
+    const role = await isPermited(userId, repoId);
+    if(!role){
+      return {
+        success: false,
+        error: "access denied."
+      }
+    }
+    return { success: true, data: role};
+  } catch (error) {
+    console.error("Failed to get user role w.r.t. repo:", error);
     return { success: false, error: "An internal error occurred. Please try again." + `${error}` };
   }
 }

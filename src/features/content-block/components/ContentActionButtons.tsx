@@ -1,58 +1,74 @@
 //  src\features\content-block\components\ContentActionButtons.tsx
-"use client"
+"use client";
 import { Button } from "@/components/ui/button";
 import { ContentBlockTable } from "@/drizzle/schema";
 import { SquarePen, Trash2 } from "lucide-react";
+import { updateBlock } from "../actions/content-block";
+import { usePathname } from "next/navigation";
+import { toast } from "sonner";
+import DeleteAlertBox from "@/features/repo/components/AlertDelete";
 
 export function ContentActionButtons({
   input,
+  userId,
+  role,
 }: {
   input: typeof ContentBlockTable.$inferSelect;
+  userId: string | undefined;
+  role: string | undefined;
 }) {
+  const pathname = usePathname();
+
+  const handleUpdate = async () => {
+    try {
+      // await updateBlock(pathname, input);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const orientationVertical = input.type === "h1";
+
   return (
     <>
-      <div>
-        {input.createdAt.toLocaleDateString()}
-        {" ~ "}
-        Updated at {input.updatedAt.toLocaleString()}
-      </div>
-      <div className="flex items-center justify-between gap-2">
-        <Button className="cursor-pointer" title="Edit">
-          <SquarePen />
-        </Button>
-        <Button
-          className="cursor-pointer"
-          title="Delete"
-          variant={"destructive"}
-        >
-          <Trash2 />
-        </Button>
-      </div>
-    </>
-  );
-}
+      {!orientationVertical && (
+        <div>
+          {input.createdAt.toLocaleDateString()}
+          {" ~ "}
+          Updated at {input.updatedAt.toLocaleString()}
+        </div>
+      )}
 
-
-export function ContentVerticalButtons({input}: {input: typeof ContentBlockTable.$inferSelect;}){
-  return (
-    <>
-      {/* <div>
-        {input.createdAt.toLocaleDateString()}
-        {" ~ "}
-        Updated at {input.updatedAt.toLocaleString()}
-      </div> */}
-      <div className="flex items-center justify-between gap-2 mr-6">
-        <Button className="cursor-pointer" title="Edit">
-          <SquarePen />
-        </Button>
-        <Button
-          className="cursor-pointer"
-          title="Delete"
-          variant={"destructive"}
-        >
-          <Trash2 />
-        </Button>
-      </div>
+      {userId && (
+        <>
+          <div
+            className={`flex items-center justify-between gap-2 ${
+              orientationVertical && "mr-6"
+            }`}
+          >
+            <Button
+              className="cursor-pointer"
+              onClick={handleUpdate}
+              title="Edit"
+            >
+              <SquarePen />
+            </Button>
+            <DeleteAlertBox
+              title={input.type}
+              contentId={input.id}
+              repoId={input.repoId}
+            >
+              <Button
+                className="cursor-pointer"
+                title="Delete"
+                variant={"destructive"}
+              >
+                <Trash2 />
+              </Button>
+            </DeleteAlertBox>
+          </div>
+        </>
+      )}
     </>
   );
 }

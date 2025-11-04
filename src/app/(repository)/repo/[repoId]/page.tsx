@@ -1,4 +1,5 @@
 // src\app\(repository)\repo\[repoId]\page.tsx
+import ContentCommentSection from "@/components/ContentCommentSection";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -23,7 +24,7 @@ export default async function ContentPage({
   params: { repoId: string };
 }) {
   const { repoId } = await params;
-
+  
   const session = await auth();
   const logedUserId = session?.user?.id;
   
@@ -84,12 +85,12 @@ export default async function ContentPage({
                 <TabsTrigger value="how-to">How to</TabsTrigger>
               </TabsList>
               <TabsContent value="content" className="my-2">
-                <ContentBlockGroup>
+                <ContentBlockGroup userId={logedUserId}>
                   <ContentBlocks params={params} />
                 </ContentBlockGroup>
               </TabsContent>
               <TabsContent value="comment" className="my-2">
-                Comment section
+                <ContentCommentSection />
               </TabsContent>
               <TabsContent value="setting" className="my-2">
                 <Card>

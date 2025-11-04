@@ -51,10 +51,11 @@ export default function ContentFormModal({
   contentId: ContentType | null;
 }) {
   const pathname = usePathname();
-  const repoId = pathname.split("/")[2];
-  // console.log(pathname.split("/")[3]);
-  const parentId = pathname.split("/")[pathname.length-1]; // undefined
-  console.log("parentId: ", parentId);
+  const pathArray = pathname.split("/");
+  const repoId = pathArray[2];
+  const parentId = pathArray.length > 3 ? pathArray[pathArray.length-1] : undefined;
+  // console.log("pathname: ", pathArray, parentId)
+  // console.log("parentId: ", parentId);
   const [isPending, startTransition] = useTransition();
   const selectedOption = BLOCK_OPTIONS.filter(
     (option) => option.id === contentId

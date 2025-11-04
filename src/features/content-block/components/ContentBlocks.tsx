@@ -5,19 +5,20 @@ import { getBlocks } from "../actions/content-block";
 import ContentBlock from "./ContentBlock";
 
 interface Props {
-  params: {repoId: string};
+  params: {repoId: string; parentId?: string; slug?: string[]};
 }
 
 export default async function ContentBlocks({params}: Props) {
-  const {repoId} = await params;
-  const content_blocks = await getBlocks({repoId});
+  const {repoId, parentId, slug} = await params;
+  // console.log(repoId, parentId)
+  const content_blocks = await getBlocks({repoId, parentId});
   const {data} = content_blocks;
   return (
     <>
       <div>
         {data?.map((block, index) => (
           <div key={block.id} className="grid resize-y">
-            <ContentBlock input={block}/>
+            <ContentBlock input={block} slug={slug}/>
           </div>
         ))}
       </div>

@@ -53,7 +53,6 @@ export async function getBlocksDB(repoId: string, parentId?: string | null) {
       .where(
         and(
           eq(ContentBlockTable.repoId, repoId),
-          // This logic correctly fetches root blocks OR nested blocks
           parentId
             ? eq(ContentBlockTable.parentId, parentId)
             : isNull(ContentBlockTable.parentId)
@@ -63,6 +62,23 @@ export async function getBlocksDB(repoId: string, parentId?: string | null) {
   } catch (error) {
     console.error(error);
     throw new Error("Error in getBlockDB");
+  }
+}
+
+export async function getFolderByIdDB(folderId: string) {
+  try {
+    return await db
+      .select()
+      .from(ContentBlockTable)
+      .where(
+        and(
+          eq(ContentBlockTable.type, "folder"),
+          eq(ContentBlockTable.id, folderId)
+        ),
+      );
+  } catch (error) {
+    console.log("Error in getFolderByIdDB", error);
+    return null;
   }
 }
 

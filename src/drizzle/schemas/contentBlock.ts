@@ -16,7 +16,7 @@ export const ContentBlockTable = pgTable("content_block", {
   parentId: uuid(),  // used lazy reference for self-referencing
   type: contentTypeEnum().notNull().default("note"),
   content: text().notNull(),
-  description: text(),
+  description: text().notNull(),
   order: integer().notNull(),
   bgColor: text(),
   createdAt,

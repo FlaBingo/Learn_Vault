@@ -9,8 +9,10 @@ import { ContentType } from "@/drizzle/schema";
 
 export default function ContentBlockGroup({
   children,
+  userId,
 }: {
   children: React.ReactNode;
+  userId: string | undefined;
 }) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>("");
@@ -38,41 +40,47 @@ export default function ContentBlockGroup({
   return (
     <div>
       <Card className="dark:border-gray-600">
-        <CardHeader>
-          <CardTitle>Content Page</CardTitle>
-        </CardHeader>
         <CardContent onClick={handleClickFocus} className="min-h-[500px]">
           {children}
-          <div className="relative">
-            <Input
-              ref={inputRef}
-              value={inputValue}
-              className={`border-none outline-none shadow-none mt-7 mb-96`}
-              onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Click here and start typing or type '/ '..."
-            />
-            <CommandModal
-              className={`${isOpen ? "block absolute top-10 z-10 min-h-80 " : "hidden"}`}
-              isOpen={isOpen}
-              parentInputRef={inputRef}
-              setIsOpen={setIsOpen}
-              setInputValue={setInputValue}
-              onSelect={(option) => {
-                setContentId(option.id);
-                setIsOpen(false);
-                setInputValue("");
-                setShowDialog(true);
-              }}
-            />
-          </div>
+          {userId && (
+            <>
+              <div className="relative">
+                <Input
+                  ref={inputRef}
+                  value={inputValue}
+                  className={`border-none outline-none shadow-none mt-7 mb-96`}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  placeholder="Click here and start typing or type '/ '..."
+                />
+                <CommandModal
+                  className={`${
+                    isOpen ? "block absolute top-10 z-10 min-h-80 " : "hidden"
+                  }`}
+                  isOpen={isOpen}
+                  parentInputRef={inputRef}
+                  setIsOpen={setIsOpen}
+                  setInputValue={setInputValue}
+                  onSelect={(option) => {
+                    setContentId(option.id);
+                    setIsOpen(false);
+                    setInputValue("");
+                    setShowDialog(true);
+                  }}
+                />
+              </div>
 
-          <ContentFormModal
-            open={showDialog}
-            onOpenChange={setShowDialog}
-            contentId={contentId}
-          >
-            <div />
-          </ContentFormModal>
+              <ContentFormModal
+                open={showDialog}
+                onOpenChange={setShowDialog}
+                contentId={contentId}
+              >
+                <div />
+              </ContentFormModal>
+            </>
+          )}
+          {!userId && (
+            <div className="h-90 opacity-0"></div>
+          )}
         </CardContent>
       </Card>
     </div>
