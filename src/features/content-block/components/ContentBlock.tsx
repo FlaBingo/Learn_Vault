@@ -6,7 +6,7 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { ContentBlockTable } from "@/drizzle/schema";
+import { collaboratorRole, ContentBlockTable } from "@/drizzle/schema";
 import {
   getYouTubeId,
   isValidImageUrl,
@@ -28,6 +28,7 @@ import {
 import Link from "next/link";
 import { auth } from "@/services/auth";
 import { userRepoRole } from "../actions/content-block";
+import { getRepoById } from "@/features/repo/actions/repo";
 
 type ContentBlockProps = {
   input: typeof ContentBlockTable.$inferSelect;
@@ -40,10 +41,12 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
   // const color = BLOCK_OPTIONS.filter((option) => input.type === option.id)[0].color;
   const session = await auth();
   const userId = session?.user?.id;
-  let role: "admin" | "editor" | "viewer" | undefined;
+  let role: collaboratorRole | undefined;
   if(userId) {
     role = (await userRepoRole(userId, input.repoId)).data?.role;
   }
+  const repo = await getRepoById(input.repoId);
+  const owner = repo.data?.userId === userId;
   switch (input.type) {
     /**
      * Renders a simple text block.
@@ -67,7 +70,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
             )}
           </CardContent>
           <CardFooter className="flex text-sm justify-between items-center">
-            <ContentActionButtons input={input} userId={userId} role={role}/>
+            <ContentActionButtons input={input} userId={userId} role={role} owner={owner}/>
           </CardFooter>
         </Card>
       );
@@ -86,7 +89,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
               {input.description}
             </div>
           </div>
-          <ContentActionButtons input={input} userId={userId} role={role} />
+          <ContentActionButtons input={input} userId={userId} role={role} owner={owner} />
         </div>
       );
 
@@ -118,7 +121,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
             )}
           </CardContent>
           <CardFooter className="text-sm flex justify-between items-center">
-            <ContentActionButtons input={input} userId={userId} role={role}/>
+            <ContentActionButtons input={input} userId={userId} role={role} owner={owner}/>
           </CardFooter>
         </Card>
       );
@@ -152,7 +155,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
             )}
           </CardContent>
           <CardFooter className="text-sm flex justify-between items-center">
-            <ContentActionButtons input={input} userId={userId} role={role}/>
+            <ContentActionButtons input={input} userId={userId} role={role} owner={owner}/>
           </CardFooter>
         </Card>
         // <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -201,7 +204,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
               </div>
             )}
             <CardFooter className="text-sm flex justify-between items-center">
-              <ContentActionButtons input={input} userId={userId} role={role}/>
+              <ContentActionButtons input={input} userId={userId} role={role} owner={owner}/>
             </CardFooter>
           </Card>
         );
@@ -230,7 +233,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
             )}
           </CardContent>
           <CardFooter className="text-sm flex justify-between items-center">
-            <ContentActionButtons input={input} userId={userId} role={role}/>
+            <ContentActionButtons input={input} userId={userId} role={role} owner={owner}/>
           </CardFooter>
         </Card>
       );
@@ -262,7 +265,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
             </a>
           </div>
           <CardFooter className="text-sm flex justify-between items-center">
-            <ContentActionButtons input={input} userId={userId} role={role}/>
+            <ContentActionButtons input={input} userId={userId} role={role} owner={owner}/>
           </CardFooter>
         </Card>
       );
@@ -316,7 +319,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
             </pre>
           </CardContent>
           <CardFooter className="text-sm flex justify-between items-center">
-            <ContentActionButtons input={input} userId={userId} role={role}/>
+            <ContentActionButtons input={input} userId={userId} role={role} owner={owner}/>
           </CardFooter>
         </Card>
       );
@@ -336,7 +339,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
               </Link>
             </CardContent>
             <CardFooter className="text-sm flex justify-between items-center">
-              <ContentActionButtons input={input} userId={userId} role={role}/>
+              <ContentActionButtons input={input} userId={userId} role={role} owner={owner}/>
             </CardFooter>
           </Card>
         </>

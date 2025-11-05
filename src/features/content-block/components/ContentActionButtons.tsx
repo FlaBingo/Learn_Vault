@@ -1,7 +1,7 @@
 //  src\features\content-block\components\ContentActionButtons.tsx
 "use client";
 import { Button } from "@/components/ui/button";
-import { ContentBlockTable } from "@/drizzle/schema";
+import { collaboratorRole, ContentBlockTable, repoStatus } from "@/drizzle/schema";
 import { SquarePen, Trash2 } from "lucide-react";
 import { updateBlock } from "../actions/content-block";
 import { usePathname } from "next/navigation";
@@ -12,10 +12,12 @@ export function ContentActionButtons({
   input,
   userId,
   role,
+  owner,
 }: {
   input: typeof ContentBlockTable.$inferSelect;
   userId: string | undefined;
-  role: "admin" | "editor" | "viewer" | undefined;
+  role: collaboratorRole | undefined;
+  owner: boolean;
 }) {
   const pathname = usePathname();
 
@@ -39,7 +41,7 @@ export function ContentActionButtons({
         </div>
       )}
 
-      {userId && role !== "viewer" && (
+      {((userId && role !== "viewer" && role !== undefined) || (owner)) && (
         <div
           className={`flex items-center justify-between gap-2 ${
             orientationVertical && "mr-6"

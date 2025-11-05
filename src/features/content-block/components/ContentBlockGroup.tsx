@@ -5,14 +5,18 @@ import { Input } from "@/components/ui/input";
 import { useEffect, useRef, useState } from "react";
 import { CommandModal } from "./CommandModal";
 import ContentFormModal from "./DataModal";
-import { ContentType } from "@/drizzle/schema";
+import { collaboratorRole, ContentType } from "@/drizzle/schema";
 
 export default function ContentBlockGroup({
   children,
   userId,
+  role,
+  owner
 }: {
   children: React.ReactNode;
   userId: string | undefined;
+  role: collaboratorRole | undefined;
+  owner: boolean;
 }) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>("");
@@ -42,7 +46,7 @@ export default function ContentBlockGroup({
       <Card className="dark:border-gray-600">
         <CardContent onClick={handleClickFocus} className="min-h-[500px]">
           {children}
-          {userId && (
+          {((userId && role !== "viewer" && role !== undefined) || (owner)) && (
             <>
               <div className="relative">
                 <Input
@@ -78,7 +82,7 @@ export default function ContentBlockGroup({
               </ContentFormModal>
             </>
           )}
-          {!userId && (
+          {(!userId || !owner) && (
             <div className="h-90 opacity-0"></div>
           )}
         </CardContent>

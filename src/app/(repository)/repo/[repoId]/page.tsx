@@ -1,5 +1,6 @@
 // src\app\(repository)\repo\[repoId]\page.tsx
 import ContentCommentSection from "@/components/ContentCommentSection";
+import ScrollButtons from "@/components/ScrollButtons";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,6 +10,8 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { collaboratorRole } from "@/drizzle/schema";
+import { userRepoRole } from "@/features/content-block/actions/content-block";
 import ContentBlockGroup from "@/features/content-block/components/ContentBlockGroup";
 import ContentBlocks from "@/features/content-block/components/ContentBlocks";
 import {
@@ -24,13 +27,18 @@ export default async function ContentPage({
   params: { repoId: string };
 }) {
   const { repoId } = await params;
-  
+
   const session = await auth();
   const logedUserId = session?.user?.id;
-  
+
   const ownerUser = await getUserByRepoId(repoId);
   const repo = await getAnyRepoById(repoId);
   const { data } = repo;
+
+  let role: collaboratorRole | undefined;
+  if (logedUserId) {
+    role = (await userRepoRole(logedUserId, repoId)).data?.role;
+  }
 
   const owner = logedUserId === ownerUser?.id;
   return (
@@ -64,16 +72,12 @@ export default async function ContentPage({
               )}
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink>
-                  {data?.title}
-                </BreadcrumbLink>
+                <BreadcrumbLink>{data?.title}</BreadcrumbLink>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
         </div>
-        <h1 className="text-5xl mt-7 mb-2 mx-3 font-bold">
-          {data?.title}
-        </h1>
+        <h1 className="text-5xl mt-7 mb-2 mx-3 font-bold">{data?.title}</h1>
 
         <div className="grid grid-cols-5 gap-3">
           <div className="col-span-4 p-4">
@@ -85,7 +89,7 @@ export default async function ContentPage({
                 <TabsTrigger value="how-to">How to</TabsTrigger>
               </TabsList>
               <TabsContent value="content" className="my-2">
-                <ContentBlockGroup userId={logedUserId}>
+                <ContentBlockGroup userId={logedUserId} role={role} owner={owner}>
                   <ContentBlocks params={params} />
                 </ContentBlockGroup>
               </TabsContent>
@@ -95,20 +99,15 @@ export default async function ContentPage({
               <TabsContent value="setting" className="my-2">
                 <Card>
                   <CardContent>
-                    settings
-                    changes to make:
-                    - option for changing background color
-                    - setting permission 
-                      - if public : admin, editor
-                      - if private: admin, editor, private viewer(may be premium)
+                    settings changes to make: - option for changing background
+                    color - setting permission - if public : admin, editor - if
+                    private: admin, editor, private viewer(may be premium)
                   </CardContent>
                 </Card>
               </TabsContent>
               <TabsContent value="how-to" className="my-2">
                 <Card>
-                  <CardContent>
-                    How to
-                  </CardContent>
+                  <CardContent>How to</CardContent>
                 </Card>
               </TabsContent>
             </Tabs>
@@ -124,6 +123,7 @@ export default async function ContentPage({
             <div>collaborators</div>
           </div>
         </div>
+        <ScrollButtons />
       </div>
     </>
   );

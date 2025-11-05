@@ -17,7 +17,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getFolderById } from "@/features/content-block/actions/content-block";
+import { collaboratorRole } from "@/drizzle/schema";
+import {
+  getFolderById,
+  userRepoRole,
+} from "@/features/content-block/actions/content-block";
 import ContentBlockGroup from "@/features/content-block/components/ContentBlockGroup";
 import ContentBlocks from "@/features/content-block/components/ContentBlocks";
 import { getAnyRepoById, getUserByRepoId } from "@/features/repo/actions/repo";
@@ -41,8 +45,10 @@ export default async function FolderPage({
   const { data } = repo;
   const owner = logedUserId === ownerUser?.id;
 
-  // --- FIX 1: Resolve all folder promises at once ---
-  // This gives you a clean array of folder data to work with
+  let role: collaboratorRole | undefined;
+  if (logedUserId) {
+    role = (await userRepoRole(logedUserId, repoId)).data?.role;
+  }
   const folderPromises = slug.map((folderId) => getFolderById(folderId));
   const resolvedFolders = await Promise.all(folderPromises);
   // --- End of FIX 1 ---
@@ -157,7 +163,7 @@ export default async function FolderPage({
                 <TabsTrigger value="how-to">How to</TabsTrigger>
               </TabsList>
               <TabsContent value="content" className="my-2">
-                <ContentBlockGroup userId={logedUserId}>
+                <ContentBlockGroup userId={logedUserId} role={role} owner={owner}>
                   <ContentBlocks params={{ repoId, parentId, slug }} />
                 </ContentBlockGroup>
               </TabsContent>

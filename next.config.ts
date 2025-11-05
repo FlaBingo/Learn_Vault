@@ -24,6 +24,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'englishgrammarzone.com'
       },
+      {
+        protocol: 'https',
+        hostname: 'media.istockphoto.com'
+      },
     ]
   }
 };
