@@ -39,35 +39,33 @@ export function ContentActionButtons({
         </div>
       )}
 
-      {(userId && role !== "viewer") && (
-        <>
-          <div
-            className={`flex items-center justify-between gap-2 ${
-              orientationVertical && "mr-6"
-            }`}
+      {userId && role !== "viewer" && (
+        <div
+          className={`flex items-center justify-between gap-2 ${
+            orientationVertical && "mr-6"
+          }`}
+        >
+          <Button
+            className="cursor-pointer"
+            onClick={handleUpdate}
+            title="Edit"
+          >
+            <SquarePen />
+          </Button>
+          <DeleteAlertBox
+            title={input.type}
+            contentId={input.id}
+            repoId={input.repoId}
           >
             <Button
               className="cursor-pointer"
-              onClick={handleUpdate}
-              title="Edit"
+              title="Delete"
+              variant={"destructive"}
             >
-              <SquarePen />
+              <Trash2 />
             </Button>
-            <DeleteAlertBox
-              title={input.type}
-              contentId={input.id}
-              repoId={input.repoId}
-            >
-              <Button
-                className="cursor-pointer"
-                title="Delete"
-                variant={"destructive"}
-              >
-                <Trash2 />
-              </Button>
-            </DeleteAlertBox>
-          </div>
-        </>
+          </DeleteAlertBox>
+        </div>
       )}
     </>
   );
