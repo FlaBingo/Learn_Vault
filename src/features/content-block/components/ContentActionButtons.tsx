@@ -15,7 +15,7 @@ export function ContentActionButtons({
 }: {
   input: typeof ContentBlockTable.$inferSelect;
   userId: string | undefined;
-  role: string | undefined;
+  role: "admin" | "editor" | "viewer" | undefined;
 }) {
   const pathname = usePathname();
 
@@ -39,7 +39,7 @@ export function ContentActionButtons({
         </div>
       )}
 
-      {userId && (
+      {(userId && role !== "viewer") && (
         <>
           <div
             className={`flex items-center justify-between gap-2 ${

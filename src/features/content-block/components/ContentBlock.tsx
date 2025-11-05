@@ -40,7 +40,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
   // const color = BLOCK_OPTIONS.filter((option) => input.type === option.id)[0].color;
   const session = await auth();
   const userId = session?.user?.id;
-  let role: string | undefined;
+  let role: "admin" | "editor" | "viewer" | undefined;
   if(userId) {
     role = (await userRepoRole(userId, input.repoId)).data?.role;
   }
