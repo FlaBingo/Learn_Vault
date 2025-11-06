@@ -1,6 +1,7 @@
 // src\app\(repository)\repo\[repoId]\[...slug]\page.tsx
 
 import ContentCommentSection from "@/components/ContentCommentSection";
+import ScrollButtons from "@/components/ScrollButtons";
 import {
   Breadcrumb,
   BreadcrumbEllipsis,
@@ -197,6 +198,7 @@ export default async function FolderPage({
             <div>collaborators</div>
           </div>
         </div>
+        <ScrollButtons />
       </div>
     </>
   );
