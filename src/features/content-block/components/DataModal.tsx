@@ -34,10 +34,11 @@ import { ContentType } from "@/drizzle/schema";
 import { BLOCK_OPTIONS } from "@/lib/content-block-utils/block-options";
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useRef, useTransition } from "react";
-import { createBlock } from "../actions/content-block";
+import { createBlock, getContentById, updateBlock } from "../actions/content-block";
 import { toast } from "sonner";
 import { usePathname } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { useContentModal } from "./ContentModalContext";
 
 export default function ContentFormModal({
   children,
@@ -50,12 +51,17 @@ export default function ContentFormModal({
   onOpenChange: (open: boolean) => void;
   contentId: ContentType | null;
 }) {
+  const { content, description, blockId } = useContentModal();
+  const isEditMode = content.length > 0 && description.length > 0;
+  // console.log(content, description, isEditMode); // perfectly working
   const pathname = usePathname();
   const pathArray = pathname.split("/");
   const repoId = pathArray[2];
-  const parentId = pathArray.length > 3 ? pathArray[pathArray.length-1] : undefined;
+  const parentId =
+    pathArray.length > 3 ? pathArray[pathArray.length - 1] : undefined;
   // console.log("pathname: ", pathArray, parentId)
   // console.log("parentId: ", parentId);
+
   const [isPending, startTransition] = useTransition();
   const selectedOption = BLOCK_OPTIONS.filter(
     (option) => option.id === contentId
@@ -69,21 +75,45 @@ export default function ContentFormModal({
     },
   });
 
+  useEffect(() => {
+    if (isEditMode) {
+      form.reset({
+        content,
+        description,
+      });
+    } else {
+      form.reset({
+        content: "",
+        description: "",
+      });
+    }
+  }, [isEditMode, content, description, form]);
+
   async function onSubmit(values: z.infer<typeof ContentFormSchema>) {
     startTransition(async () => {
       try {
-        const result = await createBlock(pathname, {
-          repoId,
-          parentId,
-          type: selectedOption.id,
-          ...values,
-        });
-        if (result.success) {
-          toast.success("Block created successfully.");
-          onOpenChange(false);
+        if (isEditMode) {
+          // const result = await updateBlock(pathname, {
+          //   id: blockId,
+          //   repoId,
+          //   parentId,
+          //   type: selectedOption.id,
+          //   ...values,
+          // })
         } else {
-          toast.error(result.error);
-          console.log(result.error);
+          const result = await createBlock(pathname, {
+            repoId,
+            parentId,
+            type: selectedOption.id,
+            ...values,
+          });
+          if (result.success) {
+            toast.success("Block created successfully.");
+            onOpenChange(false);
+          } else {
+            toast.error(result.error);
+            console.log(result.error);
+          }
         }
       } catch (error) {
         console.log(error);
@@ -122,9 +152,15 @@ export default function ContentFormModal({
                     </FormLabel>
                     <FormControl>
                       {selectedOption.contentEl === "textarea" ? (
-                        <Textarea placeholder={selectedOption.contentPlaceholder} {...field} />
+                        <Textarea
+                          placeholder={selectedOption.contentPlaceholder}
+                          {...field}
+                        />
                       ) : (
-                        <Input placeholder={selectedOption.contentPlaceholder} {...field} />
+                        <Input
+                          placeholder={selectedOption.contentPlaceholder}
+                          {...field}
+                        />
                       )}
                     </FormControl>
                     <FormDescription>
@@ -152,7 +188,8 @@ export default function ContentFormModal({
                         />
                       </FormControl>
                       <FormDescription>
-                        {selectedOption.descMessage}<br/>
+                        {selectedOption.descMessage}
+                        <br />
                         <span className="text-red-400 font-bold">
                           {remainingChars}
                         </span>{" "}
@@ -179,10 +216,14 @@ export default function ContentFormModal({
                 >
                   {isPending ? (
                     <>
-                      <Loader2 className="mr-1"/>
-                      Creating...
+                      <Loader2 className="mr-1" />
+                      {isEditMode ? "Updating..." : "Creating..."}
                     </>
-                  ) : "Create"}
+                  ) : isEditMode ? (
+                    "Update"
+                  ) : (
+                    "Create"
+                  )}
                 </Button>
               </DialogFooter>
             </form>

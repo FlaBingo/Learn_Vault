@@ -25,6 +25,7 @@ import {
 } from "@/features/content-block/actions/content-block";
 import ContentBlockGroup from "@/features/content-block/components/ContentBlockGroup";
 import ContentBlocks from "@/features/content-block/components/ContentBlocks";
+import { ContentModalProvider } from "@/features/content-block/components/ContentModalContext";
 import { getAnyRepoById, getUserByRepoId } from "@/features/repo/actions/repo";
 import { auth } from "@/services/auth";
 import Link from "next/link";
@@ -164,9 +165,15 @@ export default async function FolderPage({
                 <TabsTrigger value="how-to">How to</TabsTrigger>
               </TabsList>
               <TabsContent value="content" className="my-2">
-                <ContentBlockGroup userId={logedUserId} role={role} owner={owner}>
-                  <ContentBlocks params={{ repoId, parentId, slug }} />
-                </ContentBlockGroup>
+                <ContentModalProvider>
+                  <ContentBlockGroup
+                    userId={logedUserId}
+                    role={role}
+                    owner={owner}
+                  >
+                    <ContentBlocks params={{ repoId, parentId, slug }} />
+                  </ContentBlockGroup>
+                </ContentModalProvider>
               </TabsContent>
               <TabsContent value="comment" className="my-2">
                 <ContentCommentSection />

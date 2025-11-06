@@ -65,6 +65,21 @@ export async function getBlocksDB(repoId: string, parentId?: string | null) {
   }
 }
 
+export async function getContentByIdDB(contentId: string, repoId: string) {
+  try {
+    const contentBlock = await db.select().from(ContentBlockTable).where(
+      and(eq(ContentBlockTable.repoId, repoId), eq(ContentBlockTable.id, contentId))
+    );
+    if(!contentBlock){
+      console.error("not content found with this id");
+      return null;
+    }
+    return contentBlock[0];
+  } catch (error) {
+    console.error("Error in getContentByIdDB:", error);
+  }
+}
+
 export async function getFolderByIdDB(folderId: string) {
   try {
     return await db

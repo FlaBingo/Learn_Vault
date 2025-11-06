@@ -6,22 +6,25 @@ import { useEffect, useRef, useState } from "react";
 import { CommandModal } from "./CommandModal";
 import ContentFormModal from "./DataModal";
 import { collaboratorRole, ContentType } from "@/drizzle/schema";
+import { useContentModal } from "./ContentModalContext";
 
 export default function ContentBlockGroup({
   children,
   userId,
   role,
-  owner
+  owner,
 }: {
   children: React.ReactNode;
   userId: string | undefined;
   role: collaboratorRole | undefined;
   owner: boolean;
 }) {
+  const { showDialog, setShowDialog, contentId, setContentId, setContent, setDescription, setBlockId } =
+    useContentModal();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>("");
-  const [showDialog, setShowDialog] = useState(false);
-  const [contentId, setContentId] = useState<ContentType | null>(null);
+  // const [showDialog, setShowDialog] = useState(false);
+  // const [contentId, setContentId] = useState<ContentType | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   // const pathname = usePathname();
@@ -46,7 +49,7 @@ export default function ContentBlockGroup({
       <Card className="dark:border-gray-600">
         <CardContent onClick={handleClickFocus} className="min-h-[500px]">
           {children}
-          {((userId && role !== "viewer" && role !== undefined) || (owner)) && (
+          {((userId && role !== "viewer" && role !== undefined) || owner) && (
             <>
               <div className="relative">
                 <Input
@@ -65,10 +68,13 @@ export default function ContentBlockGroup({
                   setIsOpen={setIsOpen}
                   setInputValue={setInputValue}
                   onSelect={(option) => {
+                    setBlockId("");
+                    setContent("");
+                    setDescription("");
                     setContentId(option.id);
-                    setIsOpen(false);
-                    setInputValue("");
                     setShowDialog(true);
+                    setInputValue("");
+                    setIsOpen(false);
                   }}
                 />
               </div>
@@ -82,9 +88,7 @@ export default function ContentBlockGroup({
               </ContentFormModal>
             </>
           )}
-          {(!userId || !owner) && (
-            <div className="h-90 opacity-0"></div>
-          )}
+          {(!userId || !owner) && <div className="h-90 opacity-0"></div>}
         </CardContent>
       </Card>
     </div>

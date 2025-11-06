@@ -1,12 +1,12 @@
 // src\features\content-block\actions\content-block.ts
 "use server";
 
-import { ContentBlockTable } from "@/drizzle/schema";
+import { collaboratorRole, ContentBlockTable } from "@/drizzle/schema";
 import z, { success } from "zod";
 import { ContentBlockSchema, GetBlocksSchema } from "../schemas/content-block";
 import { auth } from "@/services/auth";
 import { getAnyRepoByIdDB, getRepoByIdDB } from "@/features/repo/db/repo";
-import { deleteBlockDB, getBlocksDB, getFolderByIdDB, getMaxOrder, isPermited, updateBlockDB } from "../db/contentdb";
+import { deleteBlockDB, getBlocksDB, getContentByIdDB, getFolderByIdDB, getMaxOrder, isPermited, updateBlockDB } from "../db/contentdb";
 import { db } from "@/drizzle/db";
 import { revalidatePath } from "next/cache";
 import { getRepoById } from "@/features/repo/actions/repo";
@@ -133,6 +133,29 @@ export async function getBlocks(input: {
   }
 }
 
+export async function getContentById(contentId: string, repoId: string) {
+  const session = await auth();
+  const userId = session?.user?.id;
+  try {
+    const repo = await getAnyRepoByIdDB(repoId);
+    let role: collaboratorRole | undefined;
+    if(userId){
+      role = await isPermited(userId, repoId).then((result) => result?.role);
+    }
+    if(((userId === repo?.userId) && repo?.userId) || repo?.status === "public" || role){
+      const data = await getContentByIdDB(contentId, repoId);
+      if(!data){
+        return { success: false, error: "Not found"}
+      }
+      return { success: true, data}
+    }
+    return { success: false, error: "Access Denied"}
+  } catch (error) {
+    console.log("Error getting content by id:", error)
+    return { success: false, error: "Content not found."}
+  }
+}
+
 export async function getFolderById(folderId: string) {
   try {
     const folders = await getFolderByIdDB(folderId);
@@ -144,12 +167,12 @@ export async function getFolderById(folderId: string) {
     }
     return { success: true, data: folders[0] };
   } catch (error) {
-    console.error("Error getting folders", error);
+    console.error("Error getting folders by id", error);
     return { success: false, error: "An internal error occurred. Please try again." + `${error}`}
   }
 }
 
-export async function updateBlock(pathname: string, input: ContentBlockInput & { id: string; order: number }) {
+export async function updateBlock(pathname: string, input: ContentBlockInput & { id?: string; order: number }) {
   const validatedInput = ContentBlockSchema.safeParse(input);
   if (!validatedInput.success) {
     return {
@@ -169,7 +192,7 @@ export async function updateBlock(pathname: string, input: ContentBlockInput & {
       }
     }
 
-    const repo = await getRepoById(repoId);
+    const repo = await getAnyRepoByIdDB(repoId);
     if (!repo) {
       const collaborator = await isPermited(userId, repoId);
       if (!collaborator || collaborator.role === "viewer") {
@@ -179,6 +202,15 @@ export async function updateBlock(pathname: string, input: ContentBlockInput & {
         }
       }
     }
+
+    if(!input.id){
+      return {
+        success: false,
+        error: "Content Block doesn't exit"
+      }
+    }
+
+    
 
     const updatedBlock = await updateBlockDB(input.id, input);
     revalidatePath(pathname);
@@ -204,7 +236,7 @@ export async function deleteBlock(pathname: string, contentId: string, repoId: s
       }
     }
 
-    const repo = await getRepoById(repoId);
+    const repo = await getAnyRepoByIdDB(repoId);
     if (!repo) {
       const collaborator = await isPermited(userId, repoId);
       if (!collaborator || collaborator.role === "viewer") {

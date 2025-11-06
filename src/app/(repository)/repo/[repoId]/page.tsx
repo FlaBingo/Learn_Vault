@@ -14,6 +14,7 @@ import { collaboratorRole } from "@/drizzle/schema";
 import { userRepoRole } from "@/features/content-block/actions/content-block";
 import ContentBlockGroup from "@/features/content-block/components/ContentBlockGroup";
 import ContentBlocks from "@/features/content-block/components/ContentBlocks";
+import { ContentModalProvider } from "@/features/content-block/components/ContentModalContext";
 import {
   getAnyRepoById,
   getRepoById,
@@ -89,9 +90,15 @@ export default async function ContentPage({
                 <TabsTrigger value="how-to">How to</TabsTrigger>
               </TabsList>
               <TabsContent value="content" className="my-2">
-                <ContentBlockGroup userId={logedUserId} role={role} owner={owner}>
-                  <ContentBlocks params={params} />
-                </ContentBlockGroup>
+                <ContentModalProvider>
+                  <ContentBlockGroup
+                    userId={logedUserId}
+                    role={role}
+                    owner={owner}
+                  >
+                    <ContentBlocks params={params} />
+                  </ContentBlockGroup>
+                </ContentModalProvider>
               </TabsContent>
               <TabsContent value="comment" className="my-2">
                 <ContentCommentSection />

@@ -314,7 +314,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
             </CardHeader>
           )}
           <CardContent className="p-0">
-            <pre className="p-4 bg-gray-900 dark:bg-gray-950 text-white dark:text-gray-200 overflow-x-auto">
+            <pre className="p-4 overflow-x-auto">
               <code className="font-mono text-sm">{input.content}</code>
             </pre>
           </CardContent>

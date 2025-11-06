@@ -7,6 +7,7 @@ import { updateBlock } from "../actions/content-block";
 import { usePathname } from "next/navigation";
 import { toast } from "sonner";
 import DeleteAlertBox from "@/features/repo/components/AlertDelete";
+import { useContentModal } from "./ContentModalContext";
 
 export function ContentActionButtons({
   input,
@@ -19,14 +20,13 @@ export function ContentActionButtons({
   role: collaboratorRole | undefined;
   owner: boolean;
 }) {
-  const pathname = usePathname();
+  const { setShowDialog, setContentId, setContent, setDescription} = useContentModal();
 
   const handleUpdate = async () => {
-    try {
-      // await updateBlock(pathname, input);
-    } catch (error) {
-      console.log(error);
-    }
+    setContent(input.content);
+    setDescription(input.description);
+    setContentId(input.type);
+    setShowDialog(true);
   };
 
   const orientationVertical = input.type === "h1";

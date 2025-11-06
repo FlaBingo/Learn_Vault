@@ -50,7 +50,7 @@ export function CommandModal({
 
   return (
     <Command
-      className={cn("rounded-lg border shadow-md md:min-w-[450px]", className)}
+      className={cn("rounded-lg border shadow-md md:min-w-[450px] overflow-auto", className)}
     >
       <CommandInput
         ref={inputRef}
