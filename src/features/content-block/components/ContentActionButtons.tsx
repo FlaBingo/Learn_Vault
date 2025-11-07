@@ -20,12 +20,10 @@ export function ContentActionButtons({
   role: collaboratorRole | undefined;
   owner: boolean;
 }) {
-  const { setShowDialog, setContentId, setContent, setDescription} = useContentModal();
+  const { setShowDialog, setContentBlock} = useContentModal();
 
   const handleUpdate = async () => {
-    setContent(input.content);
-    setDescription(input.description);
-    setContentId(input.type);
+    setContentBlock(input);
     setShowDialog(true);
   };
 

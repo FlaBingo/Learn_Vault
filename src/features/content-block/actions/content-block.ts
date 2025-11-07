@@ -172,7 +172,7 @@ export async function getFolderById(folderId: string) {
   }
 }
 
-export async function updateBlock(pathname: string, input: ContentBlockInput & { id?: string; order: number }) {
+export async function updateBlock(pathname: string, input: typeof ContentBlockTable.$inferInsert) {
   const validatedInput = ContentBlockSchema.safeParse(input);
   if (!validatedInput.success) {
     return {

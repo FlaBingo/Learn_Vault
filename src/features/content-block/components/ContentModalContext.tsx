@@ -1,6 +1,6 @@
 "use client";
 import { createContext, useContext, useState } from "react";
-import { ContentType } from "@/drizzle/schema";
+import { ContentBlockTable, ContentType } from "@/drizzle/schema";
 
 type ContentModalContextType = {
   showDialog: boolean;
@@ -14,6 +14,10 @@ type ContentModalContextType = {
   blockId: string;
   setBlockId: (value: string) => void;
   order: number;
+  setOrder: (value: number) => void;
+
+  contentBlock: typeof ContentBlockTable.$inferSelect | undefined;
+  setContentBlock: (value: typeof ContentBlockTable.$inferSelect | undefined) => void;
 };
 
 const ContentModalContext = createContext<ContentModalContextType | null>(null);
@@ -29,9 +33,10 @@ export function ContentModalProvider({
   const [description, setDescription] = useState<string>("");
   const [blockId, setBlockId] = useState("");
   const [order, setOrder] = useState<number>(0);
+  const [contentBlock, setContentBlock] = useState<typeof ContentBlockTable.$inferSelect>();
   return (
     <ContentModalContext.Provider
-      value={{ showDialog, setShowDialog, contentId, setContentId, content, setContent, description, setDescription, blockId, setBlockId, order }}
+      value={{ showDialog, setShowDialog, contentId, setContentId, content, setContent, description, setDescription, blockId, setBlockId, order, setOrder, contentBlock, setContentBlock }}
     >
       {children}
     </ContentModalContext.Provider>

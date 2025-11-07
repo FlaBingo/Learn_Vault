@@ -19,7 +19,7 @@ export default function ContentBlockGroup({
   role: collaboratorRole | undefined;
   owner: boolean;
 }) {
-  const { showDialog, setShowDialog, contentId, setContentId, setContent, setDescription, setBlockId } =
+  const { showDialog, setShowDialog, contentId, setContentId, setContent, setDescription, setBlockId, setContentBlock } =
     useContentModal();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>("");
@@ -72,6 +72,7 @@ export default function ContentBlockGroup({
                     setContent("");
                     setDescription("");
                     setContentId(option.id);
+                    setContentBlock(undefined)
                     setShowDialog(true);
                     setInputValue("");
                     setIsOpen(false);

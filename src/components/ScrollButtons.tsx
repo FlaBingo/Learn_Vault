@@ -25,7 +25,7 @@ export default function ScrollButtons() {
   };
 
   return (
-    <div className="fixed left-0 top-0 z-50 h-screen w-10 flex flex-col">
+    <div className="fixed right-60 bottom-20 z-50 h-30 w-10 flex flex-col gap-3">
       <Button
         onClick={scrollToTop}
         variant={"outline"}

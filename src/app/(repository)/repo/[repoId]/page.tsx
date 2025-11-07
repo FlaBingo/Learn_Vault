@@ -44,7 +44,7 @@ export default async function ContentPage({
   const owner = logedUserId === ownerUser?.id;
   return (
     <>
-      <div className="container mx-auto mt-7">
+      <div className="container mx-auto mt-7 relative">
         <div>
           <Breadcrumb className="px-4 py-1 mb-3 bg-accent rounded-sm">
             <BreadcrumbList>

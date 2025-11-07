@@ -34,7 +34,11 @@ import { ContentType } from "@/drizzle/schema";
 import { BLOCK_OPTIONS } from "@/lib/content-block-utils/block-options";
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useRef, useTransition } from "react";
-import { createBlock, getContentById, updateBlock } from "../actions/content-block";
+import {
+  createBlock,
+  getContentById,
+  updateBlock,
+} from "../actions/content-block";
 import { toast } from "sonner";
 import { usePathname } from "next/navigation";
 import { Loader2 } from "lucide-react";
@@ -51,8 +55,15 @@ export default function ContentFormModal({
   onOpenChange: (open: boolean) => void;
   contentId: ContentType | null;
 }) {
-  const { content, description, blockId } = useContentModal();
-  const isEditMode = content.length > 0 && description.length > 0;
+  const { contentBlock } = useContentModal();
+  let order: number;
+  let BlockId: string;
+  if (contentBlock) {
+    order = contentBlock.order;
+    BlockId = contentBlock.id;
+  }
+  const isEditMode: boolean = !!contentBlock;
+
   // console.log(content, description, isEditMode); // perfectly working
   const pathname = usePathname();
   const pathArray = pathname.split("/");
@@ -64,7 +75,7 @@ export default function ContentFormModal({
 
   const [isPending, startTransition] = useTransition();
   const selectedOption = BLOCK_OPTIONS.filter(
-    (option) => option.id === contentId
+    (option) => isEditMode ? option.id === contentBlock?.type : option.id === contentId
   )[0];
 
   const form = useForm<z.infer<typeof ContentFormSchema>>({
@@ -78,8 +89,8 @@ export default function ContentFormModal({
   useEffect(() => {
     if (isEditMode) {
       form.reset({
-        content,
-        description,
+        content: contentBlock?.content,
+        description: contentBlock?.description,
       });
     } else {
       form.reset({
@@ -87,19 +98,26 @@ export default function ContentFormModal({
         description: "",
       });
     }
-  }, [isEditMode, content, description, form]);
+  }, [isEditMode, contentBlock?.content, contentBlock?.description, form]);
 
   async function onSubmit(values: z.infer<typeof ContentFormSchema>) {
     startTransition(async () => {
       try {
         if (isEditMode) {
-          // const result = await updateBlock(pathname, {
-          //   id: blockId,
-          //   repoId,
-          //   parentId,
-          //   type: selectedOption.id,
-          //   ...values,
-          // })
+          const result = await updateBlock(pathname, {
+            id: BlockId,
+            repoId,
+            type: selectedOption.id,
+            order,
+            ...values,
+          });
+          if (result.success) {
+            toast.success("Block created successfully.");
+            onOpenChange(false);
+          } else {
+            toast.error(result.error);
+            console.log(result.error);
+          }
         } else {
           const result = await createBlock(pathname, {
             repoId,
