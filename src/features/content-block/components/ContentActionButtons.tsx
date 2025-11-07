@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 import { toast } from "sonner";
 import DeleteAlertBox from "@/features/repo/components/AlertDelete";
 import { useContentModal } from "./ContentModalContext";
+import { formatCreateDate, formatUpdateDate } from "@/lib/content-block-utils/date-formatter";
 
 export function ContentActionButtons({
   input,
@@ -33,9 +34,9 @@ export function ContentActionButtons({
     <>
       {!orientationVertical && (
         <div>
-          {input.createdAt.toLocaleDateString()}
+          {formatCreateDate(input.createdAt.toLocaleString())}
           {" ~ "}
-          Updated at {input.updatedAt.toLocaleString()}
+          Updated at {formatUpdateDate(input.updatedAt.toLocaleString())}
         </div>
       )}
 
