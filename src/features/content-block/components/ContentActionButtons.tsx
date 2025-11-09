@@ -1,14 +1,21 @@
 //  src\features\content-block\components\ContentActionButtons.tsx
 "use client";
 import { Button } from "@/components/ui/button";
-import { collaboratorRole, ContentBlockTable, repoStatus } from "@/drizzle/schema";
+import {
+  collaboratorRole,
+  ContentBlockTable,
+  repoStatus,
+} from "@/drizzle/schema";
 import { SquarePen, Trash2 } from "lucide-react";
 import { updateBlock } from "../actions/content-block";
 import { usePathname } from "next/navigation";
 import { toast } from "sonner";
 import DeleteAlertBox from "@/features/repo/components/AlertDelete";
 import { useContentModal } from "./ContentModalContext";
-import { formatCreateDate, formatUpdateDate } from "@/lib/content-block-utils/date-formatter";
+import {
+  formatCreateDate,
+  formatUpdateDate,
+} from "@/lib/content-block-utils/date-formatter";
 
 export function ContentActionButtons({
   input,
@@ -21,7 +28,7 @@ export function ContentActionButtons({
   role: collaboratorRole | undefined;
   owner: boolean;
 }) {
-  const { setShowDialog, setContentBlock} = useContentModal();
+  const { setShowDialog, setContentBlock } = useContentModal();
 
   const handleUpdate = async () => {
     setContentBlock(input);
@@ -34,13 +41,17 @@ export function ContentActionButtons({
     <>
       {!orientationVertical && (
         <div>
-          {formatCreateDate(input.createdAt.toLocaleString())}
-          {" ~ "}
-          Updated at {formatUpdateDate(input.updatedAt.toLocaleString())}
+          {formatCreateDate(input.createdAt.toISOString())}
+
+          {formatCreateDate(input.createdAt.toISOString()) !==
+            formatCreateDate(input.updatedAt.toISOString()) &&
+            `${" ~ "} Updated at ${formatUpdateDate(
+              input.updatedAt.toISOString()
+            )}`}
         </div>
       )}
 
-      {((userId && role !== "viewer" && role !== undefined) || (owner)) && (
+      {((userId && role !== "viewer" && role !== undefined) || owner) && (
         <div
           className={`flex items-center justify-between gap-2 ${
             orientationVertical && "mr-6"

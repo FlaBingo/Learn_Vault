@@ -45,7 +45,7 @@ export default async function FolderPage({
   const ownerUser = await getUserByRepoId(repoId);
   const repo = await getAnyRepoById(repoId);
   const { data } = repo;
-  const owner = logedUserId === ownerUser?.id;
+  const owner = !!logedUserId && logedUserId === ownerUser?.id;
 
   let role: collaboratorRole | undefined;
   if (logedUserId) {

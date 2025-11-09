@@ -41,7 +41,7 @@ export default async function ContentPage({
     role = (await userRepoRole(logedUserId, repoId)).data?.role;
   }
 
-  const owner = logedUserId === ownerUser?.id;
+  const owner = !!logedUserId && logedUserId === ownerUser?.id;
   return (
     <>
       <div className="container mx-auto mt-7 relative">

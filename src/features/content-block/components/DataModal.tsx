@@ -80,7 +80,10 @@ export default function ContentFormModal({
 
   const form = useForm<z.infer<typeof ContentFormSchema>>({
     resolver: zodResolver(ContentFormSchema),
-    defaultValues: {
+    defaultValues: isEditMode ? {
+      content: contentBlock?.content,
+      description: contentBlock?.description,
+    } : {
       content: "",
       description: "",
     },
