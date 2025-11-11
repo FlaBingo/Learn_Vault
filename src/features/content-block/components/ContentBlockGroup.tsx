@@ -46,7 +46,7 @@ export default function ContentBlockGroup({
 
   return (
     <div>
-      <Card className="dark:border-gray-600">
+      <Card className="dark:border-gray-600 bg-gray-100 dark:bg-gray-700 backdrop-blur-lg">
         <CardContent onClick={handleClickFocus} className="min-h-[500px]">
           {children}
           {((userId && role !== "viewer" && role !== undefined) || owner) && (
