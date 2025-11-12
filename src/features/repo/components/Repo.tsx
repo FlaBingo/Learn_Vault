@@ -28,7 +28,7 @@ export default async function RepoStructure({
             <Link href={`/repo/${id}`}>{title}</Link>
           </Button>
           {mode !== "explore" ? (
-            <div className="my-auto border-2 text-sm px-2 rounded-xl py-0.5">
+            <div className="hidden md:block my-auto border-2 text-sm px-2 rounded-xl py-0.5">
             {status}
           </div>
           ): (

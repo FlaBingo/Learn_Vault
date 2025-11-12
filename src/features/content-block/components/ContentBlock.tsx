@@ -106,14 +106,14 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
       return (
         <Card className="my-2 rounded-lg shadow-sm hover:border-primary">
           <CardContent className="p-0 m-0">
-            <div className="max-h-[500px] w-full flex items-center justify-center overflow-auto">
+            <div className="md:max-h-[500px] w-full flex items-center justify-center overflow-auto">
               <Image
                 src={imageUrl}
                 alt={input.description || "LearnVault resource image"}
                 width={0}
                 height={0}
                 sizes="100vw"
-                className="h-full w-auto object-contain"
+                className="w-full md:h-full md:w-auto object-contain"
               />
             </div>
             {input.description && (

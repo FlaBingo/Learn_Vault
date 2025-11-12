@@ -81,7 +81,7 @@ export default async function ContentPage({
         <h1 className="text-5xl mt-7 mb-2 mx-3 font-bold">{data?.title}</h1>
 
         <div className="grid grid-cols-5 gap-3">
-          <div className="col-span-4 p-4">
+          <div className="col-span-full md:col-span-4 p-4">
             <Tabs defaultValue="content">
               <TabsList>
                 <TabsTrigger value="content">Content</TabsTrigger>
@@ -119,7 +119,7 @@ export default async function ContentPage({
               </TabsContent>
             </Tabs>
           </div>
-          <div className="col-span-1 mt-14 p-2 sticky top-16 self-start">
+          <div className="col-span-1 mt-14 p-2 sticky top-16 self-start hidden md:block">
             <div>
               <h2 className="font-bold mb-2 text-2xl">About</h2>
               <ul>

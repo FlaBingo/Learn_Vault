@@ -57,7 +57,7 @@ export default function ContentBlockGroup({
                   value={inputValue}
                   className={`border-none outline-none shadow-none mt-7 mb-96`}
                   onChange={(e) => setInputValue(e.target.value)}
-                  placeholder="Click here and start typing or type '/ '..."
+                  placeholder="Click here and type '/ '..."
                 />
                 <CommandModal
                   className={`${

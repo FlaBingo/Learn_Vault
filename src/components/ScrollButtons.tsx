@@ -25,11 +25,11 @@ export default function ScrollButtons() {
   };
 
   return (
-    <div className="fixed right-60 bottom-20 z-50 h-30 w-10 flex flex-col gap-3">
+    <div className="fixed right-2 bottom-5 md:right-60 md:bottom-20 z-50 h-30 w-10 flex flex-col gap-3">
       <Button
         onClick={scrollToTop}
-        variant={"outline"}
-        className="flex-1 w-full flex items-center justify-center transition-all duration-200 focus:outline-none focus:z-10 rounded-none cursor-pointer "
+        variant={"default"}
+        className="flex-1 w-full flex items-center justify-center transition-all duration-200 focus:outline-none focus:z-10 cursor-pointer "
         aria-label="Scroll to top"
       >
         <ArrowUp className="h-6 w-6"/>
@@ -39,7 +39,7 @@ export default function ScrollButtons() {
       <Button
         onClick={scrollToBottom}
         variant={"outline"}
-        className="flex-1 w-full flex items-center justify-center transition-all duration-200 focus:outline-none focus:z-10 rounded-none cursor-pointer " 
+        className="flex-1 w-full flex items-center justify-center transition-all duration-200 focus:outline-none focus:z-10 cursor-pointer " 
         aria-label="Scroll to bottom"
       >
         <ArrowDown className="h-6 w-6" />
