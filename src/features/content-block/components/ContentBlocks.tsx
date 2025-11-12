@@ -1,6 +1,6 @@
 // src\features\content-block\components\ContentBlocks.tsx
 
-import { Separator } from "@/components/ui/separator";
+import { Loader2 } from "lucide-react";
 import { getBlocks } from "../actions/content-block";
 import ContentBlock from "./ContentBlock";
 

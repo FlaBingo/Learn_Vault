@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import { ModeToggle } from "./theme-toggle";
-import SignIn from "./sign-in";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
@@ -16,6 +15,8 @@ import Image from "next/image";
 
 export const Navbar = () => {
   const { data } = useSession();
+  const email = data?.user?.email;
+  const username = email?.substring(0, Number(email.indexOf("@")));
   return (
     <div className="container mx-auto px-5 py-3 shadow flex justify-between items-center sticky top-0 backdrop-blur-lg bg-opacity-30 z-50">
       <div className="font-extrabold cursor-pointer">
@@ -47,6 +48,9 @@ export const Navbar = () => {
                 />
               </DropdownMenuTrigger>
               <DropdownMenuContent>
+                <Link href={`/profile/${username}`}>
+                  <DropdownMenuItem>Profile</DropdownMenuItem>
+                </Link>
                 <Link href={"/my-repos"}>
                   <DropdownMenuItem>Repositories</DropdownMenuItem>
                 </Link>
