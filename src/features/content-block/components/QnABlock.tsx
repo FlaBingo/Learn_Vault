@@ -6,6 +6,7 @@ import { CardContent } from "@/components/ui/card";
 import { CornerDownRight } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { ContentBlockTable } from "@/drizzle/schema";
+import KatexDisplay from "@/components/KatexDisplay";
 
 // Define a constant for the clamp height (Tailwind's max-h-28 = 7rem = 112px)
 const MAX_CLAMP_HEIGHT_PX = 112;
@@ -41,7 +42,7 @@ export default function QnABlock({
     <CardContent className="flex flex-col gap-2">
       {/* 2. The Answer Section */}
       <div className="flex gap-3">
-        <CornerDownRight className="h-5 w-5 text-gray-500 flex-shrink-0" />
+        <CornerDownRight className="hidden md:block h-5 w-5 text-gray-500 flex-shrink-0" />
 
         {/* Wrapper for the answer text and the "Show more" button */}
         <div className="flex-1 min-w-0">
