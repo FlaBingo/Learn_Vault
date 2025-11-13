@@ -43,7 +43,7 @@ export default async function CommentSection({ repoId }: { repoId: string }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Comments ({comments.length}) (Incomplete)</CardTitle>
+        <CardTitle>Comments ({comments.length}) (mockComments)</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <CommentInput repoId={repoId} />

@@ -33,13 +33,14 @@ export async function isValidImageUrl(url: string): Promise<boolean> {
     }
 
     return true; // Looks good!
-  } catch (error: any) {
+  } catch (error) {
     // This catches network errors (e.g., DNS failure, timeout)
-    if (error.name === 'TimeoutError') {
-      console.warn(`[isValidImageUrl] Timeout for URL: ${url}`);
-    } else {
-      console.warn(`[isValidImageUrl] Fetch error for URL: ${url}`, error.message);
-    }
+    // if (error?.name === 'TimeoutError') {
+    //   console.warn(`[isValidImageUrl] Timeout for URL: ${url}`);
+    // } else {
+    //   console.warn(`[isValidImageUrl] Fetch error for URL: ${url}`, error.message);
+    // }
+    console.warn(error);
     return false;
   }
 }
