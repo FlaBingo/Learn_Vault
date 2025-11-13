@@ -5,13 +5,14 @@ import {
   CardContent,
   CardFooter,
   CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { collaboratorRole, ContentBlockTable } from "@/drizzle/schema";
 import {
   getYouTubeId,
   isValidImageUrl,
 } from "@/lib/content-block-utils/validations";
-import { CodeIcon, FileTextIcon, Folder, LinkIcon, Video } from "lucide-react";
+import { CodeIcon, CornerDownRight, FileTextIcon, Folder, LinkIcon, MessageCircleQuestionMark, NotepadText, Video } from "lucide-react";
 import Image from "next/image";
 import CollageBlock from "./CollageBlock";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,8 @@ import Link from "next/link";
 import { auth } from "@/services/auth";
 import { userRepoRole } from "../actions/content-block";
 import { getRepoById } from "@/features/repo/actions/repo";
+import QnABlock from "./QnABlock";
+import NoteBlock from "./NoteBlock";
 
 type ContentBlockProps = {
   input: typeof ContentBlockTable.$inferSelect;
@@ -49,17 +52,10 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
       return (
         <Card
           className="my-2 rounded-sm shadow-sm hover:border-primary"
-          // style={{ backgroundColor: color || undefined }}
         >
-          <CardContent className="px-4">
-            <pre className="text-lg font-semibold whitespace-pre-wrap font-sans">
-              {input.content}
-            </pre>
-            {input.description && (
-              <div className="text-sm text-muted-foreground mt-1">
-                {input.description}
-              </div>
-            )}
+          <CardContent className="px-4 flex gap-3">
+            {/* <NotepadText className="size-8"/> */}
+            <NoteBlock input={input}/>
           </CardContent>
           <CardFooter className="flex text-sm justify-between items-center">
             <ContentActionButtons
@@ -389,6 +385,29 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
         </>
       );
     }
+
+    case "qna": {
+      return (
+        <>
+          <Card className="my-2 overflow-hidden rounded-lg shadow-sm hover:border-primary">
+            <CardHeader className="flex gap-4 items-center">
+              <MessageCircleQuestionMark />
+              <CardTitle className="font-bold text-lg">{input.content}</CardTitle>
+            </CardHeader>
+            <QnABlock input={input} />
+            <CardFooter className="text-sm flex justify-between items-center">
+              <ContentActionButtons
+                input={input}
+                userId={userId}
+                role={role}
+                owner={owner}
+              />
+            </CardFooter>
+          </Card>
+        </>
+      );
+    }
+
     /**
      * Fallback for any unknown content types.
      * This helps with debugging if a new type is added but not rendered.

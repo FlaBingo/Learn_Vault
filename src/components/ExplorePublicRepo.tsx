@@ -45,7 +45,6 @@ export default async function ExplorePublicRepos({
           <CardDescription>
             Showing {repos.length} of {pagination.totalCount} repositories.
           </CardDescription>
-          <CardAction>Action</CardAction>
         </CardHeader>
         <CardContent>
           <FilterForm mode="explore" />

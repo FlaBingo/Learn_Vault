@@ -74,19 +74,21 @@ export default function ContentFormModal({
   // console.log("parentId: ", parentId);
 
   const [isPending, startTransition] = useTransition();
-  const selectedOption = BLOCK_OPTIONS.filter(
-    (option) => isEditMode ? option.id === contentBlock?.type : option.id === contentId
+  const selectedOption = BLOCK_OPTIONS.filter((option) =>
+    isEditMode ? option.id === contentBlock?.type : option.id === contentId
   )[0];
 
   const form = useForm<z.infer<typeof ContentFormSchema>>({
     resolver: zodResolver(ContentFormSchema),
-    defaultValues: isEditMode ? {
-      content: contentBlock?.content,
-      description: contentBlock?.description,
-    } : {
-      content: "",
-      description: "",
-    },
+    defaultValues: isEditMode
+      ? {
+          content: contentBlock?.content,
+          description: contentBlock?.description,
+        }
+      : {
+          content: "",
+          description: "",
+        },
   });
 
   useEffect(() => {
@@ -115,7 +117,7 @@ export default function ContentFormModal({
             ...values,
           });
           if (result.success) {
-            toast.success("Block created successfully.");
+            toast.success("Block Updated successfully.");
             onOpenChange(false);
           } else {
             toast.error(result.error);
@@ -129,7 +131,7 @@ export default function ContentFormModal({
             ...values,
           });
           if (result.success) {
-            toast.success("Block created successfully.");
+            toast.success("Block Created successfully.");
             onOpenChange(false);
           } else {
             toast.error(result.error);
@@ -195,9 +197,10 @@ export default function ContentFormModal({
                 control={form.control}
                 name="description"
                 render={({ field }) => {
-                  const MAX_LENGTH = 150;
+                  const MAX_LENGTH =
+                    selectedOption.id === "qna" ? undefined : 150;
                   const remainingChars =
-                    MAX_LENGTH - (field.value?.length || 0);
+                    MAX_LENGTH && MAX_LENGTH - (field.value?.length || 0);
                   return (
                     <FormItem>
                       <FormLabel>Description</FormLabel>
@@ -211,12 +214,16 @@ export default function ContentFormModal({
                       <FormDescription>
                         {selectedOption.descMessage}
                         <br />
-                        <span className="text-red-400 font-bold">
-                          {remainingChars}
-                        </span>{" "}
-                        characters remaining
-                        <br />
-                        Up to {MAX_LENGTH} characters.
+                        {remainingChars && (
+                          <>
+                            <span className="text-red-400 font-bold">
+                              {remainingChars}
+                            </span>{" "}
+                            characters remaining
+                            <br />
+                            Up to {MAX_LENGTH} characters.
+                          </>
+                        )}
                       </FormDescription>
                       <FormMessage />
                     </FormItem>

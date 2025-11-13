@@ -9,6 +9,7 @@ import {
   Code,
   Images,
   LucideIcon,
+  HelpCircle,
 } from "lucide-react";
 import { ContentType } from "@/drizzle/schema";
 
@@ -130,6 +131,18 @@ export const BLOCK_OPTIONS: {
     descMessage: "Explain logic or purpose.",
     icon: Code,
     color: "#C084FC",
+    acceptsFile: false,
+  },
+  {
+    id: "qna",
+    label: "QnA",
+    contentEl: "textarea",
+    contentPlaceholder: "Enter the question...",
+    contentMessage: "This text will be the main, always-visible question.",
+    descPlaceholder: "Enter the answer...",
+    descMessage: "This text will be the answer, often shown in a toggle.",
+    icon: HelpCircle,
+    color: "#2DD4BF", // teal
     acceptsFile: false,
   },
 ];
