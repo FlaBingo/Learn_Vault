@@ -1,6 +1,8 @@
 // src\app\(repository)\repo\[repoId]\page.tsx
-import ContentCommentSection from "@/components/ContentCommentSection";
+import CommentSection from "@/features/comments/components/CommentSection";
+import HowtoSection from "@/components/HowtoSection";
 import ScrollButtons from "@/components/ScrollButtons";
+import SettingsSection from "@/components/SettingsSection";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -17,10 +19,10 @@ import ContentBlocks from "@/features/content-block/components/ContentBlocks";
 import { ContentModalProvider } from "@/features/content-block/components/ContentModalContext";
 import {
   getAnyRepoById,
-  getRepoById,
   getUserByRepoId,
 } from "@/features/repo/actions/repo";
 import { auth } from "@/services/auth";
+import { metadata } from "@/app/layout";
 
 export default async function ContentPage({
   params,
@@ -35,6 +37,9 @@ export default async function ContentPage({
   const ownerUser = await getUserByRepoId(repoId);
   const repo = await getAnyRepoById(repoId);
   const { data } = repo;
+
+  metadata.title = data?.title;
+  metadata.description = data?.description;
 
   let role: collaboratorRole | undefined;
   if (logedUserId) {
@@ -101,21 +106,13 @@ export default async function ContentPage({
                 </ContentModalProvider>
               </TabsContent>
               <TabsContent value="comment" className="my-2">
-                <ContentCommentSection />
+                <CommentSection repoId={repoId}/>
               </TabsContent>
               <TabsContent value="setting" className="my-2">
-                <Card>
-                  <CardContent>
-                    settings changes to make: - option for changing background
-                    color - setting permission - if public : admin, editor - if
-                    private: admin, editor, private viewer(may be premium)
-                  </CardContent>
-                </Card>
+                <SettingsSection />
               </TabsContent>
               <TabsContent value="how-to" className="my-2">
-                <Card>
-                  <CardContent>How to</CardContent>
-                </Card>
+                <HowtoSection />
               </TabsContent>
             </Tabs>
           </div>

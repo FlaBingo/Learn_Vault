@@ -1,6 +1,6 @@
 // src\app\(repository)\repo\[repoId]\[...slug]\page.tsx
 
-import ContentCommentSection from "@/components/ContentCommentSection";
+import ContentCommentSection from "@/features/comments/components/CommentSection";
 import ScrollButtons from "@/components/ScrollButtons";
 import {
   Breadcrumb,
@@ -30,6 +30,10 @@ import { getAnyRepoById, getUserByRepoId } from "@/features/repo/actions/repo";
 import { auth } from "@/services/auth";
 import Link from "next/link";
 import { Fragment } from "react";
+import CommentSection from "@/features/comments/components/CommentSection";
+import HowtoSection from "@/components/HowtoSection";
+import SettingsSection from "@/components/SettingsSection";
+import { metadata } from "@/app/layout";
 
 export default async function FolderPage({
   params,
@@ -38,13 +42,15 @@ export default async function FolderPage({
 }) {
   const { repoId, slug } = await params; // No 'await' needed for params
   const parentId = slug[slug.length - 1];
-
+  
   const session = await auth();
   const logedUserId = session?.user?.id;
-
+  
   const ownerUser = await getUserByRepoId(repoId);
   const repo = await getAnyRepoById(repoId);
   const { data } = repo;
+  metadata.title = data?.title;
+  metadata.description = data?.description;
   const owner = !!logedUserId && logedUserId === ownerUser?.id;
 
   let role: collaboratorRole | undefined;
@@ -176,21 +182,13 @@ export default async function FolderPage({
                 </ContentModalProvider>
               </TabsContent>
               <TabsContent value="comment" className="my-2">
-                <ContentCommentSection />
+                <CommentSection repoId={repoId} />
               </TabsContent>
               <TabsContent value="setting" className="my-2">
-                <Card>
-                  <CardContent>
-                    settings changes to make: - option for changing background
-                    color - setting permission - if public : admin, editor - if
-                    private: admin, editor, private viewer(may be premium)
-                  </CardContent>
-                </Card>
+                <SettingsSection />
               </TabsContent>
               <TabsContent value="how-to" className="my-2">
-                <Card>
-                  <CardContent>How to</CardContent>
-                </Card>
+                <HowtoSection />
               </TabsContent>
             </Tabs>
           </div>

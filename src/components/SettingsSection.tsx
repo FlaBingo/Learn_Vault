@@ -1,11 +1,11 @@
 import { Card, CardContent } from "./ui/card";
 
-export default async function ContentCommentSection() {
+export default async function SettingsSection() {
   return (
     <>
       <Card>
         <CardContent>
-          first comment
+          Settings
         </CardContent>
       </Card>
     </>
