@@ -1,4 +1,4 @@
-// app/my-repos/page.tsx
+// src\app\(repository)\my-repos\page.tsx
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -34,7 +34,7 @@ export default async function RepositoriesPage({
     redirect("/login", RedirectType.replace);
   }
 
-  const resolvedSearchParams = await searchParams;
+  const resolvedSearchParams = searchParams;
 
   // extract the searchParams
   const search =
