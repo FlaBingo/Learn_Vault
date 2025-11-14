@@ -182,7 +182,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
         return (
           <Card className="my-2 overflow-hidden rounded-lg shadow-sm hover:border-primary selection:bg-[#93C5FD] selection:text-black">
             {/* <Video /> */}
-            <div className="aspect-video w-full bg-black">
+            <div className="aspect-video w-full max-h-[300px] bg-black">
               <iframe
                 src={`https://www.youtube.com/embed/${videoId}`}
                 title={input.description || "YouTube video player"}
@@ -214,7 +214,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
       // It's a direct video link (e.g., .mp4)
       return (
         <Card className="my-2 overflow-hidden rounded-lg shadow-sm hover:border-primary selection:bg-[#93C5FD] selection:text-black">
-          <CardContent className="p-0">
+          <CardContent className="p-0 max-h-[300px]">
             <video
               className="w-full h-auto bg-black"
               controls
