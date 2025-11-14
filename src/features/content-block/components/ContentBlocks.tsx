@@ -14,9 +14,9 @@ export default async function ContentBlocks({ params }: Props) {
   const { data } = content_blocks;
   return (
     <>
-      <div>
+      <div className="grid lg:grid-cols-2 lg:gap-3">
         {data?.map((block, index) => (
-          <div key={block.id} className="grid resize-y">
+          <div key={block.id} className={`${(block.type === "h1" || block.type === "qna") && "lg:col-span-full"}`}>
             <ContentBlock input={block} slug={slug} />
           </div>
         ))}
