@@ -16,10 +16,9 @@ interface Props {
 }
 
 
-export default async function Home({
-  searchParams,
-}: Props) {
+export default async function Home(props: Props) {
   const session = await auth();
+  const {searchParams} = props;
   const validatedSearchParams = await searchParams;
 
   // if (!session) {

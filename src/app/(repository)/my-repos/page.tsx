@@ -27,12 +27,12 @@ interface Props {
   searchParams?: Record<string, string | string[] | undefined>;
 }
 
-export default async function RepositoriesPage({ searchParams }: Props) {
+export default async function RepositoriesPage(props: Props) {
   const session = await auth();
   if (!session) {
     redirect("/login", RedirectType.replace);
   }
-
+  const { searchParams } = props;
   const resolvedSearchParams = searchParams;
 
   // extract the searchParams
