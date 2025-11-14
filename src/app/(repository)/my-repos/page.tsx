@@ -27,7 +27,7 @@ import { redirect, RedirectType } from "next/navigation";
 export default async function RepositoriesPage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }) {
   const session = await auth();
   if (!session) {
@@ -38,20 +38,20 @@ export default async function RepositoriesPage({
 
   // extract the searchParams
   const search =
-    typeof resolvedSearchParams.search === "string"
-      ? resolvedSearchParams.search
+    typeof resolvedSearchParams?.search === "string"
+      ? resolvedSearchParams?.search
       : undefined;
   const status = repoStatuses.includes(
-    resolvedSearchParams.status as repoStatus
+    resolvedSearchParams?.status as repoStatus
   )
-    ? (resolvedSearchParams.status as repoStatus)
+    ? (resolvedSearchParams?.status as repoStatus)
     : undefined; // this f*cking line wasted my 4 hours
-  const sortBy = sortByOptions.includes(resolvedSearchParams.sortBy as sortBy)
-    ? (resolvedSearchParams.sortBy as sortBy)
+  const sortBy = sortByOptions.includes(resolvedSearchParams?.sortBy as sortBy)
+    ? (resolvedSearchParams?.sortBy as sortBy)
     : "updated_desc";
   const page =
-    typeof resolvedSearchParams.page === "string"
-      ? Number(resolvedSearchParams.page)
+    typeof resolvedSearchParams?.page === "string"
+      ? Number(resolvedSearchParams?.page)
       : 1;
   const response = await getRepositories({ search, status, sortBy, page });
   const { data: repos, pagination } = response;

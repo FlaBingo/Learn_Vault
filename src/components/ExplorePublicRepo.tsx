@@ -20,7 +20,7 @@ import PaginationControls from "@/features/repo/components/PaginationControls";
 export default async function ExplorePublicRepos({
   searchParams,
 }: {
-  searchParams: {
+  searchParams?: {
     search?: string;
     sortBy?: string;
     page?: string;
@@ -28,10 +28,10 @@ export default async function ExplorePublicRepos({
 }) {
   // Parse params from the URL, providing defaults
   const params: GetReposParams = {
-    search: searchParams.search || undefined,
+    search: searchParams?.search || undefined,
     // status: (searchParams.status as repoStatus) || undefined, // Add type assertion
-    sortBy: (searchParams.sortBy as sortBy) || undefined,
-    page: searchParams.page ? parseInt(searchParams.page) : 1,
+    sortBy: (searchParams?.sortBy as sortBy) || undefined,
+    page: searchParams?.page ? parseInt(searchParams.page) : 1,
     mode: "explore",
   };
 

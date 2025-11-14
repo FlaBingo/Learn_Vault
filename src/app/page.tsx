@@ -14,7 +14,7 @@ import Link from "next/link";
 export default async function Home({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }) {
   const session = await auth();
   const validatedSearchParams = await searchParams;
