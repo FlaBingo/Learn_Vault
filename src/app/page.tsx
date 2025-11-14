@@ -11,11 +11,14 @@ import { SessionProvider } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 
+interface Props {
+  searchParams?: Record<string, string | string[] | undefined>;
+}
+
+
 export default async function Home({
   searchParams,
-}: {
-  searchParams?: { [key: string]: string | string[] | undefined };
-}) {
+}: Props) {
   const session = await auth();
   const validatedSearchParams = await searchParams;
 

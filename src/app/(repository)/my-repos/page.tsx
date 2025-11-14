@@ -14,7 +14,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { repoStatuses, repoStatus } from "@/drizzle/schema";
 import { getRepositories } from "@/features/repo/actions/repo";
 import FilterForm from "@/features/repo/components/FilterForm";
@@ -24,11 +23,11 @@ import { sortBy, sortByOptions } from "@/lib/types/sorttypes";
 import { auth } from "@/services/auth";
 import { redirect, RedirectType } from "next/navigation";
 
-export default async function RepositoriesPage({
-  searchParams,
-}: {
-  searchParams?: { [key: string]: string | string[] | undefined };
-}) {
+interface Props {
+  searchParams?: Record<string, string | string[] | undefined>;
+}
+
+export default async function RepositoriesPage({ searchParams }: Props) {
   const session = await auth();
   if (!session) {
     redirect("/login", RedirectType.replace);
