@@ -10,7 +10,6 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { collaboratorRole } from "@/drizzle/schema";
 import { userRepoRole } from "@/features/content-block/actions/content-block";
@@ -27,7 +26,7 @@ import { metadata } from "@/app/layout";
 export default async function ContentPage({
   params,
 }: {
-  params: { repoId: string };
+  params: Promise<{ repoId: string }>;
 }) {
   const { repoId } = await params;
 
@@ -101,7 +100,7 @@ export default async function ContentPage({
                     role={role}
                     owner={owner}
                   >
-                    <ContentBlocks params={params} />
+                    <ContentBlocks params={{ repoId }} />
                   </ContentBlockGroup>
                 </ContentModalProvider>
               </TabsContent>

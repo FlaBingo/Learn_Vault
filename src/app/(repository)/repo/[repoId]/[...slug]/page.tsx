@@ -1,6 +1,5 @@
 // src\app\(repository)\repo\[repoId]\[...slug]\page.tsx
 
-import ContentCommentSection from "@/features/comments/components/CommentSection";
 import ScrollButtons from "@/components/ScrollButtons";
 import {
   Breadcrumb,
@@ -10,7 +9,6 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,9 +36,9 @@ import { metadata } from "@/app/layout";
 export default async function FolderPage({
   params,
 }: {
-  params: { repoId: string; slug: string[] };
+  params: Promise<{ repoId: string; slug: string[] }>;
 }) {
-  const { repoId, slug } = await params; // No 'await' needed for params
+  const { repoId, slug } = await params;
   const parentId = slug[slug.length - 1];
   
   const session = await auth();

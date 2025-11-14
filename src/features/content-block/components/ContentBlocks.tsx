@@ -6,13 +6,10 @@ import ContentBlock from "./ContentBlock";
 
 interface Props {
   params: { repoId: string; parentId?: string; slug?: string[] };
-  // open: boolean;
-  // onOpenChange: (open: boolean) => void;
 }
 
 export default async function ContentBlocks({ params }: Props) {
   const { repoId, parentId, slug } = await params;
-  // console.log(repoId, parentId)
   const content_blocks = await getBlocks({ repoId, parentId });
   const { data } = content_blocks;
   return (

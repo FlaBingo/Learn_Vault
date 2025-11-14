@@ -4,9 +4,10 @@ import NewRepoForm from "@/features/repo/components/NewRepoForm";
 export default async function Repository({
   params,
 }: {
-  params: { repoId: string };
+  params: Promise<{ repoId: string }>;
 }) {
-  const initialData = await getRepoById(params.repoId);
+  const { repoId } = await params;
+  const initialData = await getRepoById(repoId);
   return (
     <>
       <div className="container mx-auto">
