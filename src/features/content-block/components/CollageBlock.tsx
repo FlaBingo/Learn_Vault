@@ -29,7 +29,7 @@ export default function CollageBlock({ urls, description }: CollageBlockProps) {
       <Carousel className="w-full">
         <CarouselContent>
           {urls.map((url, index) => (
-            <CarouselItem key={index} className="flex justify-center">
+            <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
               <div className="relative w-full h-[350px] sm:h-[400px] rounded-xl overflow-hidden">
                 <Image
                   src={url}
@@ -41,8 +41,8 @@ export default function CollageBlock({ urls, description }: CollageBlockProps) {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
+        {/* <CarouselPrevious className="hidden md:block"/>
+        <CarouselNext className="hidden md:block"/> */}
       </Carousel>
     </div>
   );
