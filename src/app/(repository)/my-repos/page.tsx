@@ -88,8 +88,8 @@ export default async function RepositoriesPage({ searchParams }: Props) {
                 key={repo.id}
                 className={`py-5 px-5 transition-colors ${
                   index % 2 === 0
-                    ? "bg-gray-50 dark:bg-gray-800" // bright for light mode, darker for dark mode
-                    : "bg-gray-100 dark:bg-gray-700"
+                    ? "" // bright for light mode, darker for dark mode
+                    : "bg-gray-100 dark:bg-gray-800"
                 }`}
               >
                 <RepoStructure {...repo} />
