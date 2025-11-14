@@ -3,7 +3,6 @@
 import FilterForm from "@/features/repo/components/FilterForm";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -14,13 +13,12 @@ import RepoStructure from "@/features/repo/components/Repo";
 import { Separator } from "./ui/separator";
 import { getRepositories, GetReposParams } from "@/features/repo/actions/repo";
 import { sortBy } from "@/lib/types/sorttypes";
-import { repoStatus } from "@/lib/types/repoTypes";
 import PaginationControls from "@/features/repo/components/PaginationControls";
 
 export default async function ExplorePublicRepos({
   searchParams,
 }: {
-  searchParams?: {
+  searchParams: {
     search?: string;
     sortBy?: string;
     page?: string;

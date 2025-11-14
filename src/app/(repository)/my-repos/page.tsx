@@ -1,4 +1,5 @@
 // src\app\(repository)\my-repos\page.tsx
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -24,16 +25,15 @@ import { auth } from "@/services/auth";
 import { redirect, RedirectType } from "next/navigation";
 
 interface Props {
-  searchParams?: Record<string, string | string[] | undefined>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default async function RepositoriesPage(props: Props) {
+export default async function RepositoriesPage({ searchParams }: Props) {
   const session = await auth();
   if (!session) {
     redirect("/login", RedirectType.replace);
   }
-  const { searchParams } = props;
-  const resolvedSearchParams = searchParams;
+  const resolvedSearchParams = await searchParams;
 
   // extract the searchParams
   const search =
