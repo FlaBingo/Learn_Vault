@@ -15,8 +15,6 @@ import {
 import { CodeIcon, FileTextIcon, Folder, LinkIcon, MessageCircleQuestionMark, NotepadText, Video } from "lucide-react";
 import Image from "next/image";
 import CollageBlock from "./CollageBlock";
-import { Button } from "@/components/ui/button";
-import { BLOCK_OPTIONS } from "@/lib/content-block-utils/block-options";
 import { ContentActionButtons } from "./ContentActionButtons";
 import Link from "next/link";
 import { auth } from "@/services/auth";
@@ -53,7 +51,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
     case "note":
       return (
         <Card
-          className={`my-2 rounded-sm shadow-sm hover:border-primary selection:bg-[#FDE68A]`}
+          className={`my-2 rounded-sm shadow-sm hover:border-primary selection:bg-[#FDE68A] selection:text-black`}
         >
           <CardContent className="px-4 flex gap-3">
             <NotepadText className="flex-shrink-0"/>
@@ -77,7 +75,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
 
     case "h1":
       return (
-          <div className="my-4 mt-6 flex items-center justify-between selection:bg-[#A5B4FC]">
+          <div className="my-4 mt-6 flex items-center justify-between selection:bg-[#A5B4FC] selection:text-black">
           <div className="">
             <div className="text-5xl font-extrabold">{input.content}</div>
             <div className="text-xs text-muted-foreground">
@@ -102,7 +100,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
       const isServerValid = await isValidImageUrl(input.content);
       const imageUrl = isServerValid ? input.content : PLACEHOLDER_IMAGE;
       return (
-        <Card className="my-2 rounded-lg shadow-sm hover:border-primary selection:bg-[#FCA5A5]">
+        <Card className="my-2 rounded-lg shadow-sm hover:border-primary selection:bg-[#FCA5A5] selection:text-black">
           <CardContent className="p-0 m-0">
             <div className="md:max-h-[500px] w-full flex items-center justify-center overflow-auto">
               <Image
@@ -150,7 +148,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
       }
 
       return (
-        <Card className="my-2 rounded-lg shadow-sm hover:border-primary selection:bg-[#FDBA74]">
+        <Card className="my-2 rounded-lg shadow-sm hover:border-primary selection:bg-[#FDBA74] selection:text-black">
           <CardContent className="p-0">
             <CollageBlock urls={urls} />
             {input.description && (
@@ -182,7 +180,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
       if (videoId) {
         // It's a YouTube video
         return (
-          <Card className="my-2 overflow-hidden rounded-lg shadow-sm hover:border-primary selection:bg-[#93C5FD]">
+          <Card className="my-2 overflow-hidden rounded-lg shadow-sm hover:border-primary selection:bg-[#93C5FD] selection:text-black">
             {/* <Video /> */}
             <div className="aspect-video w-full bg-black">
               <iframe
@@ -215,7 +213,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
 
       // It's a direct video link (e.g., .mp4)
       return (
-        <Card className="my-2 overflow-hidden rounded-lg shadow-sm hover:border-primary selection:bg-[#93C5FD]">
+        <Card className="my-2 overflow-hidden rounded-lg shadow-sm hover:border-primary selection:bg-[#93C5FD] selection:text-black">
           <CardContent className="p-0">
             <video
               className="w-full h-auto bg-black"
@@ -253,7 +251,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
      */
     case "link":
       return (
-        <Card className="w-full min-w-0 my-2 rounded-lg shadow-sm hover:shadow-md transition-shadow hover:border-primary selection:bg-[#86EFAC]">
+        <Card className="w-full min-w-0 my-2 rounded-lg shadow-sm hover:shadow-md transition-shadow hover:border-primary selection:bg-[#86EFAC] selection:text-black">
           <div className="flex justify-between">
             <a
               href={input.content}
@@ -317,7 +315,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
      */
     case "code":
       return (
-        <Card className="my-2 overflow-hidden rounded-lg shadow-sm hover:border-primary selection:bg-[#C084FC]">
+        <Card className="my-2 overflow-hidden rounded-lg shadow-sm hover:border-primary selection:bg-[#C084FC] selection:text-black">
           {input.description && (
             <CardHeader className="flex flex-row items-center gap-2 p-3 bg-gray-100 dark:bg-gray-800 border-b">
               <CodeIcon className="size-4 text-muted-foreground flex-shrink-0" />
@@ -347,7 +345,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
       // console.log(folderIds);
       return (
         <>
-          <Card className="my-2 overflow-hidden rounded-lg shadow-sm hover:border-primary selection:bg-[#FBBF24]">
+          <Card className="my-2 overflow-hidden rounded-lg shadow-sm hover:border-primary selection:bg-[#FBBF24] selection:text-black">
             <CardContent>
               <Link
                 href={`/repo/${input.repoId}/${folderIds ? folderIds : ""}/${
@@ -379,7 +377,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
     case "qna": {
       return (
         <>
-          <Card className={`my-2 overflow-hidden rounded-lg shadow-sm hover:border-primary selection:bg-[#2DD4BF]`}>
+          <Card className={`my-2 overflow-hidden rounded-lg shadow-sm hover:border-primary selection:bg-[#2DD4BF] selection:text-black`}>
             <CardHeader className="flex gap-4">
               <MessageCircleQuestionMark className="flex-shrink-0"/>
               <CardTitle className="font-semibold">{input.content}</CardTitle>
