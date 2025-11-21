@@ -53,7 +53,7 @@ export function ContentActionButtons({
 
       {((userId && role !== "viewer" && role !== undefined) || owner) && (
         <div
-          className={`flex items-center justify-between gap-2 ${
+          className={`hidden hover:flex items-center justify-between gap-2 ${
             orientationVertical && "mr-6"
           }`}
         >
