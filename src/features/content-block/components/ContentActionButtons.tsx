@@ -7,9 +7,6 @@ import {
   repoStatus,
 } from "@/drizzle/schema";
 import { SquarePen, Trash2 } from "lucide-react";
-import { updateBlock } from "../actions/content-block";
-import { usePathname } from "next/navigation";
-import { toast } from "sonner";
 import DeleteAlertBox from "@/features/repo/components/AlertDelete";
 import { useContentModal } from "./ContentModalContext";
 import {
@@ -22,11 +19,13 @@ export function ContentActionButtons({
   userId,
   role,
   owner,
+  ButtonClass,
 }: {
   input: typeof ContentBlockTable.$inferSelect;
   userId: string | undefined;
   role: collaboratorRole | undefined;
   owner: boolean;
+  ButtonClass?: string;
 }) {
   const { setShowDialog, setContentBlock } = useContentModal();
 
@@ -53,7 +52,7 @@ export function ContentActionButtons({
 
       {((userId && role !== "viewer" && role !== undefined) || owner) && (
         <div
-          className={`hidden hover:flex items-center justify-between gap-2 ${
+          className={`${ButtonClass} flex items-center justify-between gap-2 ${
             orientationVertical && "mr-6"
           }`}
         >
