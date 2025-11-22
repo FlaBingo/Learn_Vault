@@ -32,6 +32,7 @@ import CommentSection from "@/features/comments/components/CommentSection";
 import HowtoSection from "@/components/HowtoSection";
 import SettingsSection from "@/components/SettingsSection";
 import { metadata } from "@/app/layout";
+import { emailToUsername } from "@/lib/user-utils/utils";
 
 export default async function FolderPage({
   params,
@@ -55,6 +56,7 @@ export default async function FolderPage({
   if (logedUserId) {
     role = (await userRepoRole(logedUserId, repoId)).data?.role;
   }
+  const username = emailToUsername(ownerUser?.email);
   const folderPromises = slug.map((folderId) => getFolderById(folderId));
   const resolvedFolders = await Promise.all(folderPromises);
   // --- End of FIX 1 ---
@@ -80,7 +82,7 @@ export default async function FolderPage({
               ) : (
                 <>
                   <BreadcrumbItem>
-                    <BreadcrumbLink>{ownerUser?.name}</BreadcrumbLink>
+                    <BreadcrumbLink href={logedUserId ? `/profile/${username}` : `/login`}>{username}</BreadcrumbLink>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />
                   <BreadcrumbItem>

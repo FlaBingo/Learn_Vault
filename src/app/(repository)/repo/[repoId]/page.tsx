@@ -22,6 +22,7 @@ import {
 } from "@/features/repo/actions/repo";
 import { auth } from "@/services/auth";
 import { metadata } from "@/app/layout";
+import { emailToUsername } from "@/lib/user-utils/utils";
 
 export default async function ContentPage({
   params,
@@ -45,6 +46,8 @@ export default async function ContentPage({
     role = (await userRepoRole(logedUserId, repoId)).data?.role;
   }
 
+  const username = emailToUsername(ownerUser?.email)
+
   const owner = !!logedUserId && logedUserId === ownerUser?.id;
   return (
     <>
@@ -67,7 +70,7 @@ export default async function ContentPage({
               ) : (
                 <>
                   <BreadcrumbItem>
-                    <BreadcrumbLink>{ownerUser?.name}</BreadcrumbLink>
+                    <BreadcrumbLink href={logedUserId ? `/profile/${username}` : `/login`}>{username}</BreadcrumbLink>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />
                   <BreadcrumbItem>
