@@ -18,7 +18,7 @@ export default function ContentPageSkeleton() {
                   <CardDescription><Skeleton className="h-10 w-72"/></CardDescription>
                 </CardHeader>
                 <CardFooter className="flex justify-between">
-                  <Skeleton className="h-7 w-60"/>
+                  <Skeleton className="h-7 w-48"/>
                   <div className="flex gap-5 md:mr-6">
                     <Skeleton className="h-9 w-9"/>
                     <Skeleton className="h-9 w-9"/>

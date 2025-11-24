@@ -85,7 +85,7 @@ export default function NewRepoForm({
         }
       } catch (error) {
         console.log("Error in submit handler function", error);
-        toast.error("Internal Server Error...")
+        toast.error("Internal Server Error...");
       }
     });
   }
@@ -102,7 +102,9 @@ export default function NewRepoForm({
             {isEditMode ? (
               <>
                 <BreadcrumbItem>
-                  <BreadcrumbLink href={`/my-repos`}>my repositories</BreadcrumbLink>
+                  <BreadcrumbLink href={`/my-repos`}>
+                    my repositories
+                  </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>Edit {initialData.title}</BreadcrumbItem>
@@ -118,27 +120,42 @@ export default function NewRepoForm({
         </Breadcrumb>
       </div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 px-7 md:px-20 py-10">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-8 px-7 md:px-20 py-10"
+        >
           <FormField
             control={form.control}
             name="title"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Title</FormLabel>
-                <FormControl>
-                  <Input
-                    autoFocus
-                    placeholder="Enter the title for this repository..."
-                    {...field}
-                  />
-                </FormControl>
-                <FormDescription>
-                  Choose a clear, descriptive title that reflects the purpose of
-                  your repository.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
+            render={({ field }) => {
+              const MAX_LENGTH = 50;
+              const remainingChars = MAX_LENGTH - (field.value?.length || 0);
+              return (
+                <FormItem>
+                  <FormLabel>Title</FormLabel>
+                  <FormControl>
+                    <Input
+                      autoFocus
+                      placeholder="Enter the title for this repository..."
+                      maxLength={MAX_LENGTH}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    <span className="text-red-400 font-bold">
+                      {remainingChars}
+                    </span>{" "}
+                    characters remaining
+                    <br />
+                    Up to {MAX_LENGTH} characters.
+                    <br />
+                    Choose a clear, descriptive title that reflects the purpose
+                    of your repository.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
           />
 
           <FormField
