@@ -265,7 +265,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
      */
     case "link":
       return (
-        <Card className="group w-full min-w-0 my-2 mx-[-10px] md:mx-0 rounded-lg shadow-sm hover:shadow-md transition-shadow hover:border-primary selection:bg-[#86EFAC] selection:text-black">
+        <Card className="group min-w-0 my-2 mx-[-10px] md:mx-0 rounded-lg shadow-sm hover:shadow-md transition-shadow hover:border-primary selection:bg-[#86EFAC] selection:text-black">
           <div className="flex justify-between">
             <a
               href={input.content}

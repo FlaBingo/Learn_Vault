@@ -85,6 +85,7 @@ export default function NewRepoForm({
         }
       } catch (error) {
         console.log("Error in submit handler function", error);
+        toast.error("Internal Server Error...")
       }
     });
   }
@@ -117,7 +118,7 @@ export default function NewRepoForm({
         </Breadcrumb>
       </div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 px-20 py-10">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 px-7 md:px-20 py-10">
           <FormField
             control={form.control}
             name="title"

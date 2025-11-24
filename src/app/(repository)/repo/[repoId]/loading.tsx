@@ -1,11 +1,10 @@
-import { Loader2 } from "lucide-react";
+import ContentPageSkeleton from "@/components/skeletons/ContentPageSkeleton";
 
-// app/dashboard/loading.tsx
-export default function Loading() {
+
+export default async function Loading() {
   return (
-    <div className="flex items-center justify-center h-screen">
-      <Loader2 className="animate-spin"/>
-      {/* You can also use a spinner, skeleton, or other loading indicators here */}
-    </div>
+    <>
+      <ContentPageSkeleton />
+    </>
   );
 }
