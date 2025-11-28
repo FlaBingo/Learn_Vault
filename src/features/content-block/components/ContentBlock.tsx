@@ -19,7 +19,6 @@ import {
   LinkIcon,
   MessageCircleQuestionMark,
   NotepadText,
-  Video,
 } from "lucide-react";
 import Image from "next/image";
 import CollageBlock from "./CollageBlock";
@@ -30,6 +29,7 @@ import { userRepoRole } from "../actions/content-block";
 import { getRepoById } from "@/features/repo/actions/repo";
 import QnABlock from "./QnABlock";
 import NoteBlock from "./NoteBlock";
+import VideoBlock from "./video/VideoBlock";
 
 type ContentBlockProps = {
   input: typeof ContentBlockTable.$inferSelect;
@@ -193,24 +193,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
         // It's a YouTube video
         return (
           <Card className="group my-2 mx-[-10px] md:mx-0 overflow-hidden rounded-lg shadow-sm hover:border-primary selection:bg-[#93C5FD] selection:text-black">
-            {/* <Video /> */}
-            <div className="aspect-video w-full max-h-[300px] bg-black">
-              <iframe
-                src={`https://www.youtube.com/embed/${videoId}`}
-                title={input.description || "YouTube video player"}
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full"
-              ></iframe>
-            </div>
-            {input.description && (
-              <div className="p-3 bg-gray-50 dark:bg-gray-900 border-t">
-                <div className="text-sm text-muted-foreground">
-                  {input.description}
-                </div>
-              </div>
-            )}
+            <VideoBlock videoId={videoId} description={input.description} />
             <CardFooter className="text-sm flex justify-between items-center">
               <ContentActionButtons
                 ButtonClass="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
