@@ -21,7 +21,6 @@ import { auth } from "@/services/auth";
 import { metadata } from "@/app/layout";
 import { emailToUsername } from "@/lib/user-utils/utils";
 import AboutRepo from "@/components/AboutRepo";
-import { SessionProvider } from "next-auth/react";
 import RequestCollab from "@/features/repo/components/RequestCollab";
 
 export default async function ContentPage({
@@ -33,7 +32,7 @@ export default async function ContentPage({
 
   const session = await auth();
   const logedUserId = session?.user?.id;
-
+  
   const ownerUser = await getUserByRepoId(repoId);
   const repo = await getAnyRepoById(repoId);
   const { data } = repo;
@@ -102,7 +101,7 @@ export default async function ContentPage({
                 <TabsTrigger value="about" className="md:hidden">About</TabsTrigger>
               </TabsList>
               <TabsContent value="content" className="my-2">
-                {logedUserId && data?.status === "private" ? (
+                {(!role && !owner && data?.status === "private") ? (
                   <RequestCollab name={ownerUser?.name}/>
                 ) : (
                   <ContentModalProvider>

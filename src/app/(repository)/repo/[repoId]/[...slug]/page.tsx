@@ -89,6 +89,10 @@ export default async function FolderPage({
                     >
                       {username}
                     </BreadcrumbLink>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbLink href="/repo">
+                      Repository
+                    </BreadcrumbLink>
                   </BreadcrumbItem>
                 </>
               )}
@@ -177,7 +181,7 @@ export default async function FolderPage({
                 <TabsTrigger value="about" className="md:hidden">About</TabsTrigger>
               </TabsList>
               <TabsContent value="content" className="my-2">
-                {(logedUserId && data?.status === "private") ? (
+                {(!role && !owner && data?.status === "private") ? (
                   <RequestCollab name={ownerUser?.name}/>
                 ) : (
                   <ContentModalProvider>

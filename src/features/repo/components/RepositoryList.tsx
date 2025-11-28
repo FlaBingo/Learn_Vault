@@ -1,6 +1,19 @@
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import FilterForm from "./FilterForm";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import RepoStructure from "./Repo";
 import PaginationControls from "./PaginationControls";
 import { RepoTable } from "@/drizzle/schema";
@@ -15,17 +28,21 @@ type RepositoryListProps = {
     userId: string;
     createdAt: Date;
     updatedAt: Date;
-}[];
+  }[];
   pagination: {
     currentPage: number;
     pageSize: number;
     totalPages: number;
     totalCount: number;
-};
+  };
   mode?: modeType;
-}
+};
 
-export default async function RepositoryList({repos, pagination, mode}: RepositoryListProps) {
+export default async function RepositoryList({
+  repos,
+  pagination,
+  mode,
+}: RepositoryListProps) {
   return (
     <>
       <div>
@@ -36,12 +53,14 @@ export default async function RepositoryList({repos, pagination, mode}: Reposito
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/repo">Repository</BreadcrumbLink>
+              <BreadcrumbLink href={mode === "all" ? undefined : "/repo"}>Repository</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
-            {(mode !== "all") && <BreadcrumbItem>
-              <BreadcrumbLink>My repositories</BreadcrumbLink>
-            </BreadcrumbItem>}
+            {!mode && (
+              <BreadcrumbItem>
+                <BreadcrumbLink>My repositories</BreadcrumbLink>
+              </BreadcrumbItem>
+            )}
           </BreadcrumbList>
         </Breadcrumb>
       </div>
@@ -51,10 +70,10 @@ export default async function RepositoryList({repos, pagination, mode}: Reposito
 
       <Card className="my-5">
         <CardHeader>
-          <CardTitle>{mode === "all" ? "All ": "My "} repositories</CardTitle>
+          <CardTitle>{mode === "all" ? "All " : "My "} repositories</CardTitle>
           <CardDescription>
             Showing {repos.length} of {pagination.totalCount} repositories.
-          </CardDescription> 
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {repos.length > 0 ? (
@@ -62,12 +81,10 @@ export default async function RepositoryList({repos, pagination, mode}: Reposito
               <div
                 key={repo.id}
                 className={`py-5 px-5 transition-colors ${
-                  index % 2 === 0
-                    ? ""
-                    : "bg-gray-100 dark:bg-gray-800"
+                  index % 2 === 0 ? "" : "bg-gray-100 dark:bg-gray-800"
                 }`}
               >
-                <RepoStructure {...repo} mode={mode}/>
+                <RepoStructure {...repo} mode={mode} />
               </div>
             ))
           ) : (
