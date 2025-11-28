@@ -2,25 +2,31 @@
 
 "use client";
 
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeSanitize from "rehype-sanitize";
 import { useState, useEffect, useRef } from "react";
-import { ContentBlockTable } from "@/drizzle/schema";
 
 // Define a constant for the clamp height (Tailwind's max-h-28 = 7rem = 112px)
 const MAX_CLAMP_HEIGHT_PX = 112;
 
 export default function NoteBlock({
-  input,
+  content,
+  description,
 }: {
-  input: typeof ContentBlockTable.$inferSelect;
+  content: string;
+  description: string;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
-  const contentRef = useRef<HTMLPreElement>(null);
+  
+  // Changed ref to HTMLDivElement to wrap the ReactMarkdown component
+  const contentWrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const element = contentRef.current;
+    const element = contentWrapperRef.current;
     if (element) {
-      // Check if the content's scrollHeight is greater than the clamp height
+      // Check if the wrapper's scrollHeight is greater than the clamp height
       if (element.scrollHeight > MAX_CLAMP_HEIGHT_PX) {
         setIsOverflowing(true);
       } else {
@@ -28,27 +34,51 @@ export default function NoteBlock({
       }
     }
     // Re-run this check if the content text ever changes
-  }, [input.content]);
+  }, [content]);
 
   return (
     <div>
-      {/* 1. The main note content */}
-      <pre
-        ref={contentRef}
+      {/* 1. The main note content (Markdown Rendered) */}
+      <div
+        ref={contentWrapperRef}
         className={`
-          whitespace-pre-wrap 
-          font-sans 
           transition-all duration-300
-          ${
-            isExpanded
-              ? "max-h-none" // Unclamped height
-              : "max-h-28" // Clamped height (7rem / 112px)
-          }
+          ${isExpanded ? "max-h-none" : "max-h-28"}
           overflow-hidden
         `}
       >
-        {input.content || ""}
-      </pre>
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeSanitize]}
+          components={{
+            pre: ({ node, ...props }) => (
+              <pre
+                className="whitespace-pre-wrap font-sans overflow-auto"
+                {...props}
+              />
+            ),
+            // FIX: Removed 'inline' prop to prevent TS error
+            code: ({ node, className, children, ...props }) => {
+              // Detect block code via className (usually "language-xyz")
+              const match = /language-(\w+)/.exec(className || "");
+              const isBlock = !!match;
+
+              return (
+                <code
+                  className={`font-mono bg-gray-100 rounded px-1 py-[2px] ${
+                    isBlock ? "block p-2" : ""
+                  } ${className || ""}`}
+                  {...props}
+                >
+                  {children}
+                </code>
+              );
+            },
+          }}
+        >
+          {content || ""}
+        </ReactMarkdown>
+      </div>
 
       {/* 2. "Show more/less" button */}
       {/* Only show if the text is overflowing its clamped height */}
@@ -63,9 +93,9 @@ export default function NoteBlock({
       )}
 
       {/* 3. The description (always visible) */}
-      {input.description && (
+      {description && (
         <div className="text-sm text-muted-foreground mt-2 pt-2 border-t border-dashed">
-          {input.description}
+          {description}
         </div>
       )}
     </div>

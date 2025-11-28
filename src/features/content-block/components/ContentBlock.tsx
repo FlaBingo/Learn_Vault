@@ -63,7 +63,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
         >
           <CardContent className="px-4 flex gap-3">
             <NotepadText className="flex-shrink-0" />
-            <NoteBlock input={input} />
+            <NoteBlock content={input.content} description={input.description} />
           </CardContent>
           <CardFooter className="flex text-sm justify-between items-center">
             <ContentActionButtons
@@ -384,7 +384,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
               <MessageCircleQuestionMark className="flex-shrink-0" />
               <CardTitle className="font-semibold">{input.content}</CardTitle>
             </CardHeader>
-            <QnABlock input={input} />
+            <QnABlock question={input.content} answer={input.description} />
             <CardFooter className="text-sm flex justify-between items-center">
               <ContentActionButtons
                 ButtonClass="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
