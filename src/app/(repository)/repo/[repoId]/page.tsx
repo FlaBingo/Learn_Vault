@@ -16,13 +16,13 @@ import { userRepoRole } from "@/features/content-block/actions/content-block";
 import ContentBlockGroup from "@/features/content-block/components/ContentBlockGroup";
 import ContentBlocks from "@/features/content-block/components/ContentBlocks";
 import { ContentModalProvider } from "@/features/content-block/components/ContentModalContext";
-import {
-  getAnyRepoById,
-  getUserByRepoId,
-} from "@/features/repo/actions/repo";
+import { getAnyRepoById, getUserByRepoId } from "@/features/repo/actions/repo";
 import { auth } from "@/services/auth";
 import { metadata } from "@/app/layout";
 import { emailToUsername } from "@/lib/user-utils/utils";
+import AboutRepo from "@/components/AboutRepo";
+import { SessionProvider } from "next-auth/react";
+import RequestCollab from "@/features/repo/components/RequestCollab";
 
 export default async function ContentPage({
   params,
@@ -46,7 +46,7 @@ export default async function ContentPage({
     role = (await userRepoRole(logedUserId, repoId)).data?.role;
   }
 
-  const username = emailToUsername(ownerUser?.email)
+  const username = emailToUsername(ownerUser?.email);
 
   const owner = !!logedUserId && logedUserId === ownerUser?.id;
   return (
@@ -70,11 +70,11 @@ export default async function ContentPage({
               ) : (
                 <>
                   <BreadcrumbItem>
-                    <BreadcrumbLink href={logedUserId ? `/profile/${username}` : `/login`}>{username}</BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    <BreadcrumbLink>Repository</BreadcrumbLink>
+                    <BreadcrumbLink
+                      href={logedUserId ? `/profile/${username}` : `/login`}
+                    >
+                      {username}
+                    </BreadcrumbLink>
                   </BreadcrumbItem>
                 </>
               )}
@@ -92,23 +92,32 @@ export default async function ContentPage({
             <Tabs defaultValue="content">
               <TabsList>
                 <TabsTrigger value="content">Content</TabsTrigger>
-                <TabsTrigger value="comment">Comment</TabsTrigger>
-                <TabsTrigger value="setting">Settings</TabsTrigger>
+                {(owner || role) && (
+                  <TabsTrigger value="comment">Comment</TabsTrigger>
+                )}
+                {(owner || role === "admin") && (
+                  <TabsTrigger value="setting">Settings</TabsTrigger>
+                )}
                 <TabsTrigger value="how-to">How to</TabsTrigger>
+                <TabsTrigger value="about" className="md:hidden">About</TabsTrigger>
               </TabsList>
               <TabsContent value="content" className="my-2">
-                <ContentModalProvider>
-                  <ContentBlockGroup
-                    userId={logedUserId}
-                    role={role}
-                    owner={owner}
-                  >
-                    <ContentBlocks params={{ repoId }} />
-                  </ContentBlockGroup>
-                </ContentModalProvider>
+                {logedUserId && data?.status === "private" ? (
+                  <RequestCollab name={ownerUser?.name}/>
+                ) : (
+                  <ContentModalProvider>
+                    <ContentBlockGroup
+                      userId={logedUserId}
+                      role={role}
+                      owner={owner}
+                    >
+                      <ContentBlocks params={{ repoId }} />
+                    </ContentBlockGroup>
+                  </ContentModalProvider>
+                )}
               </TabsContent>
               <TabsContent value="comment" className="my-2">
-                <CommentSection repoId={repoId}/>
+                <CommentSection repoId={repoId} />
               </TabsContent>
               <TabsContent value="setting" className="my-2">
                 <SettingsSection />
@@ -116,17 +125,13 @@ export default async function ContentPage({
               <TabsContent value="how-to" className="my-2">
                 <HowtoSection />
               </TabsContent>
+              <TabsContent value="about" className="my-2 md:hidden">
+                <AboutRepo name={ownerUser?.name} status={data?.status} />
+              </TabsContent>
             </Tabs>
           </div>
           <div className="col-span-1 mt-14 p-2 sticky top-16 self-start hidden md:block">
-            <div>
-              <h2 className="font-bold mb-2 text-2xl">About</h2>
-              <ul>
-                <li>Creater: {ownerUser?.name}</li>
-                <li>Status: {data?.status}</li>
-              </ul>
-            </div>
-            <div>collaborators</div>
+            <AboutRepo name={ownerUser?.name} status={data?.status} />
           </div>
         </div>
         <ScrollButtons />

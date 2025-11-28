@@ -3,6 +3,7 @@
 import FilterForm from "@/features/repo/components/FilterForm";
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -14,6 +15,8 @@ import { Separator } from "./ui/separator";
 import { getRepositories, GetReposParams } from "@/features/repo/actions/repo";
 import { sortBy } from "@/lib/types/sorttypes";
 import PaginationControls from "@/features/repo/components/PaginationControls";
+import Link from "next/link";
+import { Button } from "./ui/button";
 
 export default async function ExplorePublicRepos({
   searchParams,
@@ -43,6 +46,11 @@ export default async function ExplorePublicRepos({
           <CardDescription>
             Showing {repos.length} of {pagination.totalCount} repositories.
           </CardDescription>
+          <CardAction>
+            <Button className="cursor-pointer" asChild>
+              <Link href={"/repo"}>All Repositories</Link>
+            </Button>
+          </CardAction>
         </CardHeader>
         <CardContent>
           <FilterForm mode="explore" />

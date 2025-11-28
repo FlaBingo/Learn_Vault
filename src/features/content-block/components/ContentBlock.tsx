@@ -87,7 +87,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
         <div className="group my-4 mt-6 flex items-center justify-between selection:bg-[#A5B4FC] selection:text-black">
           <div className="">
             <div className="text-5xl font-extrabold">{input.content}</div>
-            <div className="text-xs text-muted-foreground">
+            <div className="text-xs text-muted-foreground mt-1.5">
               {input.description}
             </div>
           </div>

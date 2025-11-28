@@ -20,6 +20,7 @@ import { getRepositories } from "@/features/repo/actions/repo";
 import FilterForm from "@/features/repo/components/FilterForm";
 import PaginationControls from "@/features/repo/components/PaginationControls";
 import RepoStructure from "@/features/repo/components/Repo";
+import RepositoryList from "@/features/repo/components/RepositoryList";
 import { sortBy, sortByOptions } from "@/lib/types/sorttypes";
 import { auth } from "@/services/auth";
 import { redirect, RedirectType } from "next/navigation";
@@ -57,52 +58,7 @@ export default async function RepositoriesPage({ searchParams }: Props) {
 
   return (
     <>
-      <div>
-        <Breadcrumb className="px-4 py-1 mb-4 bg-accent rounded-sm">
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/">Home</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink>my repositories</BreadcrumbLink>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </div>
-      <div>
-        <FilterForm />
-      </div>
-
-      <Card className="my-5">
-        <CardHeader>
-          <CardTitle>Your Repositories</CardTitle>
-          <CardDescription>
-            Showing {repos.length} of {pagination.totalCount} repositories.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {repos.length > 0 ? (
-            repos.map((repo, index) => (
-              <div
-                key={repo.id}
-                className={`py-5 px-5 transition-colors ${
-                  index % 2 === 0
-                    ? "" // bright for light mode, darker for dark mode
-                    : "bg-gray-100 dark:bg-gray-800"
-                }`}
-              >
-                <RepoStructure {...repo} />
-              </div>
-            ))
-          ) : (
-            <div>No repositories found.</div>
-          )}
-        </CardContent>
-        <CardFooter className="flex justify-center gap-2">
-          <PaginationControls pagination={pagination} />
-        </CardFooter>
-      </Card>
+      <RepositoryList repos={repos} pagination={pagination}/>
     </>
   );
 }

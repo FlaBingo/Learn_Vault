@@ -27,12 +27,14 @@ import { ContentModalProvider } from "@/features/content-block/components/Conten
 import { getAnyRepoById, getUserByRepoId } from "@/features/repo/actions/repo";
 import { auth } from "@/services/auth";
 import Link from "next/link";
-import { Fragment } from "react";
 import CommentSection from "@/features/comments/components/CommentSection";
 import HowtoSection from "@/components/HowtoSection";
 import SettingsSection from "@/components/SettingsSection";
 import { metadata } from "@/app/layout";
 import { emailToUsername } from "@/lib/user-utils/utils";
+import AboutRepo from "@/components/AboutRepo";
+import { Card, CardContent } from "@/components/ui/card";
+import RequestCollab from "@/features/repo/components/RequestCollab";
 
 export default async function FolderPage({
   params,
@@ -41,10 +43,10 @@ export default async function FolderPage({
 }) {
   const { repoId, slug } = await params;
   const parentId = slug[slug.length - 1];
-  
+
   const session = await auth();
   const logedUserId = session?.user?.id;
-  
+
   const ownerUser = await getUserByRepoId(repoId);
   const repo = await getAnyRepoById(repoId);
   const { data } = repo;
@@ -82,11 +84,11 @@ export default async function FolderPage({
               ) : (
                 <>
                   <BreadcrumbItem>
-                    <BreadcrumbLink href={logedUserId ? `/profile/${username}` : `/login`}>{username}</BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    <BreadcrumbLink>Repository</BreadcrumbLink>
+                    <BreadcrumbLink
+                      href={logedUserId ? `/profile/${username}` : `/login`}
+                    >
+                      {username}
+                    </BreadcrumbLink>
                   </BreadcrumbItem>
                 </>
               )}
@@ -156,8 +158,7 @@ export default async function FolderPage({
         </div>
         <h1 className="text-5xl mt-7 mb-2 mx-3 font-bold">
           {slug
-            ? // --- FIX 4: Use the resolved array here too ---
-              resolvedFolders[resolvedFolders.length - 1].data?.content
+            ? resolvedFolders[resolvedFolders.length - 1].data?.content
             : data?.title}
         </h1>
 
@@ -166,20 +167,29 @@ export default async function FolderPage({
             <Tabs defaultValue="content">
               <TabsList>
                 <TabsTrigger value="content">Content</TabsTrigger>
-                <TabsTrigger value="comment">Comment</TabsTrigger>
-                <TabsTrigger value="setting">Settings</TabsTrigger>
+                {(owner || role) && (
+                  <TabsTrigger value="comment">Comment</TabsTrigger>
+                )}
+                {(owner || role === "admin") && (
+                  <TabsTrigger value="setting">Settings</TabsTrigger>
+                )}
                 <TabsTrigger value="how-to">How to</TabsTrigger>
+                <TabsTrigger value="about" className="md:hidden">About</TabsTrigger>
               </TabsList>
               <TabsContent value="content" className="my-2">
-                <ContentModalProvider>
-                  <ContentBlockGroup
-                    userId={logedUserId}
-                    role={role}
-                    owner={owner}
-                  >
-                    <ContentBlocks params={{ repoId, parentId, slug }} />
-                  </ContentBlockGroup>
-                </ContentModalProvider>
+                {(logedUserId && data?.status === "private") ? (
+                  <RequestCollab name={ownerUser?.name}/>
+                ) : (
+                  <ContentModalProvider>
+                    <ContentBlockGroup
+                      userId={logedUserId}
+                      role={role}
+                      owner={owner}
+                    >
+                      <ContentBlocks params={{ repoId, parentId, slug }} />
+                    </ContentBlockGroup>
+                  </ContentModalProvider>
+                )}
               </TabsContent>
               <TabsContent value="comment" className="my-2">
                 <CommentSection repoId={repoId} />
@@ -190,17 +200,17 @@ export default async function FolderPage({
               <TabsContent value="how-to" className="my-2">
                 <HowtoSection />
               </TabsContent>
+              <TabsContent value="about" className="my-2 md:hidden">
+                <Card>
+                  <CardContent>
+                    <AboutRepo name={ownerUser?.name} status={data?.status} />
+                  </CardContent>
+                </Card>
+              </TabsContent>
             </Tabs>
           </div>
           <div className="col-span-1 mt-14 p-2 sticky top-16 self-start hidden md:block">
-            <div>
-              <h2 className="font-bold mb-2 text-2xl">About</h2>
-              <ul>
-                <li>Creater: {ownerUser?.name}</li>
-                <li>Status: {data?.status}</li>
-              </ul>
-            </div>
-            <div>collaborators</div>
+            <AboutRepo name={ownerUser?.name} status={data?.status} />
           </div>
         </div>
         <ScrollButtons />

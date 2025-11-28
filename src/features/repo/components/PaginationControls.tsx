@@ -21,11 +21,7 @@ export default function PaginationControls({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
-  useEffect(() => {
-    console.log("searchParams changed:", Array.from(searchParams.entries()));
-  }, [searchParams]);
-
+  
   const { currentPage, totalPages } = pagination;
 
   const handlePageChange = (newPage: number) => {

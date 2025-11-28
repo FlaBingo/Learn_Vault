@@ -5,6 +5,7 @@ import Link from "next/link";
 import DeleteAlertBox from "./AlertDelete";
 import { getUserByRepoId } from "../actions/repo";
 import { emailToUsername } from "@/lib/user-utils/utils";
+import { modeType } from "@/lib/types/sorttypes";
 
 export type RepoType = typeof RepoTable.$inferSelect;
 
@@ -16,7 +17,7 @@ export default async function RepoStructure({
   createdAt,
   updatedAt,
   mode,
-}: RepoType & { mode?: "explore" }) {
+}: RepoType & { mode?: modeType}) {
   const userData = await getUserByRepoId(id);
   const username = emailToUsername(userData?.email);
 
@@ -34,7 +35,7 @@ export default async function RepoStructure({
           ) : (
             <div className="my-auto select-none">~</div>
           )}
-          {mode === "explore" && (
+          {(mode === "explore" || mode === "all") && (
             <div className="my-auto text-muted-foreground text-xs">
               <Link href={`/profile/${username}`} className="hover:underline">@{username}</Link>
             </div>
@@ -60,7 +61,7 @@ export default async function RepoStructure({
           )}
         </div>
       </div>
-      {mode !== "explore" && (
+      {(!mode) && (
         <div className="flex gap-4">
           <Link href={`repo-details/${id}`}>
             <Button className="cursor-pointer" title="Edit">

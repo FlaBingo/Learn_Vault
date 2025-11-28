@@ -8,7 +8,7 @@ import { repoStatus, RepoTable } from "@/drizzle/schema"
 import { db } from "@/drizzle/db"
 import { and, asc, count, desc, eq, ilike, ne, or } from "drizzle-orm"
 import { auth } from "@/services/auth"
-import { sortBy } from "@/lib/types/sorttypes"
+import { modeType, sortBy } from "@/lib/types/sorttypes"
 import { revalidatePath } from "next/cache"
 import { isPermited } from "@/features/content-block/db/contentdb"
 
@@ -18,7 +18,7 @@ export type GetReposParams = {
   sortBy?: sortBy;
   page?: number;
   pageSize?: number;
-  mode?: "explore";
+  mode?: modeType;
 }
 
 export async function getRepositories(params: GetReposParams) {
@@ -36,7 +36,7 @@ export async function getRepositories(params: GetReposParams) {
     const conditions = [];
 
     if (userId) {
-      if (mode === "explore") {
+      if (mode === "explore" || mode === "all") {
         conditions.push(ne(RepoTable.userId, userId));
       } else {
         conditions.push(eq(RepoTable.userId, userId));
