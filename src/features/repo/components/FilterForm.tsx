@@ -35,15 +35,16 @@ export default function FilterForm({ mode }: { mode?: "explore" }) {
   };
 
   useEffect(() => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(window.location.search);
     if (debouncedSearch) {
       params.set("search", debouncedSearch);
     } else {
       params.delete("search");
     }
     params.delete("page"); //reset to page 1 when filters change
-    router.replace(`${pathname}?${params.toString()}`); // update url
-  }, [debouncedSearch, searchParams, pathname, router]);
+    const q = params.toString();
+    router.replace(q ? `${pathname}?${q}` : pathname); // update url
+  }, [debouncedSearch, pathname, router]);
 
   return (
     <div className="flex gap-2">

@@ -4,6 +4,7 @@
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
 type PaginationControlsProps = {
   pagination: {
@@ -20,6 +21,10 @@ export default function PaginationControls({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  useEffect(() => {
+    console.log("searchParams changed:", Array.from(searchParams.entries()));
+  }, [searchParams]);
 
   const { currentPage, totalPages } = pagination;
 
