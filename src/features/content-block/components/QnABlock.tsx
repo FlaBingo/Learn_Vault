@@ -2,10 +2,6 @@
 
 "use client";
 
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import rehypeSanitize from "rehype-sanitize";
-
 import { CardContent } from "@/components/ui/card";
 import { CornerDownRight } from "lucide-react";
 import { useState, useEffect, useRef } from "react";

@@ -380,7 +380,7 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
           <Card
             className={`group my-2 mx-[-10px] md:mx-0 overflow-hidden rounded-lg shadow-sm hover:border-primary selection:bg-[#2DD4BF] selection:text-black`}
           >
-            <CardHeader className="flex gap-4 border-b-2 pb-3 mb-[-10] border-b-gray-100 dark:border-b-gray-900">
+            <CardHeader className="flex gap-4 border-b-2 pb-3 mb-[-10] border-b-gray-200 dark:border-b-gray-700">
               <MessageCircleQuestionMark className="flex-shrink-0 hidden md:block" />
               <CardTitle className="font-semibold">{input.content}</CardTitle>
             </CardHeader>
