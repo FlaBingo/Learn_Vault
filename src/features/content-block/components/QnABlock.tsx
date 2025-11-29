@@ -9,15 +9,14 @@ import rehypeSanitize from "rehype-sanitize";
 import { CardContent } from "@/components/ui/card";
 import { CornerDownRight } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import MarkdownFormatter from "./MarkdownFormatter";
 
 // Define a constant for the clamp height (Tailwind's max-h-28 = 7rem = 112px)
 const MAX_CLAMP_HEIGHT_PX = 112;
 
 export default function QnABlock({
-  question,
-  answer
+  answer,
 }: {
-  question: string;
   answer: string;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -41,55 +40,17 @@ export default function QnABlock({
   return (
     <CardContent className="flex flex-col gap-2">
       <div className="flex gap-3">
-        <CornerDownRight className="hidden md:block h-5 w-5 text-gray-500 flex-shrink-0" />
+        {/* Icon indicating an answer */}
+        <CornerDownRight className="hidden md:block h-5 w-5 text-gray-500 flex-shrink-0 mt-1" />
 
         <div className="flex-1 min-w-0">
-          <div
-            ref={contentWrapperRef}
-            className={`
-              transition-all duration-300
-              ${isExpanded ? "max-h-none" : "max-h-28"}
-              overflow-hidden
-            `}
-          >
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              rehypePlugins={[rehypeSanitize]}
-              components={{
-                pre: ({ node, ...props }) => (
-                  <pre
-                    className="whitespace-pre-wrap font-sans overflow-auto"
-                    {...props}
-                  />
-                ),
-                // FIX: Removed 'inline' from props, used className to apply logic
-                code: ({ node, className, children, ...props }) => {
-                  // In standard markdown, block code usually has a language class (e.g., language-js)
-                  // or is wrapped in a <pre> (handled by the pre component above).
-                  const match = /language-(\w+)/.exec(className || "");
-                  const isBlock = !!match;
+          <MarkdownFormatter content={answerContent} contentWrapperRef={contentWrapperRef} isExpanded={isExpanded} />  
 
-                  return (
-                    <code
-                      className={`font-mono bg-gray-100 rounded px-1 py-[2px] ${
-                        isBlock ? "block p-2" : ""
-                      } ${className || ""}`}
-                      {...props}
-                    >
-                      {children}
-                    </code>
-                  );
-                },
-              }}
-            >
-              {answerContent}
-            </ReactMarkdown>
-          </div>
-
+          {/* Show More/Less Button */}
           {isOverflowing && (
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="text-sm text-blue-600 hover:underline mt-2 cursor-pointer"
+              className="text-sm text-blue-600 dark:text-blue-400 hover:underline mt-2 cursor-pointer select-none"
               aria-expanded={isExpanded}
             >
               {isExpanded ? "Show less" : "Show more"}

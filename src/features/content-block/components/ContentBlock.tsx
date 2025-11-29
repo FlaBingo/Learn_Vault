@@ -61,8 +61,8 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
         <Card
           className={`group my-2 mx-[-10px] md:mx-0 rounded-sm shadow-sm hover:border-primary selection:bg-[#FDE68A] selection:text-black`}
         >
-          <CardContent className="px-4 flex gap-3">
-            <NotepadText className="flex-shrink-0" />
+          <CardContent className="px-4 flex flex-col md:flex-row gap-3 mx-0.5">
+            <div className="flex gap-3 font-semibold"><NotepadText className="flex-shrink-0" /><span className="md:hidden">NOTE</span></div>
             <NoteBlock content={input.content} description={input.description} />
           </CardContent>
           <CardFooter className="flex text-sm justify-between items-center">
@@ -380,11 +380,11 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
           <Card
             className={`group my-2 mx-[-10px] md:mx-0 overflow-hidden rounded-lg shadow-sm hover:border-primary selection:bg-[#2DD4BF] selection:text-black`}
           >
-            <CardHeader className="flex gap-4">
-              <MessageCircleQuestionMark className="flex-shrink-0" />
+            <CardHeader className="flex gap-4 border-b-2 pb-3 mb-[-10] border-b-gray-100 dark:border-b-gray-900">
+              <MessageCircleQuestionMark className="flex-shrink-0 hidden md:block" />
               <CardTitle className="font-semibold">{input.content}</CardTitle>
             </CardHeader>
-            <QnABlock question={input.content} answer={input.description} />
+            <QnABlock answer={input.description} />
             <CardFooter className="text-sm flex justify-between items-center">
               <ContentActionButtons
                 ButtonClass="opacity-0 group-hover:opacity-100 transition-opacity duration-300"

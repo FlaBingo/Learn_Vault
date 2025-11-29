@@ -53,7 +53,7 @@ export default async function RepositoryList({
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href={mode === "all" ? undefined : "/repo"}>Repository</BreadcrumbLink>
+              <BreadcrumbLink href={mode === "all" ? undefined : "/repo"}>All repositories</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             {!mode && (
