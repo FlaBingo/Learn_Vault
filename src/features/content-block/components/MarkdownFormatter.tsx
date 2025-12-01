@@ -5,12 +5,10 @@
 import ReactMarkdown, { Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeSanitize from "rehype-sanitize";
-import React, { Ref } from "react"; // Import React for React.memo
+import React, { Ref } from "react";
 
-// 1. DEFINE COMPONENTS OUTSIDE THE FUNCTION
-// This ensures the object reference stays the same, preventing unnecessary re-renders.
+
 const MARKDOWN_COMPONENTS: Components = {
-  // --- TYPOGRAPHY FIXES (WITH DARK MODE) ---
 
   // Paragraphs:
   p: ({ node, ...props }) => (
@@ -130,8 +128,6 @@ const MARKDOWN_COMPONENTS: Components = {
   },
 };
 
-// 2. DEFINE PLUGINS OUTSIDE
-// Same logic: keep references stable
 const REMARK_PLUGINS = [remarkGfm];
 const REHYPE_PLUGINS = [rehypeSanitize];
 
@@ -166,8 +162,13 @@ function MarkdownFormatterComponent({
   );
 }
 
-// 3. WRAP IN REACT.MEMO
-// This prevents the component from re-rendering if 'content' or 'isExpanded' hasn't changed.
-const MarkdownFormatter = React.memo(MarkdownFormatterComponent);
+
+const MarkdownFormatter = React.memo(MarkdownFormatterComponent, (prevProps, nextProps) => {
+  return (
+    prevProps.content === nextProps.content && prevProps.isExpanded === nextProps.isExpanded
+  );
+});
+
+MarkdownFormatter.displayName = "MarkdownFormatter";
 
 export default MarkdownFormatter;

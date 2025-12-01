@@ -1,5 +1,13 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
+import QuoteLoader from "../QuoteLoader";
 
 export default function ContentPageSkeleton() {
   return (
@@ -11,24 +19,30 @@ export default function ContentPageSkeleton() {
           <Skeleton className="h-9 w-72 mt-6 mb-6" />
           <div className="grid grid-cols-5 gap-3">
             <Card className="backdrop-blur-lg col-span-full md:col-span-4">
-            <CardContent className="min-h-[500px]">
-              <Card className="h-52">
-                <CardHeader className="overflow-hidden">
-                  <CardTitle><Skeleton className="h-14 w-60"/></CardTitle>
-                  <CardDescription><Skeleton className="h-10 w-72"/></CardDescription>
-                </CardHeader>
-                <CardFooter className="flex justify-between">
-                  <Skeleton className="h-7 w-48"/>
-                  <div className="flex gap-5 md:mr-6">
-                    <Skeleton className="h-9 w-9"/>
-                    <Skeleton className="h-9 w-9"/>
-                  </div>
-                </CardFooter>
-              </Card>
-              <Skeleton className="mt-7 h-9 rounded-2xl"/>
-              <div className="h-56 opacity-0"></div>
-            </CardContent>
-          </Card>
+              <CardContent className="min-h-[500px]">
+                <Card className="h-52">
+                  <CardHeader className="overflow-hidden">
+                    <CardTitle>
+                      <Skeleton className="h-14 w-60" />
+                    </CardTitle>
+                    <CardDescription>
+                      <Skeleton className="h-10 w-72" />
+                    </CardDescription>
+                  </CardHeader>
+                  <CardFooter className="flex justify-between">
+                    <Skeleton className="h-7 w-48" />
+                    <div className="flex gap-5 md:mr-6">
+                      <Skeleton className="h-9 w-9" />
+                      <Skeleton className="h-9 w-9" />
+                    </div>
+                  </CardFooter>
+                </Card>
+                <div className="h-56 flex justify-center">
+                  <QuoteLoader />
+                </div>
+                <Skeleton className="mt-7 h-9 rounded-2xl" />
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>

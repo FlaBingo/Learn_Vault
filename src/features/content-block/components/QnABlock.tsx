@@ -4,7 +4,7 @@
 
 import { CardContent } from "@/components/ui/card";
 import { CornerDownRight } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import MarkdownFormatter from "./MarkdownFormatter";
 
 // Define a constant for the clamp height (Tailwind's max-h-28 = 7rem = 112px)
@@ -30,19 +30,18 @@ export default function QnABlock({
     }
   }, [answer]);
 
-  // Gracefully handle potentially null/empty content
-  const answerContent = answer || "";
+  const memoizedMarkdown = useMemo(() => (
+    <MarkdownFormatter content={answer} contentWrapperRef={contentWrapperRef} isExpanded={isExpanded} />
+  ), [answer, isExpanded])
 
   return (
     <CardContent className="flex flex-col gap-2">
       <div className="flex gap-3">
-        {/* Icon indicating an answer */}
         <CornerDownRight className="hidden md:block h-5 w-5 text-gray-500 flex-shrink-0 mt-1" />
 
         <div className="flex-1 min-w-0">
-          <MarkdownFormatter content={answerContent} contentWrapperRef={contentWrapperRef} isExpanded={isExpanded} />  
+          {memoizedMarkdown}
 
-          {/* Show More/Less Button */}
           {isOverflowing && (
             <button
               onClick={() => setIsExpanded(!isExpanded)}

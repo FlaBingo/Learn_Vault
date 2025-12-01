@@ -15,26 +15,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { collaboratorRole } from "@/drizzle/schema";
 import {
   getFolderById,
   userRepoRole,
 } from "@/features/content-block/actions/content-block";
-import ContentBlockGroup from "@/features/content-block/components/ContentBlockGroup";
-import ContentBlocks from "@/features/content-block/components/ContentBlocks";
-import { ContentModalProvider } from "@/features/content-block/components/ContentModalContext";
 import { getAnyRepoById, getUserByRepoId } from "@/features/repo/actions/repo";
 import { auth } from "@/services/auth";
 import Link from "next/link";
-import CommentSection from "@/features/comments/components/CommentSection";
-import HowtoSection from "@/components/HowtoSection";
-import SettingsSection from "@/components/SettingsSection";
-import { metadata } from "@/app/layout";
 import { emailToUsername } from "@/lib/user-utils/utils";
-import AboutRepo from "@/components/AboutRepo";
-import { Card, CardContent } from "@/components/ui/card";
-import RequestCollab from "@/features/repo/components/RequestCollab";
+import TabContent from "@/features/content-block/components/TabContent";
 
 export default async function FolderPage({
   params,
@@ -50,8 +40,7 @@ export default async function FolderPage({
   const ownerUser = await getUserByRepoId(repoId);
   const repo = await getAnyRepoById(repoId);
   const { data } = repo;
-  metadata.title = data?.title;
-  metadata.description = data?.description;
+  
   const owner = !!logedUserId && logedUserId === ownerUser?.id;
 
   let role: collaboratorRole | undefined;
@@ -166,57 +155,8 @@ export default async function FolderPage({
             : data?.title}
         </h1>
 
-        <div className="grid grid-cols-5 gap-3">
-          <div className="col-span-full md:col-span-4 p-4">
-            <Tabs defaultValue="content">
-              <TabsList>
-                <TabsTrigger value="content">Content</TabsTrigger>
-                {(owner || role) && (
-                  <TabsTrigger value="comment">Comment</TabsTrigger>
-                )}
-                {(owner || role === "admin") && (
-                  <TabsTrigger value="setting">Settings</TabsTrigger>
-                )}
-                <TabsTrigger value="how-to">How to</TabsTrigger>
-                <TabsTrigger value="about" className="md:hidden">About</TabsTrigger>
-              </TabsList>
-              <TabsContent value="content" className="my-2">
-                {(!role && !owner && data?.status === "private") ? (
-                  <RequestCollab name={ownerUser?.name}/>
-                ) : (
-                  <ContentModalProvider>
-                    <ContentBlockGroup
-                      userId={logedUserId}
-                      role={role}
-                      owner={owner}
-                    >
-                      <ContentBlocks params={{ repoId, parentId, slug }} />
-                    </ContentBlockGroup>
-                  </ContentModalProvider>
-                )}
-              </TabsContent>
-              <TabsContent value="comment" className="my-2">
-                <CommentSection repoId={repoId} />
-              </TabsContent>
-              <TabsContent value="setting" className="my-2">
-                <SettingsSection />
-              </TabsContent>
-              <TabsContent value="how-to" className="my-2">
-                <HowtoSection />
-              </TabsContent>
-              <TabsContent value="about" className="my-2 md:hidden">
-                <Card>
-                  <CardContent>
-                    <AboutRepo name={ownerUser?.name} status={data?.status} />
-                  </CardContent>
-                </Card>
-              </TabsContent>
-            </Tabs>
-          </div>
-          <div className="col-span-1 mt-14 p-2 sticky top-16 self-start hidden md:block">
-            <AboutRepo name={ownerUser?.name} status={data?.status} />
-          </div>
-        </div>
+        <TabContent parentId={parentId} slug={slug} logedUserId={logedUserId} role={role} owner={owner} repoId={repoId} data={data} ownerUser={ownerUser} />
+
         <ScrollButtons />
       </div>
     </>

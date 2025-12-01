@@ -2,10 +2,7 @@
 
 "use client";
 
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import rehypeSanitize from "rehype-sanitize";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import MarkdownFormatter from "./MarkdownFormatter";
 
 // Define a constant for the clamp height (112px)
@@ -33,13 +30,15 @@ export default function NoteBlock({
     }
   }, [content]);
 
+  const memoizedMarkdown = useMemo(() => (
+    <MarkdownFormatter content={content} contentWrapperRef={contentWrapperRef} isExpanded={isExpanded} />
+  ), [content, isExpanded])
+
   return (
     <div className="overflow-x-auto">
-      {/* 1. The main note content (Markdown Rendered) */}
 
-      <MarkdownFormatter content={content} contentWrapperRef={contentWrapperRef} isExpanded={isExpanded} />      
+      {memoizedMarkdown}    
 
-      {/* 2. "Show more/less" button */}
       {isOverflowing && (
         <button
           onClick={() => setIsExpanded(!isExpanded)}
@@ -50,7 +49,6 @@ export default function NoteBlock({
         </button>
       )}
 
-      {/* 3. The description */}
       {description && (
         <div className="text-sm text-muted-foreground mt-2 pt-2 border-t border-dashed border-gray-200 dark:border-gray-700">
           {description}

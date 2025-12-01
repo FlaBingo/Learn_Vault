@@ -1,3 +1,4 @@
+import QuoteLoader from "../QuoteLoader";
 import {
   Card,
   CardContent,
@@ -19,11 +20,18 @@ export default async function MyRepoSkeleton() {
 
       <Card className="my-5">
         <CardHeader>
-          <CardTitle><Skeleton className="h-7 w-32 rounded-lg"/></CardTitle>
-          <CardDescription><Skeleton className="h-5 w-40 rounded-lg"/></CardDescription>
+          <CardTitle>
+            <Skeleton className="h-7 w-32 rounded-lg" />
+          </CardTitle>
+          <CardDescription>
+            <Skeleton className="h-5 w-40 rounded-lg" />
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <Skeleton className="h-32"/>
+          <Skeleton className="h-32" />
+          <div className="mt-4 flex justify-center">
+            <QuoteLoader />
+          </div>
         </CardContent>
       </Card>
     </>
