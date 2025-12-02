@@ -33,10 +33,9 @@ import { Input } from "@/components/ui/input";
 import { ContentType } from "@/drizzle/schema";
 import { BLOCK_OPTIONS } from "@/lib/content-block-utils/block-options";
 import { Textarea } from "@/components/ui/textarea";
-import { useEffect, useRef, useTransition } from "react";
+import { useEffect, useTransition } from "react";
 import {
   createBlock,
-  getContentById,
   updateBlock,
 } from "../actions/content-block";
 import { toast } from "sonner";

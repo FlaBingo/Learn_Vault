@@ -1,5 +1,6 @@
 import { metadata } from "@/app/layout";
 import { getUserByEmail } from "@/features/user/actions/userAction";
+import UserProfilePage from "@/features/user/components/UserProfile";
 import { auth } from "@/services/auth";
 
 export default async function ProfilePage({
@@ -37,10 +38,7 @@ export default async function ProfilePage({
   return (
     <>
       <div className="container mx-auto">
-        <div>Profile page</div>
-        <div> {username} </div>
-        <div> {userData.email} </div>
-        <div> {userData.name} </div>
+        <UserProfilePage />
       </div>
     </>
   );

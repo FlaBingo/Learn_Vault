@@ -24,9 +24,6 @@ import Image from "next/image";
 import CollageBlock from "./CollageBlock";
 import { ContentActionButtons } from "./ContentActionButtons";
 import Link from "next/link";
-import { auth } from "@/services/auth";
-import { userRepoRole } from "../actions/content-block";
-import { getRepoById } from "@/features/repo/actions/repo";
 import QnABlock from "./QnABlock";
 import NoteBlock from "./NoteBlock";
 import VideoBlock from "./video/VideoBlock";
@@ -34,30 +31,19 @@ import VideoBlock from "./video/VideoBlock";
 type ContentBlockProps = {
   input: typeof ContentBlockTable.$inferSelect;
   slug?: string[];
+  userId: string | undefined;
+  role: collaboratorRole | undefined;
+  owner: boolean;
 };
 
 const PLACEHOLDER_IMAGE = `/default_image.jpg`;
 
-export default async function ContentBlock({ input, slug }: ContentBlockProps) {
-  // const color = BLOCK_OPTIONS.filter((option) => input.type === option.id)[0].color;
-  const session = await auth();
-  const userId = session?.user?.id;
-  let role: collaboratorRole | undefined;
-  if (userId) {
-    role = (await userRepoRole(userId, input.repoId)).data?.role;
-  }
-  const repo = await getRepoById(input.repoId);
-  const owner: boolean = !!userId && repo.data?.userId === userId;
+export default async function ContentBlock({ input, slug, userId, role, owner }: ContentBlockProps) {
 
-  // const selectedType = BLOCK_OPTIONS.filter((option) => option.id === input.type)[0]; // doesn't work here
   switch (input.type) {
-    /**
-     * Renders a simple text block.
-     * `content` is the main title/text.
-     * `description` is the supporting text.
-     */
     case "note":
       return (
+        <>
         <Card
           className={`group my-2 mx-[-10px] md:mx-0 rounded-sm shadow-sm hover:border-primary selection:bg-[#FDE68A] selection:text-black`}
         >
@@ -75,12 +61,8 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
             />
           </CardFooter>
         </Card>
+        </>
       );
-    /**
-     * Renders a simple text block.
-     * `content` is the main title/text.
-     * `description` is the supporting text.
-     */
 
     case "h1":
       return (
@@ -101,14 +83,10 @@ export default async function ContentBlock({ input, slug }: ContentBlockProps) {
         </div>
       );
 
-    /**
-     * Renders an image.
-     * `content` is the image URL.
-     * `description` is the alt text and optional caption.
-     */
     case "image":
       const isServerValid = await isValidImageUrl(input.content);
       const imageUrl = isServerValid ? input.content : PLACEHOLDER_IMAGE;
+      // const imageUrl = PLACEHOLDER_IMAGE;
       return (
         <Card className="group my-2 mx-[-10px] md:mx-0 rounded-lg shadow-sm hover:border-primary selection:bg-[#FCA5A5] selection:text-black">
           <CardContent className="p-0 m-0">

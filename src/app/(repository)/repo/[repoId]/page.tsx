@@ -47,6 +47,10 @@ export default async function ContentPage({
                 <BreadcrumbLink href="/">Home</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/repo">All repositories</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
               {owner ? (
                 <>
                   <BreadcrumbItem>

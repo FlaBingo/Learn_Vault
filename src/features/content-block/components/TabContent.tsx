@@ -62,7 +62,7 @@ export default async function TabContent({
           <Tabs defaultValue="content">
             <TabsList>
               <TabsTrigger value="content">Content</TabsTrigger>
-              {(owner || role) && (
+              {(data?.status === "public" || role) && (
                 <TabsTrigger value="comment">Comment</TabsTrigger>
               )}
               {(owner || role === "admin") && (
@@ -75,7 +75,9 @@ export default async function TabContent({
             </TabsList>
             <TabsContent value="content" className="my-2">
               {!role && !owner && data?.status === "private" ? (
-                <RequestCollab name={ownerUser?.name} repoName={data.title} />
+                <>
+                  <RequestCollab name={ownerUser?.name} repoName={data.title} />
+                </>
               ) : (
                 <ContentModalProvider>
                   <ContentBlockGroup

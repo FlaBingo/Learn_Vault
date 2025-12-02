@@ -37,7 +37,7 @@ export default function NoteBlock({
   return (
     <div className="overflow-x-auto">
 
-      {memoizedMarkdown}    
+      {memoizedMarkdown} 
 
       {isOverflowing && (
         <button

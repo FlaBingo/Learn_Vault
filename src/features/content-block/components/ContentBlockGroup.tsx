@@ -1,11 +1,11 @@
 // src/features/content-block/components/ContentBlockGroup.tsx
 "use client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useEffect, useRef, useState } from "react";
 import { CommandModal } from "./CommandModal";
 import ContentFormModal from "./DataModal";
-import { collaboratorRole, ContentType } from "@/drizzle/schema";
+import { collaboratorRole } from "@/drizzle/schema";
 import { useContentModal } from "./ContentModalContext";
 
 export default function ContentBlockGroup({
