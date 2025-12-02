@@ -6,6 +6,7 @@ import { relations } from "drizzle-orm";
 import { ContentBlockTable } from "./contentBlock";
 import { CollaboratorTable } from "./collaborator";
 import { commentTable } from "./comments";
+import { savedRepos } from "./savedRepo";
 
 export const repoStatuses = ["public", "private"] as const
 export type repoStatus = (typeof repoStatuses)[number]
@@ -35,4 +36,5 @@ export const repoRelations = relations(RepoTable, ({ one, many }) => ({
   contentBlocks: many(ContentBlockTable),
   collaborators: many(CollaboratorTable),
   comments: many(commentTable),
+  savedByUsers: many(savedRepos),
 }))

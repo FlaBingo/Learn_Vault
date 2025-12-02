@@ -62,7 +62,7 @@ export default async function TabContent({
           <Tabs defaultValue="content">
             <TabsList>
               <TabsTrigger value="content">Content</TabsTrigger>
-              {(data?.status === "public" || role) && (
+              {(data?.status === "public" || owner || role) && (
                 <TabsTrigger value="comment">Comment</TabsTrigger>
               )}
               {(owner || role === "admin") && (

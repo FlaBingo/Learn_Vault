@@ -2,6 +2,7 @@ import { metadata } from "@/app/layout";
 import { getUserByEmail } from "@/features/user/actions/userAction";
 import UserProfilePage from "@/features/user/components/UserProfile";
 import { auth } from "@/services/auth";
+import { redirect } from "next/navigation";
 
 export default async function ProfilePage({
   params,
@@ -13,16 +14,6 @@ export default async function ProfilePage({
 
   const session = await auth();
   const logedInUserId = session?.user?.id;
-
-  if (!session) {
-    return (
-      <>
-        <div className="h-[80vh] flex justify-center items-center">
-          Please Login
-        </div>
-      </>
-    );
-  }
 
   const userData = await getUserByEmail(username + "@gmail.com");
   if (!userData) {

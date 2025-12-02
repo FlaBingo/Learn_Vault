@@ -6,6 +6,7 @@ import { relations } from "drizzle-orm";
 import { RepoTable } from "./repo";
 import { CollaboratorTable } from "./collaborator";
 import { commentTable } from "./comments";
+import { savedRepos } from "./savedRepo";
 
 
 export const UsersTable = pgTable("users", {
@@ -30,4 +31,5 @@ export const usersRelations = relations(UsersTable, ({ many }) => ({
   repositories: many(RepoTable),
   collaborations: many(CollaboratorTable),
   comments: many(commentTable),
+  savedRepos: many(savedRepos),
 }))

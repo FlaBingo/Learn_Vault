@@ -6,7 +6,12 @@ import {
   Users,
   Star,
   GitFork,
-  BookOpen
+  BookOpen,
+  Bookmark,
+  MoreVertical,
+  ShieldAlert,
+  ExternalLink,
+  Trash2
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -15,6 +20,8 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { auth } from "@/services/auth";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 // Mock Data representing a joined query of User + Repo + Tags
 const profileData = {
@@ -71,6 +78,57 @@ const profileData = {
     }
   ]
 };
+// --- Mock Data ---
+
+// 1. Repos the user has SAVED (from 'savedRepos' table)
+const savedVaults = [
+  {
+    id: 101,
+    title: "Advanced Rust Patterns",
+    owner: "alex_rs",
+    description: "Deep dive into memory safety and concurrency patterns.",
+    tags: ["Rust", "Systems"],
+    savedAt: "2 days ago",
+  },
+  {
+    id: 102,
+    title: "Machine Learning Ops",
+    owner: "data_wizard",
+    description: "From notebook to production. MLOps best practices.",
+    tags: ["Python", "AI", "DevOps"],
+    savedAt: "1 week ago",
+  },
+];
+
+// 2. People collaborating on MY repos (Query: 'collaborator' table joined with 'repo' where repo.ownerId = me)
+const myCollaborators = [
+  {
+    userId: "u_1",
+    name: "Alice Johnson",
+    avatar: "https://i.pravatar.cc/150?u=alice",
+    repoName: "Next.js Mastery", // The repo of yours they are working on
+    role: "Editor", // Their permission level
+    joinedAt: "Jan 10, 2025",
+  },
+  {
+    userId: "u_2",
+    name: "Bob Smith",
+    avatar: "https://i.pravatar.cc/150?u=bob",
+    repoName: "Next.js Mastery",
+    role: "Viewer", 
+    joinedAt: "Feb 14, 2025",
+  },
+  {
+    userId: "u_3",
+    name: "Charlie Dev",
+    avatar: "https://i.pravatar.cc/150?u=charlie",
+    repoName: "System Design Patterns",
+    role: "Admin",
+    joinedAt: "Mar 01, 2025",
+  },
+];
+
+
 
 export default async function UserProfilePage() {
   return (
@@ -120,61 +178,22 @@ export default async function UserProfilePage() {
       {/* --- 2. Main Content Area --- */}
       <Tabs defaultValue="vaults" className="w-full">
         <TabsList className="mb-6">
-          <TabsTrigger value="vaults" className="gap-2">
-            <Layers className="w-4 h-4" /> My Vaults
+          <TabsTrigger value="collaborating" className="gap-2">
+            <Users className="w-4 h-4" />My Collaborations
           </TabsTrigger>
-          <TabsTrigger value="collaborations" className="gap-2">
-            <Users className="w-4 h-4" /> Collaborating
+          <TabsTrigger value="collaborators" className="gap-2">
+            <Users className="w-4 h-4" />My Collaborators
           </TabsTrigger>
           <TabsTrigger value="saved" className="gap-2">
             <Star className="w-4 h-4" /> Saved
           </TabsTrigger>
+          <TabsTrigger value="comments" className="gap-2">
+            <Star className="w-4 h-4" /> My Comments
+          </TabsTrigger>
         </TabsList>
 
-        {/* --- Tab: My Vaults (Schema: repo, tags, contentBlock) --- */}
-        <TabsContent value="vaults">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {profileData.repos.map((repo) => (
-              <Card key={repo.id} className="hover:border-primary/50 transition-colors cursor-pointer flex flex-col">
-                <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      {repo.isPrivate ? <span className="text-muted-foreground">🔒</span> : <BookOpen className="w-4 h-4 text-blue-500"/>}
-                      {repo.title}
-                    </CardTitle>
-                  </div>
-                  <CardDescription className="line-clamp-2 h-10">
-                    {repo.description}
-                  </CardDescription>
-                </CardHeader>
-                
-                <CardContent className="flex-1">
-                  <div className="flex flex-wrap gap-2">
-                    {repo.tags.map(tag => (
-                      <Badge key={tag} variant="secondary" className="text-xs font-normal">
-                        #{tag}
-                      </Badge>
-                    ))}
-                  </div>
-                </CardContent>
-
-                <CardFooter className="text-xs text-muted-foreground border-t bg-muted/10 pt-3 flex justify-between">
-                  <span>{repo.resourceCount} Resources</span>
-                  <span>Updated {repo.updatedAt}</span>
-                </CardFooter>
-              </Card>
-            ))}
-            
-            {/* Create New Vault Placeholder */}
-            <Button variant="outline" className="h-full min-h-[200px] border-dashed flex flex-col gap-2 text-muted-foreground hover:text-primary hover:border-primary">
-              <Layers className="w-8 h-8" />
-              <span>Create New Vault</span>
-            </Button>
-          </div>
-        </TabsContent>
-
         {/* --- Tab: Collaborations (Schema: collaborator, repo) --- */}
-        <TabsContent value="collaborations">
+        <TabsContent value="collaborating">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {profileData.collabs.map((collab) => (
               <Card key={collab.id}>
@@ -189,6 +208,105 @@ export default async function UserProfilePage() {
               </Card>
             ))}
           </div>
+        </TabsContent>
+
+        <TabsContent value="saved">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {savedVaults.map((repo) => (
+              <Card key={repo.id} className="group hover:shadow-md transition-all">
+                <CardHeader>
+                  <div className="flex justify-between items-start">
+                    <CardTitle className="text-lg group-hover:text-primary transition-colors">
+                      {repo.title}
+                    </CardTitle>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground">
+                       <Bookmark className="w-4 h-4 fill-current" /> {/* Filled because it is saved */}
+                    </Button>
+                  </div>
+                  <CardDescription>by @{repo.owner}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+                    {repo.description}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {repo.tags.map((tag) => (
+                      <Badge key={tag} variant="outline" className="text-xs">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+                <CardFooter className="text-xs text-muted-foreground border-t bg-muted/20 pt-3">
+                  Saved {repo.savedAt}
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
+
+
+        {/* --- TAB: INCOMING COLLABORATORS --- */}
+        <TabsContent value="collaborators">
+          <Card>
+            <CardHeader>
+              <CardTitle>Team Management</CardTitle>
+              <CardDescription>
+                People who have access to repositories you own.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ScrollArea className="h-[400px] pr-4">
+                <div className="space-y-6">
+                  {myCollaborators.map((collab, index) => (
+                    <div key={index} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50 transition-colors">
+                      
+                      {/* User Info */}
+                      <div className="flex items-center gap-4">
+                        <Avatar>
+                          <AvatarImage src={collab.avatar} />
+                          <AvatarFallback>{collab.name.substring(0,2)}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="text-sm font-medium leading-none">{collab.name}</p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Collaborating on <span className="text-primary font-medium">{collab.repoName}</span>
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Role & Actions */}
+                      <div className="flex items-center gap-4">
+                        <Badge variant={collab.role === 'Admin' ? 'default' : 'secondary'}>
+                          {collab.role}
+                        </Badge>
+                        
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                              <MoreVertical className="w-4 h-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem>
+                              <ShieldAlert className="w-4 h-4 mr-2" /> Change Role
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                               <ExternalLink className="w-4 h-4 mr-2" /> View Profile
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="text-red-600 focus:text-red-600">
+                              <Trash2 className="w-4 h-4 mr-2" /> Remove Access
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+
+                    </div>
+                  ))}
+                </div>
+              </ScrollArea>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
