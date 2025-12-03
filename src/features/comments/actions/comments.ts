@@ -5,6 +5,7 @@ import {
   createCommentDB, 
   deleteCommentDB, 
   getCommentsByRepoIdDB, 
+  getCommentsByUserIdDB, 
   updateCommentDB 
 } from "../db/db";
 import { auth } from "@/services/auth";
@@ -13,6 +14,16 @@ import { auth } from "@/services/auth";
 export async function getCommentsByRepoId(repoId: string, repoStatus?: string | undefined) {
   const comments = await getCommentsByRepoIdDB(repoId);
   return comments;
+}
+
+export async function getCommentsByUserId(userId: string) {
+  try {
+    const comments = await getCommentsByUserIdDB(userId);
+    return comments;
+  } catch (error) {
+    console.error("Error getting user comments", error);
+    return [];
+  }
 }
 
 

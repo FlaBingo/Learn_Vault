@@ -1,7 +1,7 @@
 // src\features\comments\db\db.ts
 
 import { db } from "@/drizzle/db";
-import { commentTable, UsersTable } from "@/drizzle/schema";
+import { commentTable, RepoTable, UsersTable } from "@/drizzle/schema";
 import { eq, and, desc } from "drizzle-orm";
 
 
@@ -20,6 +20,32 @@ export const createCommentDB = async (data: NewCommentInput) => {
     return { success: false, error: "Failed to create comment" };
   }
 };
+
+
+export async function getCommentsByUserIdDB(userId: string) {
+  try {
+    const results = await db
+      .select({
+        id: commentTable.id,
+        content: commentTable.content,
+        createdAt: commentTable.createdAt,
+        repo: {
+            id: RepoTable.id,
+            title: RepoTable.title, // Assuming 'name' or 'title' exists in your RepoTable
+            description: RepoTable.description, 
+        }
+      })
+      .from(commentTable)
+      .innerJoin(RepoTable, eq(commentTable.repoId, RepoTable.id))
+      .where(eq(commentTable.userId, userId))
+      .orderBy(desc(commentTable.createdAt)); // Newest comments first
+
+    return results;
+  } catch (error) {
+    console.error("Error in getCommentsByUserIdDB:", error);
+    return [];
+  }
+}
 
 
 export const getCommentsByRepoIdDB = async (repoId: string) => {

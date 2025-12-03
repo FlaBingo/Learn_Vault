@@ -29,7 +29,7 @@ export default async function ProfilePage({
   return (
     <>
       <div className="container mx-auto">
-        <UserProfilePage />
+        <UserProfilePage userData={userData}/>
       </div>
     </>
   );

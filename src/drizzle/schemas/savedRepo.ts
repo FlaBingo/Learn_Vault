@@ -1,14 +1,15 @@
 // src/drizzle/schemas/savedRepos.ts
-import { pgTable, text, timestamp, primaryKey } from "drizzle-orm/pg-core";
+import { pgTable, timestamp, primaryKey, uuid } from "drizzle-orm/pg-core";
 import { UsersTable } from "./user";
 import { RepoTable } from "./repo";
 import { relations } from "drizzle-orm";
 
 export const savedRepos = pgTable("saved_repos", {
-    userId: text("user_id")
+    userId: uuid("user_id")
       .notNull()
       .references(() => UsersTable.id, { onDelete: "cascade" }),
-    repoId: text("repo_id")
+      
+    repoId: uuid("repo_id")
       .notNull()
       .references(() => RepoTable.id, { onDelete: "cascade" }),
     savedAt: timestamp("saved_at").defaultNow().notNull(),
