@@ -7,7 +7,7 @@ import { eq, and, desc } from "drizzle-orm";
 
 export type NewCommentInput = typeof commentTable.$inferInsert;
 
-export const createComment = async (data: NewCommentInput) => {
+export const createCommentDB = async (data: NewCommentInput) => {
   try {
     const [newComment] = await db
       .insert(commentTable)
@@ -22,7 +22,7 @@ export const createComment = async (data: NewCommentInput) => {
 };
 
 
-export const getCommentsByRepoId = async (repoId: string) => {
+export const getCommentsByRepoIdDB = async (repoId: string) => {
   try {
     const comments = await db
       .select({
@@ -52,7 +52,7 @@ export const getCommentsByRepoId = async (repoId: string) => {
 };
 
 
-export const getCommentById = async (commentId: string) => {
+export const getCommentByIdDB = async (commentId: string) => {
   try {
     const [comment] = await db
       .select()
@@ -67,7 +67,7 @@ export const getCommentById = async (commentId: string) => {
 };
 
 
-export const updateComment = async (
+export const updateCommentDB = async (
   commentId: string,
   userId: string,
   content: string
@@ -99,7 +99,7 @@ export const updateComment = async (
 };
 
 
-export const deleteComment = async (commentId: string, userId: string) => {
+export const deleteCommentDB = async (commentId: string, userId: string) => {
   try {
     const [deletedComment] = await db
       .delete(commentTable)

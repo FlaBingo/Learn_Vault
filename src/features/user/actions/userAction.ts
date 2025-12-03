@@ -1,3 +1,5 @@
+// src\features\user\actions\userAction.ts
+
 "use server";
 
 import { getUserByEmailDB } from "../db/userDb";
@@ -12,4 +14,3 @@ export async function getUserByEmail(email: string) {
     return null;
   }
 }
-
