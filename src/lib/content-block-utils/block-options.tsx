@@ -138,7 +138,7 @@ export const BLOCK_OPTIONS: {
     label: "QnA",
     contentEl: "textarea",
     contentPlaceholder: "Enter the question...",
-    contentMessage: "This text will be the main, always-visible question.",
+    contentMessage: "This text will be the question...",
     descPlaceholder: "Enter the answer...",
     descMessage: "This text will be the answer, often shown in a toggle.",
     icon: HelpCircle,
