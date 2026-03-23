@@ -34,14 +34,12 @@ import { ContentType } from "@/drizzle/schema";
 import { BLOCK_OPTIONS } from "@/lib/content-block-utils/block-options";
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useTransition } from "react";
-import {
-  createBlock,
-  updateBlock,
-} from "../actions/content-block";
+import { createBlock, updateBlock } from "../actions/content-block";
 import { toast } from "sonner";
 import { usePathname } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { useContentModal } from "./ContentModalContext";
+import TiptapEditor from "@/components/TiptapEditor";
 
 export default function ContentFormModal({
   children,
@@ -72,7 +70,7 @@ export default function ContentFormModal({
 
   const [isPending, startTransition] = useTransition();
   const selectedOption = BLOCK_OPTIONS.filter((option) =>
-    isEditMode ? option.id === contentBlock?.type : option.id === contentId
+    isEditMode ? option.id === contentBlock?.type : option.id === contentId,
   )[0];
 
   const form = useForm<z.infer<typeof ContentFormSchema>>({
@@ -186,7 +184,10 @@ export default function ContentFormModal({
                         {selectedOption.label}
                       </FormLabel>
                       <FormControl>
-                        {selectedOption.contentEl === "textarea" ? (
+                        {selectedOption.contentType === "editable" ? (
+                          <TiptapEditor value={field.value} onChange={field.onChange} />
+                        ) : (
+                          selectedOption.contentEl === "textarea" ? (
                           <Textarea
                             placeholder={selectedOption.contentPlaceholder}
                             {...field}
@@ -196,6 +197,7 @@ export default function ContentFormModal({
                             placeholder={selectedOption.contentPlaceholder}
                             {...field}
                           />
+                        )
                         )}
                       </FormControl>
                       <FormDescription>
@@ -217,11 +219,15 @@ export default function ContentFormModal({
                       <FormItem>
                         <FormLabel>Description</FormLabel>
                         <FormControl>
-                          <Textarea
-                            placeholder={selectedOption.descPlaceholder}
-                            maxLength={MAX_LENGTH}
-                            {...field}
-                          />
+                          {selectedOption.id === "qna" ? (
+                            <TiptapEditor value={field.value} onChange={field.onChange}/>
+                          ) : (
+                            <Textarea
+                              placeholder={selectedOption.descPlaceholder}
+                              maxLength={MAX_LENGTH}
+                              {...field}
+                            />
+                          )}
                         </FormControl>
                         <FormDescription>
                           {selectedOption.descMessage}

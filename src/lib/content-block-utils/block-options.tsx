@@ -17,6 +17,7 @@ export const BLOCK_OPTIONS: {
   id: ContentType;
   label: string;
   contentEl: string;
+  contentType: "normal" | "editable";
   contentPlaceholder: string;
   contentMessage?: string;
   descPlaceholder: string;
@@ -29,6 +30,7 @@ export const BLOCK_OPTIONS: {
     id: "note",
     label: "Note",
     contentEl: "textarea",
+    contentType: "editable",
     contentPlaceholder: "Start writing your note...",
     contentMessage: "Plain text area for general notes.",
     descPlaceholder: "Add a short summary...",
@@ -41,6 +43,7 @@ export const BLOCK_OPTIONS: {
     id: "h1",
     label: "Heading 1",
     contentEl: "input",
+    contentType: "normal",
     contentPlaceholder: "Enter main heading...",
     contentMessage: "Use for large section titles.",
     descPlaceholder: "Describe what this section covers...",
@@ -53,6 +56,7 @@ export const BLOCK_OPTIONS: {
     id: "image",
     label: "Image",
     contentEl: "input",
+    contentType: "normal",
     contentPlaceholder: "Paste image URL or upload file...",
     contentMessage: "Supports URL or image upload.",
     descPlaceholder: "Describe this image...",
@@ -65,6 +69,7 @@ export const BLOCK_OPTIONS: {
     id: "collage",
     label: "Image Collage",
     contentEl: "textarea",
+    contentType: "normal",
     contentPlaceholder: "Paste multiple image URLs (one per line)...",
     contentMessage: "Add multiple image URLs to create a collage.",
     descPlaceholder: "Describe this collage...",
@@ -77,6 +82,7 @@ export const BLOCK_OPTIONS: {
     id: "video",
     label: "Video",
     contentEl: "input",
+    contentType: "normal",
     contentPlaceholder: "Paste YouTube or Vimeo link...",
     contentMessage: "Embed videos via URL.",
     descPlaceholder: "Add a short video description...",
@@ -89,6 +95,7 @@ export const BLOCK_OPTIONS: {
     id: "link",
     label: "Web Bookmark/Link",
     contentEl: "input",
+    contentType: "normal",
     contentPlaceholder: "Paste website URL...",
     contentMessage: "Displays a rich bookmark preview.",
     descPlaceholder: "Describe what this link leads to...",
@@ -101,6 +108,7 @@ export const BLOCK_OPTIONS: {
     id: "pdf",
     label: "PDF",
     contentEl: "input",
+    contentType: "normal",
     contentPlaceholder: "Paste PDF link or upload file...",
     contentMessage: "Embeds or links to a PDF document.",
     descPlaceholder: "Add a description of this PDF...",
@@ -113,6 +121,7 @@ export const BLOCK_OPTIONS: {
     id: "folder",
     label: "Folder Name",
     contentEl: "input",
+    contentType: "normal",
     contentPlaceholder: "Enter folder name...",
     contentMessage: "Create a folder to organize items.",
     descPlaceholder: "Describe the folder contents...",
@@ -125,6 +134,7 @@ export const BLOCK_OPTIONS: {
     id: "code",
     label: "Code Block",
     contentEl: "textarea",
+    contentType: "normal",
     contentPlaceholder: "Write or paste code here...",
     contentMessage: "Supports multiple programming languages.",
     descPlaceholder: "Describe what this code does...",
@@ -137,6 +147,7 @@ export const BLOCK_OPTIONS: {
     id: "qna",
     label: "QnA",
     contentEl: "textarea",
+    contentType: "normal",
     contentPlaceholder: "Enter the question...",
     contentMessage: "This text will be the question...",
     descPlaceholder: "Enter the answer...",

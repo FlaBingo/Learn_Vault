@@ -24,9 +24,8 @@ import Image from "next/image";
 import CollageBlock from "./CollageBlock";
 import { ContentActionButtons } from "./ContentActionButtons";
 import Link from "next/link";
-import QnABlock from "./QnABlock";
-import NoteBlock from "./NoteBlock";
 import VideoBlock from "./video/VideoBlock";
+import SafeHtml from "@/components/SafeHtml";
 
 type ContentBlockProps = {
   input: typeof ContentBlockTable.$inferSelect;
@@ -38,29 +37,44 @@ type ContentBlockProps = {
 
 const PLACEHOLDER_IMAGE = `/default_image.jpg`;
 
-export default async function ContentBlock({ input, slug, userId, role, owner }: ContentBlockProps) {
-
+export default async function ContentBlock({
+  input,
+  slug,
+  userId,
+  role,
+  owner,
+}: ContentBlockProps) {
   switch (input.type) {
     case "note":
       return (
         <>
-        <Card
-          className={`group my-2 mx-[-10px] md:mx-0 rounded-sm shadow-sm hover:border-primary selection:bg-[#FDE68A] selection:text-black`}
-        >
-          <CardContent className="px-4 flex flex-col md:flex-row gap-3 mx-0.5">
-            <div className="flex gap-3 font-semibold"><NotepadText className="flex-shrink-0" /><span className="md:hidden">NOTE</span></div>
-            <NoteBlock content={input.content} description={input.description} />
-          </CardContent>
-          <CardFooter className="flex text-sm justify-between items-center">
-            <ContentActionButtons
-              ButtonClass="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              input={input}
-              userId={userId}
-              role={role}
-              owner={owner}
-            />
-          </CardFooter>
-        </Card>
+          <Card
+            className={`group my-2 mx-[-10px] md:mx-0 rounded-sm shadow-sm hover:border-primary selection:bg-[#FDE68A] selection:text-black`}
+          >
+            <CardContent className="px-4 flex flex-col md:flex-row gap-3 mx-0.5">
+              <div className="flex gap-3 font-semibold">
+                <NotepadText className="flex-shrink-0" />
+                <span className="md:hidden">NOTE</span>
+              </div>
+              <div className="overflow-auto">
+                <div className="py-1 max-h-[50vh] overflow-auto">
+                  <SafeHtml html={input.content} />
+                </div>
+                <div className="text-sm text-muted-foreground mt-2 pt-2 border-t border-dashed border-gray-400 dark:border-gray-700">
+                  {input.description}
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter className="flex text-sm justify-between items-center">
+              <ContentActionButtons
+                ButtonClass="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                input={input}
+                userId={userId}
+                role={role}
+                owner={owner}
+              />
+            </CardFooter>
+          </Card>
         </>
       );
 
@@ -301,7 +315,7 @@ export default async function ContentBlock({ input, slug, userId, role, owner }:
             </CardHeader>
           )}
           <CardContent className="p-0">
-            <pre className="p-4 overflow-x-auto">
+            <pre className="p-4 max-h-[50vh] overflow-auto">
               <code className="font-mono text-sm">{input.content}</code>
             </pre>
           </CardContent>
@@ -362,7 +376,9 @@ export default async function ContentBlock({ input, slug, userId, role, owner }:
               <MessageCircleQuestionMark className="flex-shrink-0 hidden md:block" />
               <CardTitle className="font-semibold">{input.content}</CardTitle>
             </CardHeader>
-            <QnABlock answer={input.description} />
+            <div className="px-6 py-4 max-h-[50vh] overflow-auto">
+              <SafeHtml html={input.description} />
+            </div>
             <CardFooter className="text-sm flex justify-between items-center">
               <ContentActionButtons
                 ButtonClass="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
