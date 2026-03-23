@@ -1,10 +1,10 @@
-import NextAuth from "next-auth"
-import { DrizzleAdapter } from "@auth/drizzle-adapter"
-import GitHub from "next-auth/providers/github"
-import Google from "next-auth/providers/google"
-import { db } from "@/drizzle/db"
-import { accounts, sessions, UsersTable, verificationTokens } from "@/drizzle/schema"
- 
+// src/services/auth.ts
+import NextAuth from "next-auth";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import { db } from "@/drizzle/db";
+import { accounts, sessions, UsersTable, verificationTokens } from "@/drizzle/schema";
+import { authConfig } from "./auth.config";
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: DrizzleAdapter(db, {
     usersTable: UsersTable,
@@ -12,12 +12,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     sessionsTable: sessions,
     verificationTokensTable: verificationTokens,
   }),
-  providers: [GitHub, Google],
-  // still not understood, what's happening below
+  session: { strategy: "jwt" }, // CRITICAL for Edge Middleware compatibility
+  ...authConfig,
   callbacks: {
-    async session({ session, user }) {
-      session.user.id = user.id;
+    ...authConfig.callbacks,
+    async session({ session, token }) {
+      if (token.sub && session.user) {
+        session.user.id = token.sub;
+      }
       return session;
-    }
-  }
-})
+    },
+  },
+});
