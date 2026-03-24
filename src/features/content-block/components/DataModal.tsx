@@ -39,7 +39,12 @@ import { toast } from "sonner";
 import { usePathname } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { useContentModal } from "./ContentModalContext";
-import TiptapEditor from "@/components/TiptapEditor";
+import dynamic from "next/dynamic";
+// This only loads the editor code when the modal opens
+const TiptapEditor = dynamic(() => import('@/components/TiptapEditor'), { 
+  ssr: false,
+  loading: () => <div className="h-[150px] animate-pulse bg-muted rounded-md" /> 
+});
 
 export default function ContentFormModal({
   children,
@@ -220,7 +225,7 @@ export default function ContentFormModal({
                         <FormLabel>Description</FormLabel>
                         <FormControl>
                           {selectedOption.id === "qna" ? (
-                            <TiptapEditor value={field.value} onChange={field.onChange}/>
+                            <TiptapEditor value={field.value ?? ""} onChange={field.onChange}/>
                           ) : (
                             <Textarea
                               placeholder={selectedOption.descPlaceholder}

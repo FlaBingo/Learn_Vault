@@ -1,3 +1,5 @@
+// src\components\SafeHtml.tsx
+
 "use client";
 
 import DOMPurify from "isomorphic-dompurify";
@@ -8,11 +10,6 @@ interface SafeHtmlProps {
   className?: string;
 }
 
-/**
- * A reusable component to safely render HTML from Tiptap or other sources.
- * Uses isomorphic-dompurify to prevent XSS and Tailwind Typography (prose) 
- * to ensure formatting (bold, lists, etc.) is visible.
- */
 export default function SafeHtml({ html, className }: SafeHtmlProps) {
   // Sanitize the HTML string
   const sanitizedContent = DOMPurify.sanitize(html || "");
@@ -20,9 +17,10 @@ export default function SafeHtml({ html, className }: SafeHtmlProps) {
   return (
     <div
       className={cn(
-        // 'prose' is required for Tailwind to show <strong>, <ul>, etc.
-        "prose prose-sm dark:prose-invert max-w-none prose-p:mb-4 last:prose-p:mb-0",
-        // Allow custom spacing or colors via props
+        // 'prose' styles the text, 'overflow-x-auto' handles long formulas
+        "prose prose-sm dark:prose-invert max-w-none prose-p:mb-4 last:prose-p:mb-0 overflow-x-auto",
+        // Targeting the specific class the Tiptap math extension uses
+        "[&_.Tiptap-mathematics]:my-4 [&_.Tiptap-mathematics]:text-center",
         className
       )}
       dangerouslySetInnerHTML={{ __html: sanitizedContent }}
